@@ -11,8 +11,8 @@ plus courte chaîne entre deux sommets dans un graphe non-orienté, sans boucle,
 qui permettent de diminuer le nombre de sommets visités sur des graphes de grande taille. Une structure
 de tas sera utilisée pour la mise en œuvre de l’algorithme de Dijkstra
 
-#### [Lien vers la page de cours](tinyurl.com/sdd2526)
+#### [Lien vers la page de cours](https://tinyurl.com/sdd2526)
 
 ---
 
-FEUR
+FEUR.
