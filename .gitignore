@@ -1,3 +1,6 @@
+# compile commands
+compile_commands.json
+
 # Directories
 bin/
 obj/
