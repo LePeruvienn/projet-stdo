@@ -5,6 +5,7 @@ compile_commands.json
 bin/
 obj/
 build/
+.cache/
 
 # Prerequisites
 *.d
