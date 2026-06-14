@@ -98,5 +98,7 @@ void LSP_File_print(LSP_File lsp_file)
 	printf(" > EDGE_WEIGHT_SECTION: %s\n",
 		lsp_file->EDGE_WEIGHT_SECTION == NULL ? "No" : "YES!");
 	printf("--------------------\n");
+
+	LSP_Section_print_Node_Coord(lsp_file->NODE_COORD_SECTION);
 }
 

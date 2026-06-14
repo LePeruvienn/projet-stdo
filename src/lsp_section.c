@@ -187,3 +187,26 @@ const char* LSP_Section_Type_to_str(LSP_Section_Type type)
 	LOG_ERROR("Could not find .LSP string for SECTION_TYPE enum : %d", type);
 	return LSP_SECTION_UNDEFINED_STR;
 }
+
+void LSP_Section_print_Node_Coord(LSP_Section section)
+{
+	if (section == NULL)
+	{
+		LOG_ERROR("Cannot print a NULL section.");
+		return;
+	}
+
+	if(section->type != e_NODE_COORD_SECTION)
+	{
+		LOG_ERROR("Section type mismatch.");
+	}
+
+	LSP_Node_Coord* buffer = (LSP_Node_Coord*) section->buffer;
+
+	for (size_t i = 0; i < section->element_amount; ++i)
+	{
+		printf("%zu : %zu (x: %lf, y: %lf, z: %lf)\n",
+				i, (size_t) buffer[i].node_number,
+				buffer[i].px, buffer[i].py, buffer[i].pz);
+	}
+}

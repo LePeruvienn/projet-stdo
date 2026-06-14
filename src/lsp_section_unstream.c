@@ -52,9 +52,9 @@ void LSP_Node_Coord_Section_unstream(FILE* str, LSP_File lsp_file)
 		node_coord->py = py;
 		node_coord->pz = pz;
 	
-		LOG("> Node Coord: %zu %lf %lf %lf",
-				node_coord->node_number,
-				node_coord->px, node_coord->py, node_coord->pz);
+		// LOG("> Node Coord: %zu %lf %lf %lf",
+				// node_coord->node_number,
+				// node_coord->px, node_coord->py, node_coord->pz);
 	}
 }
 

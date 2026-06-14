@@ -45,4 +45,6 @@ LSP_Node_Coord* LSP_Section_get_next_Node_Coord(LSP_Section section);
 LSP_Section_Type parse_LSP_Section_Type(const char* field);
 const char* LSP_Section_Type_to_str(LSP_Section_Type type);
 
+void LSP_Section_print_Node_Coord(LSP_Section section);
+
 #endif // LSP_SECTION_H
