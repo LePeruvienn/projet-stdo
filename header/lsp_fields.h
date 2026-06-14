@@ -3,6 +3,9 @@
 
 #include "lsp_fields_enums.h"
 
+#include <stddef.h>
+#include <stdbool.h>
+
 /* 
  * FIELDS STRINGS MACROS
  */
@@ -11,6 +14,7 @@
 #define LSP_COMMENT_STR "COMMENT"
 #define LSP_DIMENSION_STR "DIMENSION"
 #define LSP_CAPACITY_STR "CAPACITY"
+
 #define LSP_EDGE_WEIGHT_TYPE_STR "EDGE_WEIGHT_TYPE"
 #define LSP_EDGE_WEIGHT_FORMAT_STR "EDGE_WEIGHT_FORMAT"
 #define LSP_EDGE_DATA_FORMAT_STR "EDGE_DATA_FORMAT"
@@ -33,5 +37,12 @@ LSP_Edge_Weight_Format parse_LSP_Edge_Weight_Format(const char* field);
 LSP_Edge_Data_Format parse_LSP_Edge_Data_Format(const char* field);
 LSP_Node_Coord_Type parse_LSP_Node_Coord_Type(const char* field);
 LSP_Display_Data_Type parse_LSP_Display_Data_Type(const char* field);
+
+const char* LSP_Type_to_str(LSP_Type type);
+const char* LSP_Edge_Weight_Type_to_str(LSP_Edge_Weight_Type type);
+const char* LSP_Edge_Weight_Format_to_str(LSP_Edge_Weight_Format format);
+const char* LSP_Edge_Data_Format_to_str(LSP_Edge_Data_Format format);
+const char* LSP_Node_Coord_Type_to_str(LSP_Node_Coord_Type type);
+const char* LSP_Display_Data_Type_to_str(LSP_Display_Data_Type type);
 
 #endif // LSP_FIELDS_H

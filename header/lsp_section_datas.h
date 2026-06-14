@@ -7,6 +7,7 @@
 typedef uint64_t LSP_Node_Number;
 
 typedef struct LSP_Node_Coord LSP_Node_Coord;
+// typedef struct LSP_Depot_Section LSP_Depot_Section UNSUPPORTED
 typedef struct LSP_Demand LSP_Demand;
 typedef struct LSP_Edge LSP_Edge;
 typedef struct LSP_Display_Data LSP_Display_Data;

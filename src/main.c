@@ -1,8 +1,13 @@
-#include "main.h"
+#include "lsp_parser.h"
+#include "lsp_file.h"
 
-#include <stdio.h>
+const char* filepath = "TSPLIB/res/a280.tsp";
 
 int main(void)
 {
-	printf("Here is a ⭐ MAGICK ⭐ number : %d\n", magick_number);
+	LSP_File lsp_file = LSP_parse_file(filepath);
+
+	LSP_File_print(lsp_file);
+
+	LSP_File_free(lsp_file);
 }
