@@ -1,6 +1,7 @@
 #include "lsp_parser.h"
 #include "lsp_fields.h"
 #include "lsp_file.h"
+#include "lsp_section.h"
 #include "logger.h"
 
 #include <stdio.h>
@@ -123,8 +124,12 @@ LSP_File LSP_parse_file(const char* filepath)
 
 		if (is_section)
 		{
-			// TODO
-			// LOG("%zu > SECTION %s", i, field);
+			LSP_Section_Type section_type = parse_LSP_Section_Type(field);
+			if(section_type != LSP_SECTION_UNDEFINED)
+			{
+				const char* section_name = LSP_Section_Type_to_str(section_type);
+				LOG("%zu > Section : %s", i, section_name);
+			}
 		}
 		else
 		{
@@ -163,5 +168,29 @@ void LSP_parse_field_to_file(LSP_File lsp_file, const char* field, const char* i
 		long long n = atoll(input);
 		lsp_file->CAPACITY = n;
 		// LOG("atoi parsed input %s -> %lld", input, n);
+	}
+	else if(strcmp(field, LSP_EDGE_WEIGHT_TYPE_STR) == 0)
+	{
+		lsp_file->EDGE_WEIGHT_TYPE = parse_LSP_Edge_Weight_Type(input);
+	}
+	else if(strcmp(field, LSP_EDGE_WEIGHT_FORMAT_STR) == 0)
+	{
+		lsp_file->EDGE_WEIGHT_FORMAT = parse_LSP_Edge_Weight_Format(input);
+	}
+	else if(strcmp(field, LSP_EDGE_DATA_FORMAT_STR) == 0)
+	{
+		lsp_file->EDGE_DATA_FORMAT = parse_LSP_Edge_Data_Format(input);
+	}
+	else if(strcmp(field, LSP_NODE_COORD_TYPE_STR) == 0)
+	{
+		lsp_file->NODE_COORD_TYPE = parse_LSP_Node_Coord_Type(input);
+	}
+	else if(strcmp(field, LSP_DISPLAY_DATA_TYPE_STR) == 0)
+	{
+		lsp_file->DISPLAY_DATA_TYPE = parse_LSP_Display_Data_Type(input);
+	}
+	else
+	{
+		LOG_ERROR("Couldnt match any field with : %s", field);
 	}
 }

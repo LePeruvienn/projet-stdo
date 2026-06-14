@@ -84,19 +84,19 @@ void LSP_File_print(LSP_File lsp_file)
 	// Sections
 	printf("Sections\n");
 	printf(" > NODE_COORD_SECTION: %s\n",
-		lsp_file->NODE_COORD_SECTION == NULL ? "NULL" : LSP_Section_Type_to_str(e_NODE_COORD_SECTION));
+		lsp_file->NODE_COORD_SECTION == NULL ? "No" : "YES!");
 	printf(" > DEMAND_SECTION: %s\n",
-		lsp_file->DEMAND_SECTION == NULL ? "NULL" : LSP_Section_Type_to_str(e_DEMAND_SECTION));
+		lsp_file->DEMAND_SECTION == NULL ? "No" : "YES!");
 	printf(" > EDGE_DATA_SECTION: %s\n",
-		lsp_file->EDGE_DATA_SECTION == NULL ? "NULL" : LSP_Section_Type_to_str(e_EDGE_DATA_SECTION));
+		lsp_file->EDGE_DATA_SECTION == NULL ? "No" : "YES!");
 	printf(" > FIXED_EDGES_SECTION: %s\n",
-		lsp_file->FIXED_EDGES_SECTION == NULL ? "NULL" : LSP_Section_Type_to_str(e_FIXED_EDGES_SECTION));
+		lsp_file->FIXED_EDGES_SECTION == NULL ? "No" : "YES!");
 	printf(" > DISPLAY_DATA_SECTION: %s\n",
-		lsp_file->DISPLAY_DATA_SECTION == NULL ? "NULL" : LSP_Section_Type_to_str(e_DISPLAY_DATA_SECTION));
+		lsp_file->DISPLAY_DATA_SECTION == NULL ? "No" : "YES!");
 	printf(" > TOUR_SECTION: %s\n",
-		lsp_file->TOUR_SECTION == NULL ? "NULL" : LSP_Section_Type_to_str(e_TOUR_SECTION));
+		lsp_file->TOUR_SECTION == NULL ? "No" : "YES!");
 	printf(" > EDGE_WEIGHT_SECTION: %s\n",
-		lsp_file->EDGE_WEIGHT_SECTION == NULL ? "NULL" : LSP_Section_Type_to_str(e_EDGE_WEIGHT_SECTION));
+		lsp_file->EDGE_WEIGHT_SECTION == NULL ? "No" : "YES!");
 	printf("--------------------\n");
 }
 

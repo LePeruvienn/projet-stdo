@@ -37,6 +37,7 @@ LSP_Section LSP_Section_create();
 
 void LSP_Section_free(LSP_Section section);
 
+LSP_Section_Type parse_LSP_Section_Type(const char* field);
 const char* LSP_Section_Type_to_str(LSP_Section_Type type);
 
 #endif // LSP_SECTION_H

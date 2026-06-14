@@ -6,6 +6,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #define LSP_SECTION_TYPE_NODE_COORD_SECTION_STR "NODE_COORD_SECTION"
 #define LSP_SECTION_TYPE_DEPOT_SECTION_STR "DEPOT_SECTION"
@@ -85,6 +86,23 @@ void LSP_Section_free(LSP_Section section)
 	}
 
 	free(section);
+}
+
+LSP_Section_Type parse_LSP_Section_Type(const char* field)
+{
+	if     (strcmp(field, LSP_SECTION_TYPE_NODE_COORD_SECTION_STR)   == 0) return e_NODE_COORD_SECTION;
+	else if(strcmp(field, LSP_SECTION_TYPE_DEPOT_SECTION_STR)        == 0) return e_DEPOT_SECTION;
+	else if(strcmp(field, LSP_SECTION_TYPE_DEMAND_SECTION_STR)       == 0) return e_DEMAND_SECTION;
+	else if(strcmp(field, LSP_SECTION_TYPE_EDGE_DATA_SECTION_STR)    == 0) return e_EDGE_DATA_SECTION;
+	else if(strcmp(field, LSP_SECTION_TYPE_FIXED_EDGES_SECTION_STR)  == 0) return e_FIXED_EDGES_SECTION;
+	else if(strcmp(field, LSP_SECTION_TYPE_DISPLAY_DATA_SECTION_STR) == 0) return e_DISPLAY_DATA_SECTION;
+	else if(strcmp(field, LSP_SECTION_TYPE_TOUR_SECTION_STR)         == 0) return e_TOUR_SECTION;
+	else if(strcmp(field, LSP_SECTION_TYPE_EDGE_WEIGHT_SECTION_STR)  == 0) return e_EDGE_WEIGHT_SECTION;
+
+	// TODO uncomment this
+	// LOG_ERROR("Could not find .LSP Section type for field : %s", field);
+
+	return LSP_SECTION_UNDEFINED;
 }
 
 const char* LSP_Section_Type_to_str(LSP_Section_Type type)
