@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define ELMENT_START_SIZE 32
+
 #define LSP_SECTION_TYPE_NODE_COORD_SECTION_STR "NODE_COORD_SECTION"
 #define LSP_SECTION_TYPE_DEPOT_SECTION_STR "DEPOT_SECTION"
 #define LSP_SECTION_TYPE_DEMAND_SECTION_STR "DEMAND_SECTION"
@@ -24,6 +26,9 @@ struct LSP_Section
 	void* buffer;
 	size_t size;
 	size_t stride;
+
+	size_t element_size;
+	size_t element_amount;
 };
 
 static size_t get_stride(LSP_Section_Type type)
@@ -66,7 +71,7 @@ static size_t get_stride(LSP_Section_Type type)
 }
 
 
-LSP_Section create_section(LSP_Section_Type type)
+LSP_Section LSP_Section_create(LSP_Section_Type type)
 {
 	LSP_Section section = malloc(sizeof(struct LSP_Section));
 
@@ -74,6 +79,8 @@ LSP_Section create_section(LSP_Section_Type type)
 	section->buffer = NULL;
 	section->size = 0;
 	section->stride = get_stride(type);
+	section->element_size = 0;
+	section->element_amount = 0;
 
 	return section;
 }
@@ -86,6 +93,62 @@ void LSP_Section_free(LSP_Section section)
 	}
 
 	free(section);
+}
+
+static void LSP_Section_setup_for_next(LSP_Section section)
+{
+	if (section->buffer == NULL)
+	{
+		section->element_size = ELMENT_START_SIZE;
+		section->size = section->stride * section->element_size;
+		section->buffer = malloc(section->size);
+	}
+
+	if(section->element_amount == section->element_size)
+	{
+		section->element_size *= 2;
+		section->size = section->stride * section->element_size;
+		section->buffer = realloc(section->buffer, section->size);
+	}
+
+	if (section->buffer == NULL)
+	{
+		LOG_ERROR("malloc or realloc failed, returning NULL.");
+	}
+}
+
+void* LSP_Section_get_next(LSP_Section section)
+{
+	if (section == NULL)
+	{
+		LOG_ERROR("Cannot get next of a NULL section, returned NULL.");
+		return NULL;
+	}
+
+	LSP_Section_setup_for_next(section);
+
+	return (unsigned char*) section->buffer + (section->element_amount++ * section->stride);
+}
+
+LSP_Node_Coord* LSP_Section_get_next_Node_Coord(LSP_Section section)
+{
+	if (section == NULL)
+	{
+		LOG_ERROR("Cannot get next of a NULL section, returned NULL.");
+		return NULL;
+	}
+
+	if (section->type != e_NODE_COORD_SECTION)
+	{
+		LOG_ERROR("Section type does not matche. Returned NULL.");
+		return NULL;
+	}
+
+	LSP_Section_setup_for_next(section);
+
+	LSP_Node_Coord* buffer = (LSP_Node_Coord*) section->buffer;
+
+	return &buffer[section->element_amount++];
 }
 
 LSP_Section_Type parse_LSP_Section_Type(const char* field)

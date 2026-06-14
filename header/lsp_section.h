@@ -1,6 +1,8 @@
 #ifndef LSP_SECTION_H
 #define LSP_SECTION_H
 
+#include "lsp_section_datas.h"
+
 #include <stdint.h>
 #include <stddef.h>
 
@@ -33,9 +35,12 @@ enum LSP_Section_Type
 	e_EDGE_WEIGHT_SECTION
 };
 
-LSP_Section LSP_Section_create();
+LSP_Section LSP_Section_create(LSP_Section_Type type);
 
 void LSP_Section_free(LSP_Section section);
+
+void* LSP_Section_get_next(LSP_Section section);
+LSP_Node_Coord* LSP_Section_get_next_Node_Coord(LSP_Section section);
 
 LSP_Section_Type parse_LSP_Section_Type(const char* field);
 const char* LSP_Section_Type_to_str(LSP_Section_Type type);

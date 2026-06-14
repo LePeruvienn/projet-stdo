@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-typedef uint64_t LSP_Node_Number;
+typedef size_t LSP_Node_Number;
 
 typedef struct LSP_Node_Coord LSP_Node_Coord;
 // typedef struct LSP_Depot_Section LSP_Depot_Section UNSUPPORTED

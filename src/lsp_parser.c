@@ -2,6 +2,7 @@
 #include "lsp_fields.h"
 #include "lsp_file.h"
 #include "lsp_section.h"
+#include "lsp_section_unstream.h"
 #include "logger.h"
 
 #include <stdio.h>
@@ -22,7 +23,7 @@
 #define END_STR '\0'
 
 // from: https://www.delftstack.com/howto/c/trim-string-in-c/
-static void trim_str(char* str)
+void trim_str(char* str)
 {
 	char *start = str + strspn(str, " \t\n\r");  // Points to the first non-whitespace character
 	char *end = str + strlen(str) - 1;  // Points to the last character of the string
@@ -124,12 +125,8 @@ LSP_File LSP_parse_file(const char* filepath)
 
 		if (is_section)
 		{
-			LSP_Section_Type section_type = parse_LSP_Section_Type(field);
-			if(section_type != LSP_SECTION_UNDEFINED)
-			{
-				const char* section_name = LSP_Section_Type_to_str(section_type);
-				LOG("%zu > Section : %s", i, section_name);
-			}
+			LOG("%zu > Section : %s", i, field);
+ 			LSP_parse_section_to_file(str, lsp_file, field);
 		}
 		else
 		{
@@ -192,5 +189,42 @@ void LSP_parse_field_to_file(LSP_File lsp_file, const char* field, const char* i
 	else
 	{
 		LOG_ERROR("Couldnt match any field with : %s", field);
+	}
+}
+
+void LSP_parse_section_to_file(FILE* str, LSP_File lsp_file, const char* field)
+{
+	LSP_Section_Type type = parse_LSP_Section_Type(field);
+
+	switch(type)
+	{
+		case e_NODE_COORD_SECTION:
+			LSP_Node_Coord_Section_unstream(str, lsp_file);
+			break;
+
+		case e_DEPOT_SECTION:
+			break;
+
+		case e_DEMAND_SECTION:
+			break;
+
+		case e_EDGE_DATA_SECTION:
+			break;
+
+		case e_FIXED_EDGES_SECTION:
+			break;
+
+		case e_DISPLAY_DATA_SECTION:
+			break;
+
+		case e_TOUR_SECTION:
+			break;
+
+		case e_EDGE_WEIGHT_SECTION:
+			break;
+
+		case e_SECTION_TYPE_UNDEFINED:
+			LOG_ERROR("Trying to parse a Undefined LSP Section type.");
+			break;
 	}
 }
