@@ -1,7 +1,7 @@
 #ifndef LSP_FIELDS_H
 #define LSP_FIELDS_H
 
-#include "lsp_fields_enums.h"
+#include "LSP/fields_enums.h"
 
 #include <stddef.h>
 #include <stdbool.h>

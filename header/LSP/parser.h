@@ -1,7 +1,7 @@
 #ifndef LSP_PARSER_H
 #define LSP_PARSER_H
 
-#include "lsp_file.h"
+#include "LSP/file.h"
 
 #include <stdio.h>
 

@@ -1,9 +1,9 @@
-#include "lsp_parser.h"
-#include "lsp_fields.h"
-#include "lsp_file.h"
-#include "lsp_section.h"
-#include "lsp_section_unstream.h"
-#include "logger.h"
+#include "LSP/parser.h"
+#include "LSP/fields.h"
+#include "LSP/file.h"
+#include "LSP/section.h"
+#include "LSP/section_unstream.h"
+#include "utils/logger.h"
 
 #include <stdio.h>
 #include <stdlib.h>

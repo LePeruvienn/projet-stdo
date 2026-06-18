@@ -26,14 +26,26 @@ endif
 SOURCES = $(wildcard $(SOURCE_DIR)/*.c)
 OBJS = $(addprefix $(OBJ_DIR)/, $(notdir $(SOURCES:.c=.o)))
 
-# Chemin vers le binaire
+LSP_SOURCES = $(wildcard $(SOURCE_DIR)/LSP/*.c)
+LSP_OBJS = $(addprefix $(OBJ_DIR)/, $(notdir $(LSP_SOURCES:.c=.o)))
+
+# Libaries
+LSP_STATIC_LIB = $(OBJ_DIR)/lsp.a
+
+# Binaires
 BINARY = $(BIN_DIR)/$(BINARY_NAME)
 
 ### Règles de compilation
 all: $(OBJ_DIR) $(BIN_DIR) $(BINARY)
 
-$(BINARY): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LINK_FLAGS)
+$(BINARY): $(OBJS) $(LSP_STATIC_LIB)
+	$(CC) $(OBJS) $(LSP_STATIC_LIB) -o $@ $(LINK_FLAGS)
+
+$(LSP_STATIC_LIB): $(LSP_OBJS)
+	ar rcs $@ $^
+
+$(OBJ_DIR)/%.o: $(SOURCE_DIR)/LSP/%.c
+	$(CC) $(C_FLAGS) $(INCLUDES) -c $< -o $@
 
 $(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.c
 	$(CC) $(C_FLAGS) $(INCLUDES) -c $< -o $@

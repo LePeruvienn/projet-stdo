@@ -1,5 +1,5 @@
-#include "lsp_parser.h"
-#include "lsp_file.h"
+#include "LSP/parser.h"
+#include "LSP/file.h"
 
 const char* filepath = "TSPLIB/res/a280.tsp";
 

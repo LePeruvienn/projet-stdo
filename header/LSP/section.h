@@ -1,7 +1,7 @@
 #ifndef LSP_SECTION_H
 #define LSP_SECTION_H
 
-#include "lsp_section_datas.h"
+#include "LSP/section_datas.h"
 
 #include <stdint.h>
 #include <stddef.h>

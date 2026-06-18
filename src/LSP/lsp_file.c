@@ -1,8 +1,8 @@
-#include "lsp_file.h"
+#include "LSP/file.h"
 
-#include "lsp_fields.h"
-#include "lsp_fields_enums.h"
-#include "lsp_section.h"
+#include "LSP/fields.h"
+#include "LSP/fields_enums.h"
+#include "LSP/section.h"
 
 #include <stdint.h>
 #include <stddef.h>

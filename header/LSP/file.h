@@ -1,8 +1,8 @@
 #ifndef LSP_H
 #define LSP_H
 
-#include "lsp_fields_enums.h"
-#include "lsp_section.h"
+#include "LSP/fields_enums.h"
+#include "LSP/section.h"
 
 #include <stdint.h>
 #include <stddef.h>

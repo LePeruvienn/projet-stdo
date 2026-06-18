@@ -1,6 +1,6 @@
-#include "lsp_section.h"
-#include "lsp_section_datas.h"
-#include "logger.h"
+#include "LSP/section.h"
+#include "LSP/section_datas.h"
+#include "utils/logger.h"
 
 #include <stdint.h>
 #include <stddef.h>

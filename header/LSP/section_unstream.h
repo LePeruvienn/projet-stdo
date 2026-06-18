@@ -1,7 +1,7 @@
 #ifndef LSP_SECTION_UNSTREAM_H
 #define LSP_SECTION_UNSTREAM_H
 
-#include "lsp_file.h"
+#include "LSP/file.h"
 
 #include <stdio.h>
 

@@ -1,6 +1,6 @@
-#include "lsp_fields.h"
-#include "lsp_fields_enums.h"
-#include "logger.h"
+#include "LSP/fields.h"
+#include "LSP/fields_enums.h"
+#include "utils/logger.h"
 
 #include <string.h>
 
