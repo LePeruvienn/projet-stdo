@@ -1,3 +1,6 @@
+#ifndef HASHMAP_H
+#define HASHMAP_H
+
 #include "node.h"
 
 typedef struct s_hashmap hashmap;
@@ -38,3 +41,5 @@ node    *hashmap_get     (hashmap *hm, int key);
  * \param key The key used to identify the value
  */
 void    hashmap_remove  (hashmap *hm, int key);
+
+#endif // HASHMAP_H
