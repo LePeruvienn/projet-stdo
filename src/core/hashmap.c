@@ -1,5 +1,6 @@
-#include "../header/hashmap.h"
-#include "../header/node.h"
+#include "core/hashmap.h"
+#include "core/node.h"
+
 #include <stdlib.h>
 #include <math.h>
 #include <stdbool.h>

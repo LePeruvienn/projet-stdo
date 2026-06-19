@@ -1,6 +1,9 @@
 #include "LSP/parser.h"
 #include "LSP/file.h"
 
+#include "core/hashmap.h"
+#include "core/node.h"
+
 const char* filepath = "TSPLIB/res/a280.tsp";
 
 int main(void)
