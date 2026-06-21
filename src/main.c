@@ -23,8 +23,8 @@ void render()
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	bind_shader(global_default_shader);
-	set_shader_camera(global_default_shader, c);
+	bind_shader(global_circle_shader);
+	set_shader_camera(global_circle_shader, c);
 
 	bind_geometry(g);
 	draw_geometry(g);
@@ -84,6 +84,10 @@ int main(void)
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_MULTISAMPLE);
 
 	create_global_shaders();
 

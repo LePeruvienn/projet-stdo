@@ -26,6 +26,7 @@ typedef struct shader* shader;
  * @{
  */
 extern shader global_default_shader;
+extern shader global_circle_shader;
 /** @} */
 
 /**

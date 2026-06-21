@@ -53,6 +53,7 @@ const char* U_NAME_TEXTURE         = "uTexture";
 
 // Shaders globaux précharger à l'intialisations
 shader global_default_shader = NULL;
+shader global_circle_shader = NULL;
 
 int get_shader_status(GLuint shader, GLenum pname, const char* shader_name)
 {
@@ -97,7 +98,11 @@ void create_global_shaders()
 	global_default_shader = create_shader("asset/shader/default.vert",
 	                                      "asset/shader/default.frag");
 
+	global_circle_shader = create_shader("asset/shader/default.vert",
+	                                     "asset/shader/circle.frag");
+
 	LOG_SHADER_IS_OK(global_default_shader, "global_default_shader");
+	LOG_SHADER_IS_OK(global_circle_shader, "global_default_shader");
 }
 
 void free_global_shaders()

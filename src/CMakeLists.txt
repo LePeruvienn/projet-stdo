@@ -14,4 +14,4 @@ target_sources(${PROJECT_NAME}
 )
 
 # On link les librarie nécessaire à la compilation du projet
-target_link_libraries(${PROJECT_NAME} PUBLIC tsp visu core)
+target_link_libraries(${PROJECT_NAME} PUBLIC tsp visu core m)
