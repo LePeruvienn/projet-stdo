@@ -1,5 +1,6 @@
 #include "core/hashmap.h"
 #include "core/node.h"
+#include "utils/logger.h"
 
 #include <stdlib.h>
 #include <math.h>
@@ -114,13 +115,16 @@ void        hasmap_put(hashmap *hm, int key, node *value)
 {
     int hash        = __hash(key);
     hm_entry *entry = __hashmap_entry_new(key, value);
+    LOG("Hashed entry %d (hash: %d)", key, hash);
 
     if (hm->keys[hash] == NULL) 
     {
-       hm->keys[hash] = entry;
+        hm->keys[hash] = entry;
+        LOG("Add entry to hashmap");
     }
     else
     {
+        LOG("Collision detected");
         hm_entry *correct_place = __hashmap_get_entry_if_exists(hm->keys[hash], key);
 
         if (correct_place == NULL) 
@@ -153,7 +157,6 @@ void        hashmap_remove  (hashmap *hm, int key)
 
     while (current != NULL)
     {
-        
         if (current->next != NULL && current->next->key == key)
         {
             hm_entry *to_remove = current->next;
