@@ -1,5 +1,6 @@
 # Ajout des sous dossiers qui représente des modules C
-add_subdirectory(LSP)
+add_subdirectory(tsp)
+add_subdirectory(visu)
 add_subdirectory(core)
 
 # On inclue les headers pour les sources
@@ -12,4 +13,4 @@ target_sources(${PROJECT_NAME}
 )
 
 # On link les librarie nécessaire à la compilation du projet
-target_link_libraries(${PROJECT_NAME} PUBLIC LSP core)
+target_link_libraries(${PROJECT_NAME} PUBLIC tsp visu core)

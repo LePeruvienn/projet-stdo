@@ -29,6 +29,8 @@ else()
 	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Werror)
 endif()
 
+# Ajout du dossiers des dépendances
+add_subdirectory(deps)
 # Ajout du sous dossier SRC pour la compilation des sources du logiciel
 add_subdirectory(src)
 # compilation des programme de tests

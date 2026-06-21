@@ -1,16 +1,16 @@
-#include "LSP/parser.h"
-#include "LSP/file.h"
+#include "tsp/parser.h"
+#include "tsp/file.h"
 
 #include <CUnit/CUnit.h>
 #include <CUnit/Basic.h>
 
 void open_tsp_file(const char* filepath)
 {
-	LSP_File lsp_file = LSP_parse_file(filepath);
+	TSP_File tsp_file = TSP_parse_file(filepath);
 
-	CU_ASSERT(lsp_file != NULL);
+	CU_ASSERT(tsp_file != NULL);
 
-	LSP_File_free(lsp_file);
+	TSP_File_free(tsp_file);
 }
 
 void open_a280()

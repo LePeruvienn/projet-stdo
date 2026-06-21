@@ -1,8 +1,8 @@
-#include "LSP/parser.h"
-#include "LSP/fields.h"
-#include "LSP/file.h"
-#include "LSP/section.h"
-#include "LSP/section_unstream.h"
+#include "tsp/parser.h"
+#include "tsp/fields.h"
+#include "tsp/file.h"
+#include "tsp/section.h"
+#include "tsp/section_unstream.h"
 #include "utils/logger.h"
 
 #include <stdio.h>
@@ -43,7 +43,7 @@ void trim_str(char* str)
 	}
 }
 
-int LSP_parse_line(const char* line, char* field, char* input)
+int TSP_parse_line(const char* line, char* field, char* input)
 {
 	size_t field_size = 0;
 	size_t input_size = 0;
@@ -96,7 +96,7 @@ int LSP_parse_line(const char* line, char* field, char* input)
 	return 0;
 }
 
-LSP_File LSP_parse_file(const char* filepath)
+TSP_File TSP_parse_file(const char* filepath)
 {
 	FILE* str = fopen(filepath, "r");
 
@@ -106,7 +106,7 @@ LSP_File LSP_parse_file(const char* filepath)
 		return NULL;
 	}
 
-	LSP_File lsp_file = LSP_File_create();
+	TSP_File lsp_file = TSP_File_create();
 
 	char line[MAX_LINE_SIZE];
 
@@ -115,7 +115,7 @@ LSP_File LSP_parse_file(const char* filepath)
 		char field[MAX_FIELD_SIZE] = {0};
 		char input[MAX_INPUT_SIZE] = {0};
 
-		if (LSP_parse_line(line, field, input) != 0)
+		if (TSP_parse_line(line, field, input) != 0)
 		{
 			LOG_ERROR("Failed to parse line %zu, continue with next line.", i);
 			continue;
@@ -126,12 +126,12 @@ LSP_File LSP_parse_file(const char* filepath)
 		if (is_section)
 		{
 			LOG("%zu > Section : %s", i, field);
- 			LSP_parse_section_to_file(str, lsp_file, field);
+ 			TSP_parse_section_to_file(str, lsp_file, field);
 		}
 		else
 		{
 			LOG("%zu > %s : %s", i, field, input);
-			LSP_parse_field_to_file(lsp_file, field, input);
+			TSP_parse_field_to_file(lsp_file, field, input);
 		}
 	}
 
@@ -140,51 +140,51 @@ LSP_File LSP_parse_file(const char* filepath)
 	return lsp_file;
 }
 
-void LSP_parse_field_to_file(LSP_File lsp_file, const char* field, const char* input)
+void TSP_parse_field_to_file(TSP_File lsp_file, const char* field, const char* input)
 {
-	if (strcmp(field, LSP_NAME_STR) == 0)
+	if (strcmp(field, TSP_NAME_STR) == 0)
 	{
-		strncpy(lsp_file->NAME, input, LSP_NAME_MAX_SIZE);
+		strncpy(lsp_file->NAME, input, TSP_NAME_MAX_SIZE);
 	}
-	else if(strcmp(field, LSP_TYPE_STR) == 0)
+	else if(strcmp(field, TSP_TYPE_STR) == 0)
 	{
-		lsp_file->TYPE = parse_LSP_Type(input);
+		lsp_file->TYPE = parse_TSP_Type(input);
 	}
-	else if(strcmp(field, LSP_COMMENT_STR) == 0)
+	else if(strcmp(field, TSP_COMMENT_STR) == 0)
 	{
-		strncpy(lsp_file->COMMENT, input, LSP_COMMENT_MAX_SIZE);
+		strncpy(lsp_file->COMMENT, input, TSP_COMMENT_MAX_SIZE);
 	}
-	else if(strcmp(field, LSP_DIMENSION_STR) == 0)
+	else if(strcmp(field, TSP_DIMENSION_STR) == 0)
 	{
 		long long n = atoll(input);
 		lsp_file->DIMENSION = n;
 		// LOG("atoi parsed input %s -> %lld", input, n);
 	}
-	else if(strcmp(field, LSP_CAPACITY_STR) == 0)
+	else if(strcmp(field, TSP_CAPACITY_STR) == 0)
 	{
 		long long n = atoll(input);
 		lsp_file->CAPACITY = n;
 		// LOG("atoi parsed input %s -> %lld", input, n);
 	}
-	else if(strcmp(field, LSP_EDGE_WEIGHT_TYPE_STR) == 0)
+	else if(strcmp(field, TSP_EDGE_WEIGHT_TYPE_STR) == 0)
 	{
-		lsp_file->EDGE_WEIGHT_TYPE = parse_LSP_Edge_Weight_Type(input);
+		lsp_file->EDGE_WEIGHT_TYPE = parse_TSP_Edge_Weight_Type(input);
 	}
-	else if(strcmp(field, LSP_EDGE_WEIGHT_FORMAT_STR) == 0)
+	else if(strcmp(field, TSP_EDGE_WEIGHT_FORMAT_STR) == 0)
 	{
-		lsp_file->EDGE_WEIGHT_FORMAT = parse_LSP_Edge_Weight_Format(input);
+		lsp_file->EDGE_WEIGHT_FORMAT = parse_TSP_Edge_Weight_Format(input);
 	}
-	else if(strcmp(field, LSP_EDGE_DATA_FORMAT_STR) == 0)
+	else if(strcmp(field, TSP_EDGE_DATA_FORMAT_STR) == 0)
 	{
-		lsp_file->EDGE_DATA_FORMAT = parse_LSP_Edge_Data_Format(input);
+		lsp_file->EDGE_DATA_FORMAT = parse_TSP_Edge_Data_Format(input);
 	}
-	else if(strcmp(field, LSP_NODE_COORD_TYPE_STR) == 0)
+	else if(strcmp(field, TSP_NODE_COORD_TYPE_STR) == 0)
 	{
-		lsp_file->NODE_COORD_TYPE = parse_LSP_Node_Coord_Type(input);
+		lsp_file->NODE_COORD_TYPE = parse_TSP_Node_Coord_Type(input);
 	}
-	else if(strcmp(field, LSP_DISPLAY_DATA_TYPE_STR) == 0)
+	else if(strcmp(field, TSP_DISPLAY_DATA_TYPE_STR) == 0)
 	{
-		lsp_file->DISPLAY_DATA_TYPE = parse_LSP_Display_Data_Type(input);
+		lsp_file->DISPLAY_DATA_TYPE = parse_TSP_Display_Data_Type(input);
 	}
 	else
 	{
@@ -192,14 +192,14 @@ void LSP_parse_field_to_file(LSP_File lsp_file, const char* field, const char* i
 	}
 }
 
-void LSP_parse_section_to_file(FILE* str, LSP_File lsp_file, const char* field)
+void TSP_parse_section_to_file(FILE* str, TSP_File lsp_file, const char* field)
 {
-	LSP_Section_Type type = parse_LSP_Section_Type(field);
+	TSP_Section_Type type = parse_TSP_Section_Type(field);
 
 	switch(type)
 	{
 		case e_NODE_COORD_SECTION:
-			LSP_Node_Coord_Section_unstream(str, lsp_file);
+			TSP_Node_Coord_Section_unstream(str, lsp_file);
 			break;
 
 		case e_DEPOT_SECTION:
@@ -224,7 +224,7 @@ void LSP_parse_section_to_file(FILE* str, LSP_File lsp_file, const char* field)
 			break;
 
 		case e_SECTION_TYPE_UNDEFINED:
-			LOG_ERROR("Trying to parse a Undefined LSP Section type.");
+			LOG_ERROR("Trying to parse a Undefined TSP Section type.");
 			break;
 	}
 }

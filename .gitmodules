@@ -2,3 +2,6 @@
 	path = TSPLIB
 	url = https://github.com/shredderzwj/TSPLIB
 	branch = master
+[submodule "deps/GLFW"]
+	path = deps/GLFW
+	url = https://github.com/glfw/glfw
