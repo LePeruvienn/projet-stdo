@@ -1,6 +1,6 @@
 #include "visu/window.h"
-#include "visu/shader.h"
-#include "visu/geometry.h"
+#include "visu/camera.h"
+#include "visu/node_renderer.h"
 
 #include "utils/logger.h"
 
@@ -15,19 +15,20 @@ static unsigned int window_height = 960;
 
 static window w = NULL;
 static camera c = NULL;
-static geometry g = NULL;
-
 
 void render()
 {
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	bind_shader(global_circle_shader);
-	set_shader_camera(global_circle_shader, c);
+	node_begin_draw();
 
-	bind_geometry(g);
-	draw_geometry(g);
+	node_draw(0.f, 0.f);
+	node_draw(2.f, 2.f);
+	node_draw(2.f, 0.f);
+	node_draw(0.f, 2.f);
+
+	node_end_draw(c);
 }
 
 void handle_input()
@@ -89,13 +90,11 @@ int main(void)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_MULTISAMPLE);
 
-	create_global_shaders();
+	init_node_renderer();
 
 	float aspect = (float) window_width / (float) window_height;
 
 	c = create_camera(0.f, 0.f, 1.f, aspect);
-	// g = create_quad_geometry();
-	g = create_circle_fan_geometry(50);
 
 	while(!window_should_close(w))
 	{
@@ -105,5 +104,6 @@ int main(void)
 		handle_window_resize();
 	}
 
+	free_node_renderer();
 	free_window(w);
 }

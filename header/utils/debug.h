@@ -19,6 +19,8 @@
 	#include "utils/logger.h"
 	#include "glad/glad.h"
 
+	#include <stdlib.h>
+
 	#define GL_CALL(func) \
 		do \
 		{ \
