@@ -97,12 +97,12 @@ void free_window(window w)
 }
 
 bool window_should_close(window w) 
-{ 
+{
 	return glfwWindowShouldClose(w->handle); 
 }
 
 void window_update_events(window w) 
-{ 
+{
 	glfwSwapBuffers(w->handle); 
 	glfwPollEvents(); 
 }
@@ -119,29 +119,31 @@ void window_wait_events(window w, double timeout)
 	thrd_sleep(&ts, NULL);
 }
 int window_get_width(window w) 
-{ 
+{
 	return w->width; 
 }
 
 int window_get_height(window w) 
-{ 
+{
 	return w->height; 
 }
 
 float window_get_time(window w) 
-{ 
+{
 	(void)w; 
 	return (float)glfwGetTime(); 
 }
 
 void* window_get_native_handle(window w) 
-{ 
+{
 	return w->handle; 
 }
 
 void window_get_framebuffer_size(window w, int* width, int* height) 
 {
-    if (w && w->handle) {
-        glfwGetFramebufferSize(w->handle, width, height);
-    }
+	if (w && w->handle)
+	{
+		glfwGetFramebufferSize(w->handle, width, height);
+	}
 }
+

@@ -1,4 +1,5 @@
 # Ajout des sous dossiers qui représente des modules C
+add_subdirectory(utils)
 add_subdirectory(tsp)
 add_subdirectory(visu)
 add_subdirectory(core)

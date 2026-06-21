@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.23)
 
 project(projet_stdo)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 # Passage du standart C99 en C11
 set(CMAKE_C_STANDARD 11)
 # Pour que les extension d'autocomplétion fonctionne pour nvim / vscode
@@ -26,7 +28,7 @@ if(MSVC)
 	target_compile_definitions(${PROJECT_NAME} PRIVATE _USE_MATH_DEFINES)
 else()
 	# Flag warnings
-	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Werror)
+	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Werror -Wextra)
 endif()
 
 # Ajout du dossiers des dépendances

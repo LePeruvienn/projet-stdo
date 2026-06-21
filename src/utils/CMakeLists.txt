@@ -15,14 +15,6 @@ target_include_directories(${LIB_NAME} PUBLIC ${HEADER_DIR})
 # Fichiers sources de la librairie
 target_sources(${LIB_NAME}
 	PRIVATE
-		window.c
-		vertex_layout.c
-		mesh.c
-		geometry.c
-		camera.c
-		texture.c
-		shader.c
+		read_file.c
 )
 
-# On link les librarie nécessaire à la compilation du projet
-target_link_libraries(${LIB_NAME} PUBLIC glad glfw stb_image m utils)
