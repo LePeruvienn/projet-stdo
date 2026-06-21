@@ -8,6 +8,7 @@
 
 #include <GLFW/glfw3.h>
 #include <stdbool.h>
+#include <math.h>
 
 static unsigned int window_width = 1280;
 static unsigned int window_height = 960;
@@ -38,10 +39,12 @@ void handle_input()
 	bool down = glfwGetKey(handle, GLFW_KEY_S) == GLFW_PRESS;
 	bool right = glfwGetKey(handle, GLFW_KEY_D) == GLFW_PRESS;
 
-	bool zoom = glfwGetKey(handle, GLFW_KEY_SPACE) == GLFW_PRESS;
-	bool dezoom = glfwGetKey(handle, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS;
+	bool zooming = glfwGetKey(handle, GLFW_KEY_SPACE) == GLFW_PRESS;
+	bool dezooming = glfwGetKey(handle, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS;
 
-	float speed = 1.f / 1000.f;
+	float current_zoom = get_camera_zoom(c);
+
+	float speed = (1.f / 1000.f) * fmin(current_zoom, 1.f);
 	float zoom_speed = 1.f / 10000.f;
 
 	float dx = 0.f;
@@ -53,8 +56,8 @@ void handle_input()
 	if (right) dx += speed;
 	if (left) dx -= speed;
 
-	if (zoom) dzoom += zoom_speed;
-	if (dezoom) dzoom -= zoom_speed;
+	if (zooming) dzoom += zoom_speed;
+	if (dezooming) dzoom -= zoom_speed;
 
 	camera_move(c, dx, dy, dzoom);
 }
@@ -87,7 +90,8 @@ int main(void)
 	float aspect = (float) window_width / (float) window_height;
 
 	c = create_camera(0.f, 0.f, 1.f, aspect);
-	g = create_quad_geometry();
+	// g = create_quad_geometry();
+	g = create_circle_fan_geometry(50);
 
 	while(!window_should_close(w))
 	{
