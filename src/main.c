@@ -4,7 +4,7 @@
 
 #include "visu/window.h"
 #include "visu/camera.h"
-#include "visu/node_renderer.h"
+#include "visu/circle_renderer.h"
 
 #include "utils/logger.h"
 
@@ -31,17 +31,17 @@ void render()
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	node_begin_draw();
+	circle_begin_draw();
 
 	for (size_t i = 0; i < data.size; ++i)
 	{
 		float x = nodes_coords[i].px;
 		float y = nodes_coords[i].py;
 
-		node_draw(x, y);
+		circle_draw(x, y);
 	}
 
-	node_end_draw(c);
+	circle_end_draw(c);
 }
 
 void handle_input()
@@ -107,7 +107,7 @@ int main(void)
 	const char* filepath = "TSPLIB/res/a280.tsp";
 	tsp_file = TSP_parse_file(filepath);
 
-	init_node_renderer();
+	init_circle_renderer();
 
 	float aspect = (float) window_width / (float) window_height;
 
@@ -121,7 +121,7 @@ int main(void)
 		handle_window_resize();
 	}
 
-	free_node_renderer();
+	free_circle_renderer();
 	free_window(w);
 	TSP_File_free(tsp_file);
 }

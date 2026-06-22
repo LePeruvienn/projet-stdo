@@ -22,7 +22,7 @@ target_sources(${LIB_NAME}
 		camera.c
 		texture.c
 		shader.c
-		node_renderer.c
+		circle_renderer.c
 )
 
 # On link les librarie nécessaire à la compilation du projet
