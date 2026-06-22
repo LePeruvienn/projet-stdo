@@ -23,6 +23,7 @@ target_sources(${LIB_NAME}
 		texture.c
 		shader.c
 		circle_renderer.c
+		edge_renderer.c
 )
 
 # On link les librarie nécessaire à la compilation du projet

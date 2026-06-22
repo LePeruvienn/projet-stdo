@@ -1,7 +1,7 @@
 #version 330 core
 
 layout(location = 0) in vec2 aVertexPosition;
-layout(location = 3) in vec2 aInstancePosition;
+layout(location = 1) in vec2 aInstancePosition;
 
 uniform vec2 uCameraPosition;
 uniform float uCameraZoom;

@@ -5,6 +5,7 @@
 #include "visu/window.h"
 #include "visu/camera.h"
 #include "visu/circle_renderer.h"
+#include "visu/edge_renderer.h"
 
 #include "utils/logger.h"
 
@@ -20,19 +21,19 @@ static unsigned int window_height = 960;
 static window w = NULL;
 static camera c = NULL;
 
-
-TSP_File tsp_file = NULL;
+static TSP_File tsp_file = NULL;
 
 void render()
 {
-	TSP_Section_Data data = TSP_Section_get_data(tsp_file->NODE_COORD_SECTION);
-	TSP_Node_Coord* nodes_coords = data.coords;
+	// TSP_Section_Data data = TSP_Section_get_data(tsp_file->NODE_COORD_SECTION);
+	// TSP_Node_Coord* nodes_coords = data.coords;
 
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	circle_begin_draw();
 
+	/*
 	for (size_t i = 0; i < data.size; ++i)
 	{
 		float x = nodes_coords[i].px;
@@ -40,8 +41,22 @@ void render()
 
 		circle_draw(x, y);
 	}
+	*/
+
+	float x1 = 5.f;
+	float y1 = 5.f;
+
+	float x2 = - 5.f;
+	float y2 = - 5.f;
+
+	circle_draw(x1, y1);
+	circle_draw(x2, y2);
 
 	circle_end_draw(c);
+
+	edge_begin_draw();
+	edge_draw(x1, y1, x2, y2);
+	edge_end_draw(c);
 }
 
 void handle_input()
@@ -108,6 +123,7 @@ int main(void)
 	tsp_file = TSP_parse_file(filepath);
 
 	init_circle_renderer();
+	init_edge_renderer();
 
 	float aspect = (float) window_width / (float) window_height;
 

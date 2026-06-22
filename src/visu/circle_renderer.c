@@ -29,7 +29,7 @@ static GLuint instance_VBO;
 static circle_rep instances[MAX_INSTANCES_AMOUNT] = { 0 };
 static size_t instances_amount = 0;
 
-vertex_layout create_instance_layout()
+static vertex_layout create_instance_layout()
 {
 	unsigned int attributes_amount = 1;
 

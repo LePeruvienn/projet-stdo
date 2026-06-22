@@ -45,6 +45,12 @@ geometry create_quad_geometry();
 geometry create_circle_fan_geometry(unsigned int segments);
 
 /**
+* \brief Créer une nouvelle géométrie d'une ligne
+* \return nouvelle géométrie alloué
+*/
+geometry create_line_geometry(vertex* vertices, unsigned int size);
+
+/**
 * \brief libère la mémoire de la géométrie en passer en paramêtre
 * \param g géométrie à libérer
 */

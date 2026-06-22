@@ -24,6 +24,7 @@ typedef struct mesh* mesh;
 * \return mesh vertex du carré
 */
 mesh create_quad();
+mesh create_quad2();
 
 /**
 * \brief Créer les données de vertex d'un cercle

@@ -60,10 +60,10 @@ mesh create_quad()
 	vertex* vertices = malloc(m->vertices_size);
 	unsigned int* indices = malloc(sizeof(unsigned int) * QUAD_INDICES_AMOUNT);
 
-	vertices[0] = (vertex) { - 0.5f,   0.5f };
-	vertices[1] = (vertex) {   0.5f,   0.5f };
-	vertices[2] = (vertex) {   0.5f, - 0.5f };
-	vertices[3] = (vertex) { - 0.5f, - 0.5f };
+	vertices[0] = (vertex) { - 1.f,   1.f };
+	vertices[1] = (vertex) {   1.f,   1.f };
+	vertices[2] = (vertex) {   1.f, - 1.f };
+	vertices[3] = (vertex) { - 1.f, - 1.f };
 
 	indices[0] = 0;
 	indices[1] = 1;
@@ -136,9 +136,9 @@ mesh create_line(vertex* vertices, unsigned int size)
 	m->indices_amount = size;
 
 	m->vertices = malloc(m->vertices_size);
-	m->indices = malloc(sizeof(vertex) * m->indices_amount);
+	m->indices = malloc(sizeof(unsigned int) * m->indices_amount);
 
-	memcpy(m->vertices, vertices, size);
+	memcpy(m->vertices, vertices, m->vertices_size);
 
 	for (unsigned int i = 0; i < size; i++)
 	{

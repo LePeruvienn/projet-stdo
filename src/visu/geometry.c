@@ -71,6 +71,18 @@ geometry create_circle_fan_geometry(unsigned int segments)
 	return g;
 }
 
+geometry create_line_geometry(vertex* vertices, unsigned int size)
+{
+	mesh m = create_line(vertices, size);
+	geometry g = create_geometry(m);
+
+	g->draw_mode = GL_LINES;
+
+	free_mesh(m);
+
+	return g;
+}
+
 void free_geometry(geometry g)
 {
 	if (g == NULL)
@@ -141,6 +153,11 @@ void draw_geometry_instanced_mode(geometry g, GLenum mode, unsigned int amount)
 	if (g == NULL)
 	{
 		LOG_ERROR("Cannot draw a NULL geometry.");
+		return;
+	}
+
+	if (amount == 0)
+	{
 		return;
 	}
 
