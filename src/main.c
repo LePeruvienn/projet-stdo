@@ -6,6 +6,7 @@
 #include "visu/camera.h"
 #include "visu/circle_renderer.h"
 #include "visu/edge_renderer.h"
+#include "visu/grid_renderer.h"
 
 #include "utils/logger.h"
 
@@ -30,6 +31,8 @@ void render()
 
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+	
+	draw_grid();
 
 	circle_begin_draw();
 
@@ -124,6 +127,7 @@ int main(void)
 
 	init_circle_renderer();
 	init_edge_renderer();
+	init_grid_renderer();
 
 	float aspect = (float) window_width / (float) window_height;
 
