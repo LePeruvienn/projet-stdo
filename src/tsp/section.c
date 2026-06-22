@@ -95,6 +95,17 @@ void TSP_Section_free(TSP_Section section)
 	free(section);
 }
 
+TSP_Section_Data TSP_Section_get_data(TSP_Section section)
+{
+	TSP_Section_Data data;
+
+	data.type = section->type;
+	data.buffer = section->buffer;
+	data.size = section->element_size;
+
+	return data;
+}
+
 static void TSP_Section_setup_for_next(TSP_Section section)
 {
 	if (section->buffer == NULL)

@@ -1,3 +1,7 @@
+#include "tsp/parser.h"
+#include "tsp/file.h"
+#include "tsp/section.h"
+
 #include "visu/window.h"
 #include "visu/camera.h"
 #include "visu/node_renderer.h"
@@ -16,17 +20,26 @@ static unsigned int window_height = 960;
 static window w = NULL;
 static camera c = NULL;
 
+
+TSP_File tsp_file = NULL;
+
 void render()
 {
+	TSP_Section_Data data = TSP_Section_get_data(tsp_file->NODE_COORD_SECTION);
+	TSP_Node_Coord* nodes_coords = data.coords;
+
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	node_begin_draw();
 
-	node_draw(0.f, 0.f);
-	node_draw(2.f, 2.f);
-	node_draw(2.f, 0.f);
-	node_draw(0.f, 2.f);
+	for (size_t i = 0; i < data.size; ++i)
+	{
+		float x = nodes_coords[i].px;
+		float y = nodes_coords[i].py;
+
+		node_draw(x, y);
+	}
 
 	node_end_draw(c);
 }
@@ -45,8 +58,8 @@ void handle_input()
 
 	float current_zoom = get_camera_zoom(c);
 
-	float speed = (1.f / 1000.f) * fmin(current_zoom, 1.f);
-	float zoom_speed = 1.f / 10000.f;
+	float speed = (1.f / 10.f) * fmin(current_zoom, 1.f);
+	float zoom_speed = 1.f / 10.f;
 
 	float dx = 0.f;
 	float dy = 0.f;
@@ -89,12 +102,16 @@ int main(void)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_MULTISAMPLE);
+	glfwSwapInterval(1);
+
+	const char* filepath = "TSPLIB/res/a280.tsp";
+	tsp_file = TSP_parse_file(filepath);
 
 	init_node_renderer();
 
 	float aspect = (float) window_width / (float) window_height;
 
-	c = create_camera(0.f, 0.f, 1.f, aspect);
+	c = create_camera(0.f, 0.f, 10.f, aspect);
 
 	while(!window_should_close(w))
 	{
@@ -106,4 +123,5 @@ int main(void)
 
 	free_node_renderer();
 	free_window(w);
+	TSP_File_free(tsp_file);
 }

@@ -20,6 +20,7 @@
 
 typedef enum TSP_Section_Type TSP_Section_Type;
 typedef struct TSP_Section* TSP_Section;
+typedef struct TSP_Section_Data TSP_Section_Data;
 
 enum TSP_Section_Type
 {
@@ -35,9 +36,28 @@ enum TSP_Section_Type
 	e_EDGE_WEIGHT_SECTION
 };
 
+struct TSP_Section_Data
+{
+	union
+	{
+		void* buffer;
+		TSP_Node_Coord* coords;
+		TSP_Demand* demands;
+		TSP_Edge* edges;
+		TSP_Display_Data* display_datas;
+		TSP_Tour* tours;
+		TSP_Edge_Weight* edges_weight;
+	};
+
+	size_t size;
+	TSP_Section_Type type;
+};
+
 TSP_Section TSP_Section_create(TSP_Section_Type type);
 
 void TSP_Section_free(TSP_Section section);
+
+TSP_Section_Data TSP_Section_get_data(TSP_Section section);
 
 void* TSP_Section_get_next(TSP_Section section);
 TSP_Node_Coord* TSP_Section_get_next_Node_Coord(TSP_Section section);
