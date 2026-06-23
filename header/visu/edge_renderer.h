@@ -2,6 +2,7 @@
 #define EDGE_RENDERER_H
 
 #include "visu/camera.h"
+#include "visu/color.h"
 
 void init_edge_renderer();
 
@@ -9,8 +10,12 @@ void edge_begin_draw();
 
 void edge_draw(float x1, float y1, float x2, float y2);
 
-void edge_end_draw(camera c);
+void edge_end_draw();
 
 void free_edge_renderer();
+
+void set_edge_renderer_camera(camera c);
+void set_edge_renderer_color(color_rgba rgba);
+void set_edge_renderer_thickness(float t);
 
 #endif // EDGE_RENDERER_H

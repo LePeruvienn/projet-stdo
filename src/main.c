@@ -41,13 +41,26 @@ void render()
 	float x1 = 5.f;
 	float y1 = 5.f;
 
-	float x2 = - 5.f;
+	float x2 =   5.f;
 	float y2 = - 5.f;
 
-	edge_begin_draw();
-	edge_draw(x1, y1, x2, y2);
-	edge_end_draw(c);
+	float x3 = - 5.f;
+	float y3 = - 5.f;
 
+	// IL FAUT SET AVANT DE DRAW (sinon bug jsp pk)
+	set_edge_renderer_color((color_rgba) {0x00, 0xFF, 0x00, 0xFF});
+
+	edge_begin_draw();
+
+	edge_draw(x1, y1, x2, y2);
+	
+	set_edge_renderer_color((color_rgba) {0xFF, 0xFF, 0x00, 0xFF});
+
+	edge_draw(x2, y2, x3, y3);
+
+	edge_end_draw();
+
+	// IL FAUT SET AVANT DE DRAW (sinon bug jsp pk)
 	set_circle_renderer_fill_color((color_rgba) {0x00, 0x00, 0x00, 0xFF});
 
 	circle_begin_draw();
@@ -66,7 +79,7 @@ void render()
 
 	set_circle_renderer_fill_color((color_rgba) {0xFF, 0xFF, 0xFF, 0xFF});
 
-	circle_draw(x2, y2);
+	circle_draw(x3, y3);
 
 	circle_end_draw();
 }
@@ -144,6 +157,7 @@ int main(void)
 
 	set_circle_renderer_camera(c);
 	set_grid_renderer_camera(c);
+	set_edge_renderer_camera(c);
 
 	while(!window_should_close(w))
 	{

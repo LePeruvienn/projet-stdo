@@ -69,12 +69,6 @@ void init_circle_renderer()
 		return;
 	}
 
-	if(is_drawing)
-	{
-		LOG_ERROR("We started drawing before initializing the renderer.");
-		return;
-	}
-
 	circle_geometry = create_circle_fan_geometry(50);
 
 	circle_shader = create_shader("asset/shader/default.vert",
@@ -99,6 +93,12 @@ void init_circle_renderer()
 
 void circle_begin_draw()
 {
+	if (is_intialized == false)
+	{
+		LOG_ERROR("Not initialized !");
+		return;
+	}
+
 	if(circle_camera == NULL)
 	{
 		LOG_ERROR("Cannot draw on a NULL camera");
@@ -143,6 +143,14 @@ void circle_end_draw()
 		return;
 	}
 
+	is_drawing = false;
+
+	if (instances_amount == 0)
+	{
+		// LOG_WARNING("Draw on 0 instance");
+		return;
+	}
+
 	bind_shader(circle_shader);
 
 	set_shader_circle_color(circle_shader, circle_color);
@@ -167,8 +175,6 @@ void circle_end_draw()
 	draw_geometry_instanced(circle_geometry, instances_amount);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	is_drawing = false;
 }
 
 void free_circle_renderer()
@@ -240,9 +246,9 @@ void set_circle_renderer_border_thickness(float t)
 {
 	if(is_drawing)
 	{
-		circle_begin_draw();
 		circle_end_draw();
 		border_thikness = t;
+		circle_begin_draw();
 		return;
 	}
 

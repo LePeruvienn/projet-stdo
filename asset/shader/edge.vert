@@ -8,13 +8,17 @@ uniform vec2 uCameraPosition;
 uniform float uCameraZoom;
 uniform float uCameraAspect;
 
-out vec4 vColor;
+uniform float uEdgeThickness;
 
-float thickness = 0.05f;
-vec4 lineColor = vec4(0.3f, 0.2f, 2.f, 1.f);
+float thicknessClampRatio = 5.f;
 
 void main()
 {
+	float tMin = uEdgeThickness / thicknessClampRatio;
+	float tMax = uEdgeThickness * thicknessClampRatio;
+
+	float thickness = clamp(uEdgeThickness * uCameraZoom, tMin, tMax);
+
 	vec2 p = mix(aInstanceLineP1, aInstanceLineP2, aVertexPosition.x * 0.5f + 0.5f);
 
 	vec2 dir = normalize(aInstanceLineP2 - aInstanceLineP1);
@@ -26,6 +30,4 @@ void main()
 	pos.y *= uCameraAspect;
 
 	gl_Position = vec4(pos, 0.f, 1.f);
-
-	vColor = lineColor;
 }
