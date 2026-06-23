@@ -1,4 +1,5 @@
 #include "core/graph.h"
+#include "core/edge.h"
 #include "core/list.h"
 #include "core/node.h"
 #include "core/hashmap.h"
@@ -34,7 +35,7 @@ void    graph_free(graph *g)
 int_list *graph_get_all_nodes_names(graph *g)
 {
     int_list *lst = malloc(sizeof(int_list));
-    
+
     memcpy(lst->inner, g->node_names, g->node_number * sizeof(int));
     lst->size = g->node_number;
 
@@ -74,14 +75,14 @@ void    graph_add_edge(graph *g, int src, int dest, float distance)
     graph_bulk_add_edge(g, src, dest_lst, distance_lst, 1);
 }
 
-float   graph_get_distance(graph *g, int src, int dest)
+edge   *graph_get_distance(graph *g, int src, int dest)
 {
     node *nd = hashmap_get(g->storage, src);
 
     if (nd != NULL)
     {
-        return node_get_edge(nd, dest);
+        return edge_new(dest, node_get_edge(nd, dest));
     }
     
-    return -1.f;
+    return edge_new(dest, -1.f);
 }

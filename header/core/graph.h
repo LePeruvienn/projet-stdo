@@ -1,6 +1,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include "core/edge.h"
 #include "core/list.h"
 #include <stddef.h>
 
@@ -52,6 +53,6 @@ void        graph_bulk_add_edge(graph *g, int src, int dest[], float distance[],
  * \param dest The destination node
  * \return The distance if there's an edge between the two nodes, and -1 if there's no edge.
  */
-float       graph_get_distance(graph *g, int src, int dest);
+edge       *graph_get_distance(graph *g, int src, int dest);
 
 #endif // GRAPH_H
