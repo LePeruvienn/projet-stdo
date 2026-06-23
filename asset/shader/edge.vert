@@ -10,11 +10,12 @@ uniform float uCameraAspect;
 
 out vec4 vColor;
 
-float thickness = 0.05;
+float thickness = 0.05f;
+vec4 lineColor = vec4(0.3f, 0.2f, 2.f, 1.f);
 
 void main()
 {
-	vec2 p = mix(aInstanceLineP1, aInstanceLineP2, aVertexPosition.x * 0.5 + 0.5);
+	vec2 p = mix(aInstanceLineP1, aInstanceLineP2, aVertexPosition.x * 0.5f + 0.5f);
 
 	vec2 dir = normalize(aInstanceLineP2 - aInstanceLineP1);
 	vec2 perp = vec2(-dir.y, dir.x);
@@ -24,7 +25,7 @@ void main()
 	vec2 pos = (p - uCameraPosition) / uCameraZoom;
 	pos.y *= uCameraAspect;
 
-	gl_Position = vec4(pos, 0.0, 1.0);
+	gl_Position = vec4(pos, 0.f, 1.f);
 
-	vColor = vec4(0, 0, 1, 1);
+	vColor = lineColor;
 }

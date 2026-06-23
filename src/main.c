@@ -34,6 +34,18 @@ void render()
 	
 	draw_grid(c);
 
+	float x1 = 5.f;
+	float y1 = 5.f;
+
+	float x2 = - 5.f;
+	float y2 = - 5.f;
+
+	edge_begin_draw();
+	edge_draw(x1, y1, x2, y2);
+	edge_end_draw(c);
+
+	set_circle_renderer_fill_color((color_rgba) {0x00, 0x00, 0x00, 0xFF});
+
 	circle_begin_draw();
 
 	/*
@@ -46,20 +58,13 @@ void render()
 	}
 	*/
 
-	float x1 = 5.f;
-	float y1 = 5.f;
-
-	float x2 = - 5.f;
-	float y2 = - 5.f;
-
 	circle_draw(x1, y1);
+
+	set_circle_renderer_fill_color((color_rgba) {0xFF, 0xFF, 0xFF, 0xFF});
+
 	circle_draw(x2, y2);
 
-	circle_end_draw(c);
-
-	edge_begin_draw();
-	edge_draw(x1, y1, x2, y2);
-	edge_end_draw(c);
+	circle_end_draw();
 }
 
 void handle_input()
@@ -132,6 +137,8 @@ int main(void)
 	float aspect = (float) window_width / (float) window_height;
 
 	c = create_camera(0.f, 0.f, 10.f, aspect);
+
+	set_circle_renderer_camera(c);
 
 	while(!window_should_close(w))
 	{

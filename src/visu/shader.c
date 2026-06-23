@@ -1,5 +1,6 @@
 #include "visu/shader.h"
 #include "visu/camera.h"
+#include "visu/color.h"
 
 #include "utils/read_file.h"
 #include "utils/logger.h"
@@ -36,6 +37,12 @@ struct shader
 	GLint loc_model_scale;
 	GLint loc_model_color;
 
+	// locations circle shader
+	GLint loc_circle_color;
+	GLint loc_circle_radius;
+	GLint loc_circle_border_color;
+	GLint loc_circle_border_thickness;
+	
 	// texture
 	GLint loc_texture;
 };
@@ -48,6 +55,11 @@ const char* U_NAME_CAMERA_ASPECT   = "uCameraAspect";
 const char* U_NAME_MODEL_POSITION  = "uModelPosition";
 const char* U_NAME_MODEL_SCALE     = "uModelScale";
 const char* U_NAME_MODEL_COLOR     = "uModelColor";
+
+const char* U_NAME_CIRCLE_COLOR            = "uCircleColor";
+const char* U_NAME_CIRCLE_RADIUS           = "uCircleRadius";
+const char* U_NAME_CIRCLE_BORDER_COLOR     = "uCircleBorderColor";
+const char* U_NAME_CIRCLE_BORDER_THICKNESS = "uCircleBorderThickness";
 
 const char* U_NAME_TEXTURE         = "uTexture";
 
@@ -212,6 +224,11 @@ shader create_shader(const char* vert_shader_path, const char* frag_shader_path)
 	s->loc_model_scale     = glGetUniformLocation(s->program, U_NAME_MODEL_SCALE);
 	s->loc_model_color     = glGetUniformLocation(s->program, U_NAME_MODEL_COLOR);
 
+	s->loc_circle_color            = glGetUniformLocation(s->program, U_NAME_CIRCLE_COLOR);
+	s->loc_circle_radius           = glGetUniformLocation(s->program, U_NAME_CIRCLE_RADIUS);
+	s->loc_circle_border_color     = glGetUniformLocation(s->program, U_NAME_CIRCLE_BORDER_COLOR);
+	s->loc_circle_border_thickness = glGetUniformLocation(s->program, U_NAME_CIRCLE_BORDER_THICKNESS);
+
 	s->loc_texture         = glGetUniformLocation(s->program, U_NAME_TEXTURE);
 
 	return s;
@@ -346,3 +363,73 @@ void set_shader_model_color(shader s, unsigned char r,
 	GL_CALL(glUniform3f(s->loc_model_color, rf, gf, bf));
 }
 
+
+void set_shader_circle_color(shader s, color c)
+{
+	CHECK_SHADER_IS_NULL(s, "Tried to set texture cube uniform to a NULL shader.", );
+
+	static bool print_warnining_not_used = true;
+	if (print_warnining_not_used  && s->loc_circle_color == - 1)
+	{
+		LOG_WARNING("Uniform is not used in current shader (-1).");
+		print_warnining_not_used = false;
+		return;
+	}
+
+	color_norm* nc = &c.norm;
+
+	GL_CALL(glUniform4f(
+		s->loc_circle_color,
+		nc->r, nc->g, nc->b, nc->a)
+	);
+}
+
+void set_shader_circle_radius(shader s, float r)
+{
+	CHECK_SHADER_IS_NULL(s, "Tried to set circle radius on a NULL shader.", );
+
+	static bool print_warning_not_used = true;
+	if (print_warning_not_used && s->loc_circle_radius == -1)
+	{
+		LOG_WARNING("Uniform 'circle radius' is not used in current shader (-1).");
+		print_warning_not_used = false;
+		return;
+	}
+
+	GL_CALL(glUniform1f(s->loc_circle_radius, r));
+}
+
+void set_shader_circle_border_color(shader s, color c)
+{
+	CHECK_SHADER_IS_NULL(s, "Tried to set circle border color on a NULL shader.", );
+
+	static bool print_warning_not_used = true;
+	if (print_warning_not_used && s->loc_circle_border_color == -1)
+	{
+		LOG_WARNING("Uniform 'circle border color' is not used in current shader (-1).");
+		print_warning_not_used = false;
+		return;
+	}
+
+	color_norm* nc = &c.norm;
+
+	GL_CALL(glUniform4f(
+		s->loc_circle_border_color,
+		nc->r, nc->g, nc->b, nc->a
+	));
+}
+
+void set_shader_circle_border_thinkness(shader s, float t)
+{
+	CHECK_SHADER_IS_NULL(s, "Tried to set circle border thickness on a NULL shader.", );
+
+	static bool print_warning_not_used = true;
+	if (print_warning_not_used && s->loc_circle_border_thickness == -1)
+	{
+		LOG_WARNING("Uniform 'circle border thickness' is not used in current shader (-1).");
+		print_warning_not_used = false;
+		return;
+	}
+
+	GL_CALL(glUniform1f(s->loc_circle_border_thickness, t));
+}

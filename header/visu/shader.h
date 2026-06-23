@@ -2,6 +2,7 @@
 #define SHADER_H
 
 #include "visu/camera.h"
+#include "visu/color.h"
 
 #include "glad/glad.h"
 
@@ -146,5 +147,10 @@ void set_shader_model_color(shader s, unsigned char r,
 * \param unit index de position du buffer GPU de la texture
 */
 void set_shader_texture_unit(shader s, GLint unit);
+
+void set_shader_circle_color(shader s, color c);
+void set_shader_circle_radius(shader s, float r);
+void set_shader_circle_border_color(shader s, color c);
+void set_shader_circle_border_thinkness(shader s, float t);
 
 #endif // SHADER_H

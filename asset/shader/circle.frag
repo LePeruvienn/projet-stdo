@@ -5,21 +5,24 @@ in vec4 vColor;
 
 out vec4 fFragColor;
 
-vec4 fillColor = vec4(1.f, 0.f, 0.f, 1.f);
-vec4 borderColor = vec4(0.f, 1.f, 0.f, 1.f);
+uniform vec4  uCircleColor;
+uniform vec4  uCircleBorderColor;
 
-float radius = 1.0;
-float thickness = 0.1f;
+uniform float uCircleRadius;
+uniform float uCircleBorderThickness;
 
 void main()
 {
 	float d = length(vLocalPos);
 	float aa = fwidth(d);
 
-	float borderMix = smoothstep(radius - thickness - aa, radius - thickness + aa, d);
-	vec3 rgb = mix(fillColor.rgb, borderColor.rgb, borderMix);
+	float borderMix = smoothstep(
+			uCircleRadius - uCircleBorderThickness - aa,
+			uCircleRadius - uCircleBorderThickness + aa, d);
 
-	float alpha = 1.0 - smoothstep(radius - aa, radius + aa, d);
+	vec3 rgb = mix(uCircleColor.rgb, uCircleBorderColor.rgb, borderMix);
+
+	float alpha = 1.0 - smoothstep(uCircleRadius - aa, uCircleRadius + aa, d);
 
 	fFragColor = vec4(rgb, alpha);
 }
