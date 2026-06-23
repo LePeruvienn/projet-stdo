@@ -1,16 +1,16 @@
 #include "core/node.h"
 #include <stdlib.h>
 
-typedef	struct s_edge 
+typedef	struct s_stored_edge 
 {
-	int				dest;
-	float			distance;
-	struct s_edge	*next;
+	int						dest;
+	float					distance;
+	struct s_stored_edge	*next;
 } nd_edge;
 
 struct	s_node
 {
-	nd_edge			*first;		
+	nd_edge					*first;		
 };
 
 node    *node_new()
