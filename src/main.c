@@ -32,7 +32,7 @@ void render()
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	
-	draw_grid();
+	draw_grid(c);
 
 	circle_begin_draw();
 

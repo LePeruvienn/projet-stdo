@@ -10,10 +10,13 @@ uniform float uCameraAspect;
 
 void main()
 {
-	vec2 pos = (aVertexPosition - uCameraPosition) / uCameraZoom;
-	pos.y *= uCameraAspect;
+	vec2 worldPos;
 
-	vWorldPos = pos;
+	// calcul tricky pour éviter un défilement pas "naturelle"
+	worldPos.x = aVertexPosition.x * uCameraZoom + uCameraPosition.x;
+	worldPos.y = (aVertexPosition.y / uCameraAspect) * uCameraZoom + uCameraPosition.y;
+
+	vWorldPos = worldPos;
 
 	gl_Position = vec4(aVertexPosition, 0.0, 1.0);
 }
