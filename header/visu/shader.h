@@ -148,6 +148,10 @@ void set_shader_model_color(shader s, unsigned char r,
 */
 void set_shader_texture_unit(shader s, GLint unit);
 
+void set_shader_grid_size(shader s, float size);
+void set_shader_grid_bg_color(shader s, color rgba);
+void set_shader_grid_line_color(shader s, color rgba);
+
 void set_shader_circle_color(shader s, color c);
 void set_shader_circle_radius(shader s, float r);
 void set_shader_circle_border_color(shader s, color c);

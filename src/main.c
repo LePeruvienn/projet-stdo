@@ -31,8 +31,12 @@ void render()
 
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	set_grid_renderer_grid_size(10.f);
+	set_grid_renderer_bg_color((color_rgba) {0x0F, 0x0F, 0x0F, 0xFF});
+	set_grid_renderer_line_color((color_rgba) {0x44, 0x44, 0x44, 0xFF});
 	
-	draw_grid(c);
+	draw_grid();
 
 	float x1 = 5.f;
 	float y1 = 5.f;
@@ -139,6 +143,7 @@ int main(void)
 	c = create_camera(0.f, 0.f, 10.f, aspect);
 
 	set_circle_renderer_camera(c);
+	set_grid_renderer_camera(c);
 
 	while(!window_should_close(w))
 	{

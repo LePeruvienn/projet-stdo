@@ -3,13 +3,13 @@
 in vec2 vWorldPos;
 out vec4 FragColor;
 
-float gridSize = 5.f;
-vec4 backgroundColor = vec4(0.1f, 0.1f, 0.1f, 1.);
-vec4 lineColor = vec4(0.3f, 0.3f, 0.3f, 1.f);
+uniform float uGridSize;
+uniform vec4 uGridBgColor;
+uniform vec4 uGridLineColor;
 
 void main()
 {
-	vec2 coord = vWorldPos / gridSize;
+	vec2 coord = vWorldPos / uGridSize;
 
 	vec2 grid = abs(fract(coord) - 0.5);
 
@@ -20,5 +20,5 @@ void main()
 
 	float line = max(lineX, lineY);
 
-	FragColor = vec4(mix(backgroundColor, lineColor, line));
+	FragColor = vec4(mix(uGridBgColor, uGridLineColor, line));
 }

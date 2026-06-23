@@ -37,6 +37,11 @@ struct shader
 	GLint loc_model_scale;
 	GLint loc_model_color;
 
+	// location grid
+	GLint loc_grid_size;
+	GLint loc_grid_bg_color;
+	GLint loc_grid_line_color;
+
 	// locations circle shader
 	GLint loc_circle_color;
 	GLint loc_circle_radius;
@@ -55,6 +60,10 @@ const char* U_NAME_CAMERA_ASPECT   = "uCameraAspect";
 const char* U_NAME_MODEL_POSITION  = "uModelPosition";
 const char* U_NAME_MODEL_SCALE     = "uModelScale";
 const char* U_NAME_MODEL_COLOR     = "uModelColor";
+
+const char* U_NAME_GRID_SIZE       = "uGridSize";
+const char* U_NAME_GRID_BG_COLOR   = "uGridBgColor";
+const char* U_NAME_GRID_LINE_COLOR = "uGridLineColor";
 
 const char* U_NAME_CIRCLE_COLOR            = "uCircleColor";
 const char* U_NAME_CIRCLE_RADIUS           = "uCircleRadius";
@@ -224,6 +233,10 @@ shader create_shader(const char* vert_shader_path, const char* frag_shader_path)
 	s->loc_model_scale     = glGetUniformLocation(s->program, U_NAME_MODEL_SCALE);
 	s->loc_model_color     = glGetUniformLocation(s->program, U_NAME_MODEL_COLOR);
 
+	s->loc_grid_size       = glGetUniformLocation(s->program, U_NAME_GRID_SIZE);
+	s->loc_grid_bg_color   = glGetUniformLocation(s->program, U_NAME_GRID_BG_COLOR);
+	s->loc_grid_line_color = glGetUniformLocation(s->program, U_NAME_GRID_LINE_COLOR);
+
 	s->loc_circle_color            = glGetUniformLocation(s->program, U_NAME_CIRCLE_COLOR);
 	s->loc_circle_radius           = glGetUniformLocation(s->program, U_NAME_CIRCLE_RADIUS);
 	s->loc_circle_border_color     = glGetUniformLocation(s->program, U_NAME_CIRCLE_BORDER_COLOR);
@@ -363,6 +376,59 @@ void set_shader_model_color(shader s, unsigned char r,
 	GL_CALL(glUniform3f(s->loc_model_color, rf, gf, bf));
 }
 
+void set_shader_grid_size(shader s, float size)
+{
+	CHECK_SHADER_IS_NULL(s, "Tried to set model color uniform to a NULL shader.", );
+
+	static bool print_warnining_not_used = true;
+	if (print_warnining_not_used  && s->loc_grid_size == - 1)
+	{
+		LOG_WARNING("Uniform is not used in current shader (-1).");
+		print_warnining_not_used = false;
+		return;
+	}
+
+	GL_CALL(glUniform1f(s->loc_grid_size, size));
+}
+
+void set_shader_grid_bg_color(shader s, color rgba)
+{
+	CHECK_SHADER_IS_NULL(s, "Tried to set model color uniform to a NULL shader.", );
+
+	static bool print_warnining_not_used = true;
+	if (print_warnining_not_used  && s->loc_grid_bg_color == - 1)
+	{
+		LOG_WARNING("Uniform is not used in current shader (-1).");
+		print_warnining_not_used = false;
+		return;
+	}
+
+	color_norm* nc = &rgba.norm;
+
+	GL_CALL(glUniform4f(
+		s->loc_grid_bg_color,
+		nc->r, nc->g, nc->b, nc->a)
+	);
+}
+
+void set_shader_grid_line_color(shader s, color rgba)
+{
+	static bool print_warnining_not_used = true;
+	if (print_warnining_not_used  && s->loc_grid_line_color == - 1)
+	{
+		LOG_WARNING("Uniform is not used in current shader (-1).");
+		print_warnining_not_used = false;
+		return;
+	}
+
+	color_norm* nc = &rgba.norm;
+
+	GL_CALL(glUniform4f(
+		s->loc_grid_line_color,
+		nc->r, nc->g, nc->b, nc->a)
+	);
+}
+
 
 void set_shader_circle_color(shader s, color c)
 {
@@ -433,3 +499,4 @@ void set_shader_circle_border_thinkness(shader s, float t)
 
 	GL_CALL(glUniform1f(s->loc_circle_border_thickness, t));
 }
+
