@@ -7,6 +7,7 @@
 #include "visu/circle_renderer.h"
 #include "visu/edge_renderer.h"
 #include "visu/grid_renderer.h"
+#include "visu/text_renderer.h"
 
 #include "utils/logger.h"
 
@@ -37,6 +38,8 @@ void render()
 	set_grid_renderer_line_color((color_rgba) {0x44, 0x44, 0x44, 0xFF});
 	
 	draw_grid();
+
+	draw_text();
 
 	float x1 = 5.f;
 	float y1 = 5.f;
@@ -150,6 +153,7 @@ int main(void)
 	init_circle_renderer();
 	init_edge_renderer();
 	init_grid_renderer();
+	init_text_renderer();
 
 	float aspect = (float) window_width / (float) window_height;
 
@@ -168,6 +172,10 @@ int main(void)
 	}
 
 	free_circle_renderer();
+	free_edge_renderer();
+	free_grid_renderer();
+	free_text_renderer();
+
 	free_window(w);
 	TSP_File_free(tsp_file);
 }

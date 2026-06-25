@@ -52,8 +52,11 @@ struct shader
 	GLint loc_edge_thickness;
 	GLint loc_edge_color;
 
-	// texture
+	// texturec location
 	GLint loc_texture;
+
+	// text color location 
+	GLint loc_text_color;
 };
 
 // Nom des variables uniformes
@@ -78,6 +81,8 @@ const char* U_NAME_EDGE_THICKNESS  = "uEdgeThickness";
 const char* U_NAME_EDGE_COLOR      = "uEdgeColor";
 
 const char* U_NAME_TEXTURE         = "uTexture";
+
+const char* U_NAME_TEXT_COLOR      = "uTextColor";
 
 // Shaders globaux précharger à l'intialisations
 shader global_default_shader = NULL;
@@ -252,7 +257,9 @@ shader create_shader(const char* vert_shader_path, const char* frag_shader_path)
 	s->loc_edge_thickness = glGetUniformLocation(s->program, U_NAME_EDGE_THICKNESS);
 	s->loc_edge_color     = glGetUniformLocation(s->program, U_NAME_EDGE_COLOR);
 
-	s->loc_texture         = glGetUniformLocation(s->program, U_NAME_TEXTURE);
+	s->loc_texture        = glGetUniformLocation(s->program, U_NAME_TEXTURE);
+
+	s->loc_text_color     = glGetUniformLocation(s->program, U_NAME_TEXT_COLOR);
 
 	return s;
 }
@@ -543,4 +550,24 @@ void set_shader_edge_thickness(shader s, float t)
 	}
 
 	GL_CALL(glUniform1f(s->loc_edge_thickness, t));
+}
+
+void set_shader_text_color(shader s, color c)
+{
+	CHECK_SHADER_IS_NULL(s, "Tried to set circle border thickness on a NULL shader.", );
+
+	static bool print_warning_not_used = true;
+	if (print_warning_not_used && s->loc_text_color == -1)
+	{
+		LOG_WARNING("Uniform 'text color' is not used in current shader (-1).");
+		print_warning_not_used = false;
+		return;
+	}
+
+	color_norm* nc = &c.norm;
+
+	GL_CALL(glUniform4f(
+		s->loc_edge_color,
+		nc->r, nc->g, nc->b, nc->a
+	));
 }

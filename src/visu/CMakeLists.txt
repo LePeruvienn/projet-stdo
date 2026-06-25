@@ -26,6 +26,7 @@ target_sources(${LIB_NAME}
 		edge_renderer.c
 		grid_renderer.c
 		color.c
+		text_renderer.c
 )
 
 # On link les librarie nécessaire à la compilation du projet
