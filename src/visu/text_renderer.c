@@ -41,6 +41,7 @@ static color text_color = (color) { .rgba = {255, 255, 255, 255 },
                                     .norm = {1.f, 1.f, 1.f, 1.f } };
 
 static float char_space_size = 1.5f;
+static float text_size = 0.5f;
 
 static bool is_intialized = false;
 static bool is_drawing = false;
@@ -159,7 +160,7 @@ void draw_text(const char* text, float x, float y)
 			continue;
 		}
 
-		float px = x + (i * char_space_size);
+		float px = x + (i * char_space_size * text_size);
 		float py = y;
 
 		draw_char(c, px, py);
@@ -188,6 +189,7 @@ void text_end_draw()
 	bind_texture(bitmap_texture, texture_unit);
 	set_shader_texture_unit(text_shader, texture_unit);
 
+	set_shader_text_size(text_shader, text_size);
 	set_shader_text_color(text_shader, text_color);
 	set_shader_camera(text_shader, text_camera);
 
@@ -195,12 +197,12 @@ void text_end_draw()
 
 	glBindBuffer(GL_ARRAY_BUFFER, instance_VBO);
 
-	glBufferData(
+	GL_CALL(glBufferData(
 		GL_ARRAY_BUFFER,
 		instances_amount * sizeof(char_rep),
 		instances,
 		GL_DYNAMIC_DRAW
-	);
+	));
 
 	draw_geometry_instanced(text_geometry, instances_amount);
 
@@ -235,3 +237,8 @@ void set_text_renderer_char_space_size(float space)
 	char_space_size = space;
 }
 
+
+void set_text_renderer_text_size(float size)
+{
+	text_size = size;
+}

@@ -8,6 +8,8 @@ uniform vec2  uCameraPosition;
 uniform float uCameraZoom;
 uniform float uCameraAspect;
 
+uniform float uTextSize;
+
 out vec2 vUV;
 
 int charsPerRow = 10;
@@ -31,7 +33,7 @@ void main()
 		mix(v0, v1, local.y)
 	);
 
-	vec2 pos = (aVertexPosition + aInstancePosition - uCameraPosition) / uCameraZoom;
+	vec2 pos = ((aVertexPosition * uTextSize) + aInstancePosition - uCameraPosition) / uCameraZoom;
 	pos.y *= uCameraAspect;
 	gl_Position = vec4(pos, 0.0, 1.0);
 }

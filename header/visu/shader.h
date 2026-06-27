@@ -162,4 +162,6 @@ void set_shader_edge_thickness(shader s, float t);
 
 void set_shader_text_color(shader s, color c);
 
+void set_shader_text_size(shader s, float size);
+
 #endif // SHADER_H
