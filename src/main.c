@@ -162,6 +162,7 @@ int main(void)
 	set_circle_renderer_camera(c);
 	set_grid_renderer_camera(c);
 	set_edge_renderer_camera(c);
+	set_text_renderer_camera(c);
 
 	while(!window_should_close(w))
 	{

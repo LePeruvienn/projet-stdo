@@ -1,7 +1,6 @@
 #version 330 core
 
 uniform sampler2D uTexture;
-// MARCHE PAS !!!!
 uniform vec4 uTextColor;
 
 in vec2 vUV;

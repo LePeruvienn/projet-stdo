@@ -567,7 +567,7 @@ void set_shader_text_color(shader s, color c)
 	color_norm* nc = &c.norm;
 
 	GL_CALL(glUniform4f(
-		s->loc_edge_color,
+		s->loc_text_color,
 		nc->r, nc->g, nc->b, nc->a
 	));
 }
