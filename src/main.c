@@ -5,7 +5,7 @@
 #include "visu/window.h"
 #include "visu/camera.h"
 #include "visu/circle_renderer.h"
-#include "visu/edge_renderer.h"
+#include "visu/line_renderer.h"
 #include "visu/grid_renderer.h"
 #include "visu/text_renderer.h"
 
@@ -49,17 +49,17 @@ void render()
 	float y3 = - 5.f;
 
 	// IL FAUT SET AVANT DE DRAW (sinon bug jsp pk)
-	set_edge_renderer_color((color_rgba) {0x00, 0xFF, 0x00, 0xFF});
+	set_line_renderer_color((color_rgba) {0x00, 0xFF, 0x00, 0xFF});
 
-	edge_begin_draw();
+	line_begin_draw();
 
-	edge_draw(x1, y1, x2, y2);
+	line_draw(x1, y1, x2, y2);
 	
-	set_edge_renderer_color((color_rgba) {0xFF, 0xFF, 0x00, 0xFF});
+	set_line_renderer_color((color_rgba) {0xFF, 0xFF, 0x00, 0xFF});
 
-	edge_draw(x2, y2, x3, y3);
+	line_draw(x2, y2, x3, y3);
 
-	edge_end_draw();
+	line_end_draw();
 
 	// IL FAUT SET AVANT DE DRAW (sinon bug jsp pk)
 	set_circle_renderer_fill_color((color_rgba) {0x00, 0x00, 0x00, 0xFF});
@@ -164,7 +164,7 @@ int main(void)
 	tsp_file = TSP_parse_file(filepath);
 
 	init_circle_renderer();
-	init_edge_renderer();
+	init_line_renderer();
 	init_grid_renderer();
 	init_text_renderer();
 
@@ -174,7 +174,7 @@ int main(void)
 
 	set_circle_renderer_camera(c);
 	set_grid_renderer_camera(c);
-	set_edge_renderer_camera(c);
+	set_line_renderer_camera(c);
 	set_text_renderer_camera(c);
 
 	while(!window_should_close(w))
@@ -186,7 +186,7 @@ int main(void)
 	}
 
 	free_circle_renderer();
-	free_edge_renderer();
+	free_line_renderer();
 	free_grid_renderer();
 	free_text_renderer();
 

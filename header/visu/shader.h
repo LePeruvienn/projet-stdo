@@ -157,8 +157,8 @@ void set_shader_circle_radius(shader s, float r);
 void set_shader_circle_border_color(shader s, color c);
 void set_shader_circle_border_thinkness(shader s, float t);
 
-void set_shader_edge_color(shader s, color c);
-void set_shader_edge_thickness(shader s, float t);
+void set_shader_line_color(shader s, color c);
+void set_shader_line_thickness(shader s, float t);
 
 void set_shader_text_color(shader s, color c);
 

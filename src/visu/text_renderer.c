@@ -15,7 +15,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#define BITMAP_PATH "asset/bitmap/font.bmp"
+#define BITMAP_PATH "asset/bitmap/font.png"
 #define MAX_INSTANCES_AMOUNT 1024
 
 typedef struct char_rep char_rep;

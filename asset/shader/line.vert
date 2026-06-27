@@ -8,16 +8,16 @@ uniform vec2 uCameraPosition;
 uniform float uCameraZoom;
 uniform float uCameraAspect;
 
-uniform float uEdgeThickness;
+uniform float uLineThickness;
 
 float thicknessClampRatio = 5.f;
 
 void main()
 {
-	float tMin = uEdgeThickness / thicknessClampRatio;
-	float tMax = uEdgeThickness * thicknessClampRatio;
+	float tMin = uLineThickness / thicknessClampRatio;
+	float tMax = uLineThickness * thicknessClampRatio;
 
-	float thickness = clamp(uEdgeThickness * uCameraZoom, tMin, tMax);
+	float thickness = clamp(uLineThickness * uCameraZoom, tMin, tMax);
 
 	vec2 p = mix(aInstanceLineP1, aInstanceLineP2, aVertexPosition.x * 0.5f + 0.5f);
 

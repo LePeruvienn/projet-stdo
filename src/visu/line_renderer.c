@@ -1,4 +1,4 @@
-#include "visu/edge_renderer.h"
+#include "visu/line_renderer.h"
 #include "visu/vertex_layout.h"
 #include "visu/geometry.h"
 #include "visu/shader.h"
@@ -15,27 +15,27 @@
 
 #define MAX_INSTANCES_AMOUNT 512
 
-typedef struct edge_rep edge_rep;
+typedef struct line_rep line_rep;
 
-struct edge_rep
+struct line_rep
 {
 	float x1, y1;
 	float x2, y2;
 };
 
-static camera edge_camera = NULL;
-static geometry edge_geometry = NULL;
-static shader edge_shader = NULL;
-static vertex_layout edge_layout = NULL;
+static camera line_camera = NULL;
+static geometry line_geometry = NULL;
+static shader line_shader = NULL;
+static vertex_layout line_layout = NULL;
 
 static GLuint instance_VBO;
 
-static edge_rep instances[MAX_INSTANCES_AMOUNT] = { 0 };
+static line_rep instances[MAX_INSTANCES_AMOUNT] = { 0 };
 static size_t instances_amount = 0;
 
 
-static float edge_thickness = 0.05f;
-static color edge_color = (color) { .rgba = { 0x4D, 0x33, 0xFF, 0xFF },
+static float line_thickness = 0.05f;
+static color line_color = (color) { .rgba = { 0x4D, 0x33, 0xFF, 0xFF },
                                     .norm = { 0.3f, 0.2f, 1.f, 1.f   } };
 
 static bool is_drawing = false;
@@ -51,20 +51,20 @@ static vertex_layout create_instance_layout()
 	attributes[0].size = 2;
 	attributes[0].type = GL_FLOAT;
 	attributes[0].normalized = GL_FALSE;
-	attributes[0].offset = offsetof(edge_rep, x1);
+	attributes[0].offset = offsetof(line_rep, x1);
 	attributes[0].divisor = 1;
 
 	attributes[1].id = INSTANCE_ATTR_LINE_P2;
 	attributes[1].size = 2;
 	attributes[1].type = GL_FLOAT;
 	attributes[1].normalized = GL_FALSE;
-	attributes[1].offset = offsetof(edge_rep, x2);
+	attributes[1].offset = offsetof(line_rep, x2);
 	attributes[1].divisor = 1;
 
-	return create_custom_layout(attributes, attributes_amount, sizeof(edge_rep));
+	return create_custom_layout(attributes, attributes_amount, sizeof(line_rep));
 }
 
-void init_edge_renderer()
+void init_line_renderer()
 {
 	if(is_intialized)
 	{
@@ -72,31 +72,31 @@ void init_edge_renderer()
 		return;
 	}
 
-	edge_geometry = create_quad_geometry();
+	line_geometry = create_quad_geometry();
 
-	edge_shader = create_shader("asset/shader/edge.vert",
-	                             "asset/shader/edge.frag");
+	line_shader = create_shader("asset/shader/line.vert",
+	                             "asset/shader/line.frag");
 
-	edge_layout = create_instance_layout();
+	line_layout = create_instance_layout();
 
-	CHECK_IS_NULL(edge_geometry, "Failed to create edge geometry");
-	CHECK_IS_NULL(edge_shader, "Failed to create edge shader");
-	CHECK_IS_NULL(edge_layout, "Failed to create edge vertex layout");
+	CHECK_IS_NULL(line_geometry, "Failed to create line geometry");
+	CHECK_IS_NULL(line_shader, "Failed to create line shader");
+	CHECK_IS_NULL(line_layout, "Failed to create line vertex layout");
 
-	bind_geometry(edge_geometry);
+	bind_geometry(line_geometry);
 
 	glGenBuffers(1, &instance_VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, instance_VBO);
-	setup_vao_attributes(edge_layout);
+	setup_vao_attributes(line_layout);
 
-	unbind_geometry(edge_geometry);
+	unbind_geometry(line_geometry);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 	is_intialized = true;
 }
 
-void edge_begin_draw()
+void line_begin_draw()
 {
 	if(is_intialized == false)
 	{
@@ -110,7 +110,7 @@ void edge_begin_draw()
 		return;
 	}
 
-	if(edge_camera == NULL)
+	if(line_camera == NULL)
 	{
 		LOG_ERROR("Cannot draw with a NULL camera");
 		return;
@@ -120,7 +120,7 @@ void edge_begin_draw()
 	is_drawing = true;
 }
 
-void edge_draw(float x1, float y1, float x2, float y2)
+void line_draw(float x1, float y1, float x2, float y2)
 {
 	if(is_drawing == false)
 	{
@@ -130,7 +130,7 @@ void edge_draw(float x1, float y1, float x2, float y2)
 
 	if(instances_amount == MAX_INSTANCES_AMOUNT)
 	{
-		LOG_ERROR("edgeRep instances amount is full !");
+		LOG_ERROR("lineRep instances amount is full !");
 		return;
 	}
 
@@ -142,7 +142,7 @@ void edge_draw(float x1, float y1, float x2, float y2)
 	++instances_amount;
 }
 
-void edge_end_draw()
+void line_end_draw()
 {
 	if(is_drawing == false)
 	{
@@ -158,41 +158,41 @@ void edge_end_draw()
 		return;
 	}
 
-	bind_shader(edge_shader);
+	bind_shader(line_shader);
 
-	set_shader_edge_color(edge_shader, edge_color);
-	set_shader_edge_thickness(edge_shader, edge_thickness);
+	set_shader_line_color(line_shader, line_color);
+	set_shader_line_thickness(line_shader, line_thickness);
 
-	bind_geometry(edge_geometry);
+	bind_geometry(line_geometry);
 
-	set_shader_camera(edge_shader, edge_camera);
+	set_shader_camera(line_shader, line_camera);
 
 	glBindBuffer(GL_ARRAY_BUFFER, instance_VBO);
 
 	glBufferData(
 		GL_ARRAY_BUFFER,
-		instances_amount * sizeof(edge_rep),
+		instances_amount * sizeof(line_rep),
 		instances,
 		GL_DYNAMIC_DRAW
 	);
 
-	draw_geometry_instanced(edge_geometry, instances_amount);
+	draw_geometry_instanced(line_geometry, instances_amount);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void free_edge_renderer()
+void free_line_renderer()
 {
 	glDeleteBuffers(1, &instance_VBO);
 
-	FREE_PTR_NOT_NULL(edge_geometry, free_geometry);
-	FREE_PTR_NOT_NULL(edge_shader, free_shader);
-	FREE_PTR_NOT_NULL(edge_layout, free_vertex_layout);
+	FREE_PTR_NOT_NULL(line_geometry, free_geometry);
+	FREE_PTR_NOT_NULL(line_shader, free_shader);
+	FREE_PTR_NOT_NULL(line_layout, free_vertex_layout);
 
 	is_intialized = false;
 }
 
-void set_edge_renderer_camera(camera c)
+void set_line_renderer_camera(camera c)
 {
 	if (c == NULL)
 	{
@@ -206,31 +206,31 @@ void set_edge_renderer_camera(camera c)
 		return;
 	}
 
-	edge_camera = c;
+	line_camera = c;
 }
 
-void set_edge_renderer_color(color_rgba rgba)
+void set_line_renderer_color(color_rgba rgba)
 {
 	if(is_drawing)
 	{
-		edge_end_draw();
-		color_set_rgba(&edge_color, rgba);
-		edge_begin_draw();
+		line_end_draw();
+		color_set_rgba(&line_color, rgba);
+		line_begin_draw();
 		return;
 	}
 
-	color_set_rgba(&edge_color, rgba);
+	color_set_rgba(&line_color, rgba);
 }
 
-void set_edge_renderer_thickness(float t)
+void set_line_renderer_thickness(float t)
 {
 	if(is_drawing)
 	{
-		edge_end_draw();
-		edge_thickness = t;
-		edge_begin_draw();
+		line_end_draw();
+		line_thickness = t;
+		line_begin_draw();
 		return;
 	}
 
-	edge_thickness = t;
+	line_thickness = t;
 }

@@ -2,9 +2,9 @@
 
 out vec4 fFragColor;
 
-uniform vec4 uEdgeColor;
+uniform vec4 uLineColor;
 
 void main()
 {
-	fFragColor = uEdgeColor;
+	fFragColor = uLineColor;
 }

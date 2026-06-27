@@ -23,7 +23,7 @@ target_sources(${LIB_NAME}
 		texture.c
 		shader.c
 		circle_renderer.c
-		edge_renderer.c
+		line_renderer.c
 		grid_renderer.c
 		color.c
 		text_renderer.c
