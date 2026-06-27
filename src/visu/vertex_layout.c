@@ -69,17 +69,32 @@ void setup_vao_attributes(vertex_layout layout)
 	{
 		vertex_attr* attr = &layout->attributes[i];
 
-		GL_CALL(glVertexAttribPointer(
-			attr->id,
-			attr->size,
-			attr->type,
-			attr->normalized,
-			layout->stride,
-			(void*) attr->offset
-		));
-		
-		glEnableVertexAttribArray(attr->id);
+		// entiers : GL_INT, GL_UNSIGNED_INT, GL_SHORT, etc.
+		if (attr->type == GL_INT || attr->type == GL_UNSIGNED_INT ||
+			attr->type == GL_BYTE || attr->type == GL_UNSIGNED_BYTE ||
+			attr->type == GL_SHORT || attr->type == GL_UNSIGNED_SHORT)
+		{
+			GL_CALL(glVertexAttribIPointer(
+				attr->id,
+				attr->size,
+				attr->type,
+				layout->stride,
+				(void*) attr->offset
+			));
+		}
+		else
+		{
+			GL_CALL(glVertexAttribPointer(
+				attr->id,
+				attr->size,
+				attr->type,
+				attr->normalized,
+				layout->stride,
+				(void*) attr->offset
+			));
+		}
 
+		glEnableVertexAttribArray(attr->id);
 		if (attr->divisor != 0)
 		{
 			glVertexAttribDivisor(attr->id, attr->divisor);

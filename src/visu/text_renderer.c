@@ -12,15 +12,16 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
-// #define BITMAP_PATH "asset/bitmap/kenpixel.png"
-#define BITMAP_PATH "asset/bitmap/SweetSunset_bitmap_x1.png"
+#include <stdint.h>
+
+#define BITMAP_PATH "asset/bitmap/font.bmp"
 #define MAX_INSTANCES_AMOUNT 1024
 
 typedef struct char_rep char_rep;
 
 struct char_rep
 {
-	unsigned int id;
+	uint8_t id;
 	float x, y;
 };
 
@@ -35,8 +36,8 @@ static GLuint instance_VBO;
 static char_rep instances[MAX_INSTANCES_AMOUNT] = { 0 };
 static size_t instances_amount = 0;
 
-static color text_color = (color) { .rgba = {0, 0, 0, 0 },
-                                    .norm = {0.f, 0.f, 0.f, 0 } };
+static color text_color = (color) { .rgba = {255, 255, 255, 0 },
+                                    .norm = {1.f, 1.f, 1.f, 0.f } };
 
 static bool is_intialized = false;
 static bool is_drawing = false;
@@ -49,7 +50,7 @@ static vertex_layout create_instance_layout()
 
 	attributes[0].id = INSTANCE_ATTR_CHAR_ID;
 	attributes[0].size = 1;
-	attributes[0].type = GL_UNSIGNED_INT;
+	attributes[0].type = GL_UNSIGNED_BYTE;
 	attributes[0].normalized = GL_FALSE;
 	attributes[0].offset = offsetof(char_rep, id);
 	attributes[0].divisor = 1;
@@ -119,7 +120,7 @@ void text_begin_draw()
 	is_drawing = true;
 }
 
-void char_draw(char c, float x, float y)
+void draw_char(char c, float x, float y)
 {
 	if(is_drawing == false)
 	{
@@ -133,9 +134,7 @@ void char_draw(char c, float x, float y)
 		return;
 	}
 
-	unsigned int id = c - '!';
-
-	instances[instances_amount].id = id;
+	instances[instances_amount].id = (int) (c - '!');
 	instances[instances_amount].x  = x;
 	instances[instances_amount].y  = y;
 

@@ -8,7 +8,7 @@ void init_text_renderer();
 
 void text_begin_draw();
 
-void char_draw(char c, float x, float y);
+void draw_char(char c, float x, float y);
 
 void text_end_draw();
 

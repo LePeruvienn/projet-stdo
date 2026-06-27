@@ -87,7 +87,11 @@ void render()
 
 	text_begin_draw();
 
-	char_draw('A', 0.f, 0.f);
+	for (char i = 0; i < 100; ++i)
+	{
+		draw_char((char)('!' + i), (float) i * 2, 0.f);
+	}
+
 
 	text_end_draw();
 }
