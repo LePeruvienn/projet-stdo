@@ -39,8 +39,6 @@ void render()
 	
 	draw_grid();
 
-	draw_text();
-
 	float x1 = 5.f;
 	float y1 = 5.f;
 
@@ -85,6 +83,13 @@ void render()
 	circle_draw(x3, y3);
 
 	circle_end_draw();
+
+
+	text_begin_draw();
+
+	char_draw('A', 0.f, 0.f);
+
+	text_end_draw();
 }
 
 void handle_input()

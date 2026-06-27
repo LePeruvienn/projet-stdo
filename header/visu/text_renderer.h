@@ -6,8 +6,11 @@
 
 void init_text_renderer();
 
-// void draw_text(const char* text);
-void draw_text();
+void text_begin_draw();
+
+void char_draw(char c, float x, float y);
+
+void text_end_draw();
 
 void free_text_renderer();
 

@@ -89,6 +89,8 @@ void init_edge_renderer()
 	glBindBuffer(GL_ARRAY_BUFFER, instance_VBO);
 	setup_vao_attributes(edge_layout);
 
+	unbind_geometry(edge_geometry);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 	is_intialized = true;

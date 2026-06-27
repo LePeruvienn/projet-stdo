@@ -31,6 +31,8 @@
 #define INSTANCE_ATTR_LINE_P1  2
 #define INSTANCE_ATTR_LINE_P2  3
 
+#define INSTANCE_ATTR_CHAR_ID  4
+
 /** @} */
 
 #define MAX_VERTEX_ATTRIBUTE_AMOUNT 5
