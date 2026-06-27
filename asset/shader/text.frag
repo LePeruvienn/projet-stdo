@@ -9,6 +9,5 @@ out vec4 fFragColor;
 void main()
 {
 	vec4 textureColor = texture(uTexture, vUV);
-
-	fFragColor = textureColor;
+	fFragColor = uTextColor * textureColor;
 }

@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
 
 #define BITMAP_PATH "asset/bitmap/font.bmp"
 #define MAX_INSTANCES_AMOUNT 1024
@@ -36,8 +37,10 @@ static GLuint instance_VBO;
 static char_rep instances[MAX_INSTANCES_AMOUNT] = { 0 };
 static size_t instances_amount = 0;
 
-static color text_color = (color) { .rgba = {255, 255, 255, 0 },
-                                    .norm = {1.f, 1.f, 1.f, 0.f } };
+static color text_color = (color) { .rgba = {255, 255, 255, 255 },
+                                    .norm = {1.f, 1.f, 1.f, 1.f } };
+
+static float char_space_size = 1.5f;
 
 static bool is_intialized = false;
 static bool is_drawing = false;
@@ -143,6 +146,26 @@ void draw_char(char c, float x, float y)
 	++instances_amount;
 }
 
+void draw_text(const char* text, float x, float y)
+{
+	size_t len = strlen(text);
+
+	for(size_t i = 0; i < len; ++i)
+	{
+		char c = text[i];
+
+		if (c == ' ')
+		{
+			continue;
+		}
+
+		float px = x + (i * char_space_size);
+		float py = y;
+
+		draw_char(c, px, py);
+	}
+}
+
 void text_end_draw()
 {
 	if(is_drawing == false)
@@ -206,3 +229,9 @@ void set_text_renderer_color(color_rgba rgba)
 {
 	color_set_rgba(&text_color, rgba);
 }
+
+void set_text_renderer_char_space_size(float space)
+{
+	char_space_size = space;
+}
+

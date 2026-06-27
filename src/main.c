@@ -87,10 +87,14 @@ void render()
 
 	text_begin_draw();
 
+	/*
 	for (char i = 0; i < 100; ++i)
 	{
 		draw_char((char)('!' + i), (float) i * 2, 0.f);
 	}
+	*/
+
+	draw_text("Sarah je t'aime !", 0.f, 0.f);
 
 
 	text_end_draw();
