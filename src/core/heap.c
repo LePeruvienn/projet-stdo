@@ -2,6 +2,7 @@
 #include "core/edge.h"
 #include "utils/logger.h"
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -74,6 +75,66 @@ void        heap_insert     (heap *h, edge *value)
 
     h->data[child] = value;
     h->alllocated_size++;
+}
+
+static int  __heap_find_edge(heap *h, int dest)
+{
+    edge *current = h->data[0];
+    int current_index = 0;
+
+    while (current_index < h->used_size)
+    {
+        if (edge_node(current) == dest)
+        {
+            return current_index;
+        }
+        else
+        {
+            current = h->data[++current_index];
+        }
+    }
+
+    return -1;
+}
+
+static int  __heap_get_parent(int i)
+{
+    return (i % 2 == 0) ? (i - 2) / 2 : (i - 1) / 2;
+}
+
+static int  __heap_get_left_child(int i)
+{
+    return (2 * i) + 1;
+}
+
+static int  __heap_get_right_child(int i)
+{
+    return (2 * i) + 2;
+}
+
+void        heap_decrease_value(heap *h, int dest, float value)
+{
+    int selected_index = __heap_find_edge(h, dest);
+
+    if (selected_index == -1)
+    {
+        LOG("Could not find edge with destination %d", dest);
+        return;
+    }
+
+    edge *selected = h->data[selected_index];
+
+    if (edge_distance(selected) < value)
+    {
+        int i = selected_index;
+        while (i > 0 && h->data[__heap_get_parent(selected_index)] < h->data[i])
+        {
+            int parent = __heap_get_parent(selected_index);
+            edge *temp = h->data[parent];
+            h->data[parent] = h->data[i];
+            i = parent;
+        }
+    }
 }
 
 edge        *heap_pop       (heap *h)

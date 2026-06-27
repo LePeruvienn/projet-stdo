@@ -7,14 +7,16 @@
 
 typedef struct s_heap heap;
 
-heap    *heap_new       (size_t initial_size);
+heap    *heap_new               (size_t initial_size);
 
-void    heap_free       (heap *h);
+void    heap_free               (heap *h);
 
-bool    heap_is_empty   (heap *h);
+bool    heap_is_empty           (heap *h);
 
-void    heap_insert     (heap *h, edge *value);
+void    heap_insert             (heap *h, edge *value);
 
-edge    *heap_pop       (heap *h);
+void    heap_decrease_value     (heap *h, int dest, float value);
+
+edge    *heap_pop               (heap *h);
 
 #endif // HEAP_H
