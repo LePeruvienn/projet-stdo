@@ -36,6 +36,13 @@ void        graph_add_edge(graph *g, int src, int dest, float distance);
 int_list    *graph_get_all_nodes_names(graph *g);
 
 /**
+ * \brief Get the number of nodes in the graph
+ * \param g The graph
+ * \return Number of nodes
+ */
+int         graph_get_node_number(graph *g);
+
+/**
  * \brief Adds edges between src and a list of dest, with specified distances
  * \param g The graph
  * \param src The source node

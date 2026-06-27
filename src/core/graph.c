@@ -67,6 +67,11 @@ void    graph_bulk_add_edge(graph *g, int src, int *dest, float *distance, size_
     }
 }
 
+int         graph_get_node_number(graph *g)
+{
+    return g->node_number;
+}
+
 void    graph_add_edge(graph *g, int src, int dest, float distance)
 {
     int dest_lst[1] = { dest };
