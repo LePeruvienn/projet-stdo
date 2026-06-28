@@ -1,6 +1,8 @@
 #ifndef NODE_H
 #define NODE_H
 
+#include "core/edge.h"
+
 /**
  * \brief Represents a list of edges originating from
  * the same node, with the destination and the distance from the node. 
@@ -12,7 +14,7 @@ typedef struct s_node node;
  * \attention The node muist be freed with node_free()
  * \return New hashmap
  */
-node    *node_new       ();
+node    *node_new           ();
 
 /**
  * \brief Add an edge (destination, distance) to the node
@@ -20,7 +22,7 @@ node    *node_new       ();
  * \param dest Destination node
  * \param distance Distance from the node
  */
-void    node_add_edge  (node *n, int dest, float distance);
+void    node_add_edge       (node *n, int dest, float distance);
 
 /**
  * \brief Get the distance to an other node if there's an edge.
@@ -29,13 +31,17 @@ void    node_add_edge  (node *n, int dest, float distance);
  * \return The distance if there is an edge, and -1.0 if there's no edge
  *      between the two nodes.
  */
-float   node_get_edge  (node *n, int dest);
+float   node_get_edge       (node *n, int dest);
+
+edge	**node_edge_list(node *n);
+
+int     node_edge_number    (node *n);
 
 /**
  * \brief Frees a node
  * \param n The node to be freed
  */
-void    node_free       (node *n);
+void    node_free           (void *n);
 
 #endif // NODE_H
 

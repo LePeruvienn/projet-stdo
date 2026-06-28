@@ -17,7 +17,7 @@
 typedef struct  s_hashmap_entry
 {
     int                     key;
-    node                    *value;
+    void                    *value;
     struct s_hashmap_entry  *next;
 } hm_entry;
 
@@ -31,21 +31,23 @@ typedef struct  s_hashmap_entry
 struct  s_hashmap 
 {
     hm_entry                **keys;
+    void                    (*free_value)(void *);
 };
 
 /**
  * Hash formula for int indexed hashmaps
  */
-int     __hash(int i)
+int         __hash(int i)
 {
     return i * (i + 3) % PRIME_NUMBER; 
 }
 
-hashmap*    hashmap_new()
+hashmap*    hashmap_new(void (*free_value_fn)(void *))
 {
     hashmap *hm = malloc(sizeof(struct s_hashmap));
     
-    hm->keys = malloc(sizeof(struct s_hashmap_entry) * PRIME_NUMBER);
+    hm->free_value = free_value_fn;
+    hm->keys = malloc(sizeof(hm_entry*) * PRIME_NUMBER);
     for (int i = 0; i < PRIME_NUMBER; i++)
     {
         hm->keys[i] = NULL;
@@ -54,9 +56,9 @@ hashmap*    hashmap_new()
     return hm;
 }
 
-hm_entry*    __hashmap_entry_new(int key, node *value)
+static hm_entry*    __hashmap_entry_new(int key, void *value)
 {
-    hm_entry *entry = malloc(sizeof(struct s_hashmap_entry));
+    hm_entry *entry = malloc(sizeof(hm_entry));
 
     entry->key = key;
     entry->value = value;
@@ -65,9 +67,9 @@ hm_entry*    __hashmap_entry_new(int key, node *value)
     return entry;
 }
 
-void        __hashmap_entry_free(hm_entry *entry)
+static void        __hashmap_entry_free(hashmap *hm, hm_entry *entry)
 {
-    node_free(entry->value);
+    hm->free_value(entry->value);
     free(entry);
 }
 
@@ -75,19 +77,19 @@ void        hashmap_free    (hashmap *hm)
 {
     for (int i = 0; i < PRIME_NUMBER; i++)
     {
-        int hash = __hash(i);
-        hm_entry *current_node = hm->keys[hash];
-        while (current_node)
+        hm_entry *current_node = hm->keys[i];
+        while (current_node != NULL)
         {
-            struct s_hashmap_entry *node_to_free = current_node;
+            hm_entry *node_to_free = current_node;
             current_node = node_to_free->next;
-            __hashmap_entry_free(node_to_free); 
+            __hashmap_entry_free(hm, node_to_free); 
         }
     }
     free(hm->keys);
+    free(hm);
 }
 
-hm_entry*   __hashmap_get_entry_last_node(hm_entry *entry)
+static hm_entry*   __hashmap_get_entry_last_node(hm_entry *entry)
 {
     hm_entry *current = entry;
     while (current->next != NULL)
@@ -97,7 +99,7 @@ hm_entry*   __hashmap_get_entry_last_node(hm_entry *entry)
     return current;
 }
 
-hm_entry*   __hashmap_get_entry_if_exists(hm_entry *entries, int key)
+static hm_entry*   __hashmap_get_entry_if_exists(hm_entry *entries, int key)
 {
     hm_entry *current_node = entries;
     while (current_node)
@@ -111,7 +113,7 @@ hm_entry*   __hashmap_get_entry_if_exists(hm_entry *entries, int key)
     return NULL;
 }
 
-void        hasmap_put(hashmap *hm, int key, node *value)
+void        hashmap_put(hashmap *hm, int key, void *value)
 {
     int hash        = __hash(key);
     hm_entry *entry = __hashmap_entry_new(key, value);
@@ -135,43 +137,46 @@ void        hasmap_put(hashmap *hm, int key, node *value)
         else
         {   
             // we just replace the value if the key is already present
-            node_free(correct_place->value);
+            hm->free_value(correct_place->value);
             correct_place->value = value;
         }
-
     }
 }
 
-node*       hashmap_get(hashmap *hm, int key)
+void*       hashmap_get (hashmap *hm, int key)
 {
     int hash = __hash(key);
     hm_entry *entry = __hashmap_get_entry_if_exists(hm->keys[hash], key);
 
-    return (entry) ? entry->value : NULL;
+    return (entry != NULL) ? entry->value : NULL;
 }
 
 void        hashmap_remove  (hashmap *hm, int key)
 {
     int hash = __hash(key);
+    LOG("Hashed entry %d (hash: %d)", key, hash);
+
     hm_entry *current = hm->keys[hash];
+
+    if (current->key == key)
+    {
+        hm->keys[hash] = current->next;
+        __hashmap_entry_free(hm, current);
+        return;
+    }
+
+    hm_entry *parent = current;
+    current = parent->next;
 
     while (current != NULL)
     {
-        if (current->next != NULL && current->next->key == key)
+        if (current->key == key)
         {
-            hm_entry *to_remove = current->next;
-            if (to_remove->next != NULL) 
-            {
-                current->next = to_remove->next;
-                __hashmap_entry_free(to_remove);
-            }
-            else 
-            {
-                current->next = NULL;
-                __hashmap_entry_free(to_remove);
-            }
+            parent->next = current->next;
+            __hashmap_entry_free(hm, current);
             break;
         }
-        current = current->next;
+        parent = current;
+        current = parent->next;
     }
 }

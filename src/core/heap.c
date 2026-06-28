@@ -57,13 +57,15 @@ bool        heap_is_empty   (heap *h)
 
 void        heap_insert     (heap *h, edge *value)
 {
-    int child   = h->used_size;
+    int child   = h->used_size++;
     int parent  = (child - 1) / 2;
 
     // if we don't have space left in the heap, increase it to the next 2 power n value
-    if (h->used_size + 1 > h->alllocated_size)
+    if (h->used_size > h->alllocated_size)
     {
-        h->data = realloc(h->data, sizeof(edge*) * 1 + (h->alllocated_size - 1) * 2 );
+        h->alllocated_size = 1 + (h->alllocated_size - 1) * 2;
+        h->data = realloc(h->data, sizeof(edge*) * h->alllocated_size );
+        
     }
 
     while (child > 0 && edge_distance(h->data[parent]) > edge_distance(value) )
@@ -74,8 +76,8 @@ void        heap_insert     (heap *h, edge *value)
     }
 
     h->data[child] = value;
-    h->alllocated_size++;
 }
+
 
 static int  __heap_find_edge(heap *h, int dest)
 {
@@ -123,15 +125,20 @@ void        heap_decrease_value(heap *h, int dest, float value)
     }
 
     edge *selected = h->data[selected_index];
+    LOG("Found selected: (n: %d, d: %f)", edge_node(selected), edge_distance(selected));
 
-    if (edge_distance(selected) < value)
-    {
+    if (edge_distance(selected) > value)
+    {   
+        LOG("Value smaller than current (old: %f, new: %f)", edge_distance(selected), value);
+        edge_set_distance(selected, value);
         int i = selected_index;
         while (i > 0 && h->data[__heap_get_parent(selected_index)] < h->data[i])
         {
+            LOG("Switching with its parent");
             int parent = __heap_get_parent(selected_index);
             edge *temp = h->data[parent];
             h->data[parent] = h->data[i];
+            h->data[i] = temp;
             i = parent;
         }
     }
@@ -145,19 +152,25 @@ edge        *heap_pop       (heap *h)
     int parent = 0;
     int child;
 
-    while (1)
+    if (h->used_size == 0)
     {
-        int left_child_index = 2*parent+1;
-        int right_child_index = left_child_index+1;
+        h->data[0] = NULL;
+        return popped_value;
+    }
+
+    while (true)
+    {
+        int left_child_index    = __heap_get_left_child(parent);
+        int right_child_index   = __heap_get_right_child(parent);
 
         // does left_child exists?
-        if ((left_child_index) < h->used_size) child = 2*parent+1;
+        if (left_child_index < h->used_size) child = __heap_get_left_child(parent);
         else break;
 
         // does right_child exists?
-        if ((right_child_index) < h->used_size)
+        if (right_child_index < h->used_size)
             if (edge_distance(h->data[right_child_index]) <= edge_distance(h->data[left_child_index]))
-                child = 2 * parent + 2;
+                child = __heap_get_right_child(parent);
 
         if (edge_distance(x) <= edge_distance(h->data[child]))
             break;
@@ -165,7 +178,6 @@ edge        *heap_pop       (heap *h)
         h->data[parent] = h->data[child];
         parent = child;
     }
-
     h->data[parent] = x;
 
     return popped_value; 

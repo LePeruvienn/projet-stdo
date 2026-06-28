@@ -19,7 +19,7 @@ graph   *graph_new()
 {
     graph *g = malloc(sizeof(struct s_graph));
 
-    g->storage  = hashmap_new();
+    g->storage  = hashmap_new(node_free);
     g->node_number = 0;
     g->node_names = NULL;
 
@@ -36,7 +36,11 @@ int_list *graph_get_all_nodes_names(graph *g)
 {
     int_list *lst = malloc(sizeof(int_list));
 
-    memcpy(lst->inner, g->node_names, g->node_number * sizeof(int));
+    lst->inner = malloc(sizeof(int) * g->node_number);
+
+    for (int i = 0; i < g->node_number; i++)
+        lst->inner[i] = g->node_names[i];
+
     lst->size = g->node_number;
 
     return lst;
@@ -90,4 +94,9 @@ edge   *graph_get_distance(graph *g, int src, int dest)
     }
     
     return edge_new(dest, -1.f);
+}
+
+node    *graph_get_edges(graph *g, int src)
+{
+    return hashmap_get(g->storage, src);
 }

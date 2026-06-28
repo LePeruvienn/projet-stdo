@@ -3,6 +3,7 @@
 
 #include "core/edge.h"
 #include "core/list.h"
+#include "core/node.h"
 #include <stddef.h>
 
 typedef struct s_graph graph;
@@ -61,5 +62,13 @@ void        graph_bulk_add_edge(graph *g, int src, int dest[], float distance[],
  * \return The distance if there's an edge between the two nodes, and -1 if there's no edge.
  */
 edge       *graph_get_distance(graph *g, int src, int dest);
+
+/**
+ * \brief Get all edges coming from src
+ * \param g The graph
+ * \param src The source node
+ * \return A node representing all the edges coming from this source 
+ */
+node        *graph_get_edges(graph *g, int src);
 
 #endif // GRAPH_H
