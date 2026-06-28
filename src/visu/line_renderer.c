@@ -140,12 +140,12 @@ void line_draw(float x1, float y1, float x2, float y2)
 	float dist = dx * dx + dy * dy;
 
 	// Dont draw if too small
-	if (dist < 0.001f)
+	if (dist < 0.0001f)
 	{
 		return;
 	}
 
-	LOG("Draw line : (%f, %f) -> (%f, %f)", x1, y1, x2, y2);
+	// LOG("Draw line : (%f, %f) -> (%f, %f)", x1, y1, x2, y2);
 
 	instances[instances_amount].x1 = x1;
 	instances[instances_amount].y1 = y1;

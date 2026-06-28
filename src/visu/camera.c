@@ -2,8 +2,8 @@
 
 #include <stdlib.h>
 
-#define ZOOM_MIN 0.001f
-#define ZOOM_MAX 1000.f
+#define ZOOM_MIN 0.5f
+#define ZOOM_MAX 1000000.f
 
 struct camera
 {

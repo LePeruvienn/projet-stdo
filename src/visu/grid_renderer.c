@@ -13,8 +13,7 @@ static camera grid_camera = NULL;
 static geometry grid_geometry = NULL;
 static shader grid_shader = NULL;
 
-
-static float grid_size = 5.f;
+static float grid_size = 100.f;
 
 static color background_color = { .rgba = { 0x1A, 0x1A, 0x1A, 0xFF },
                                   .norm = { 0.1f, 0.1f, 0.1f, 1.f  } };

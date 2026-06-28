@@ -39,6 +39,7 @@ static color circle_color = { .rgba = {  0x78,  0xD9,  0x76, 0xFF },
 static color border_color = { .rgba = {  0xD7,  0x76,  0xD9, 0xFF },
                               .norm = { 0.843, 0.463, 0.851, 1.0  } };
 
+static float circle_scale = 10.f;
 static float circle_radius = 1.f;
 static float border_thikness = 0.1f;
 
@@ -71,8 +72,8 @@ void init_circle_renderer()
 
 	circle_geometry = create_circle_fan_geometry(50);
 
-	circle_shader = create_shader("asset/shader/default.vert",
-	                             "asset/shader/circle.frag");
+	circle_shader = create_shader("asset/shader/circle.vert",
+	                              "asset/shader/circle.frag");
 
 	circle_layout = create_instance_layout();
 
@@ -158,6 +159,8 @@ void circle_end_draw()
 
 	set_shader_circle_border_color(circle_shader, border_color);
 	set_shader_circle_border_thinkness(circle_shader, border_thikness);
+
+	set_shader_model_scale(circle_shader, circle_scale, circle_scale);
 
 	bind_geometry(circle_geometry);
 
@@ -253,4 +256,17 @@ void set_circle_renderer_border_thickness(float t)
 	}
 
 	border_thikness = t;
+}
+
+void set_circle_renderer_scale(float s)
+{
+	if (is_drawing)
+	{
+		circle_end_draw();
+		circle_scale = s;
+		circle_begin_draw();
+		return;
+	}
+
+	circle_scale = s;
 }

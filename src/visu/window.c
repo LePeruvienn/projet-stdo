@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <threads.h>
-#include <math.h>
 
 #define _10e9 1000000000.0
 
@@ -189,6 +188,7 @@ void handle_window_input(window w, camera c)
 			dy = (float)(mouse_y - last_mouse_y) * speed * 0.01f;
 		}
 		dragging = true;
+
 		last_mouse_x = mouse_x;
 		last_mouse_y = mouse_y;
 	}

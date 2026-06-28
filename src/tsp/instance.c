@@ -26,7 +26,7 @@ static float node_dist(const TSP_Node_Coord* a, const TSP_Node_Coord* b)
 	double dx = a->px - b->px;
 	double dy = a->py - b->py;
 
-	return (float) sqrt(dx * dx + dy * dy);
+	return sqrtf(dx * dx + dy * dy);
 }
 
 static void setup_nodes(TSP_Instance instance)
@@ -186,3 +186,4 @@ TSP_Instance_Edges TSP_Instance_get_edges(TSP_Instance instance)
 {
 	return instance->edges;
 }
+

@@ -89,10 +89,6 @@ void render(TSP_Instance instance)
 {
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-
-	set_grid_renderer_grid_size(10.f);
-	set_grid_renderer_bg_color((color_rgba) {0x0F, 0x0F, 0x0F, 0xFF});
-	set_grid_renderer_line_color((color_rgba) {0x44, 0x44, 0x44, 0xFF});
 	
 	draw_grid();
 

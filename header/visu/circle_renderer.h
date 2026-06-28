@@ -19,6 +19,7 @@ void set_circle_renderer_camera(camera c);
 void set_circle_renderer_fill_color(color_rgba c);
 void set_circle_renderer_border_color(color_rgba c);
 
+void set_circle_renderer_scale(float s);
 void set_circle_renderer_radius(float r);
 void set_circle_renderer_border_thickness(float t);
 
