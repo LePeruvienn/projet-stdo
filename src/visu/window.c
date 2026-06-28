@@ -1,4 +1,6 @@
 #include "visu/window.h"
+#include "visu/camera.h"
+
 #include "utils/logger.h"
 
 #include "glad/glad.h"
@@ -7,6 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <threads.h>
+#include <math.h>
 
 #define _10e9 1000000000.0
 
@@ -147,3 +150,47 @@ void window_get_framebuffer_size(window w, int* width, int* height)
 	}
 }
 
+
+void handle_window_input(window w, camera c)
+{
+	GLFWwindow* handle = (GLFWwindow*) window_get_native_handle(w);
+
+	bool up = glfwGetKey(handle, GLFW_KEY_W) == GLFW_PRESS;
+	bool left = glfwGetKey(handle, GLFW_KEY_A) == GLFW_PRESS;
+	bool down = glfwGetKey(handle, GLFW_KEY_S) == GLFW_PRESS;
+	bool right = glfwGetKey(handle, GLFW_KEY_D) == GLFW_PRESS;
+
+	bool zooming = glfwGetKey(handle, GLFW_KEY_SPACE) == GLFW_PRESS;
+	bool dezooming = glfwGetKey(handle, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS;
+
+	float current_zoom = get_camera_zoom(c);
+
+	float speed = (1.f / 10.f) * fmin(current_zoom, 1.f);
+	float zoom_speed = 1.f / 10.f;
+
+	float dx = 0.f;
+	float dy = 0.f;
+	float dzoom = 0.f;
+
+	if (up) dy += speed;
+	if (down) dy -= speed;
+	if (right) dx += speed;
+	if (left) dx -= speed;
+
+	if (zooming) dzoom += zoom_speed;
+	if (dezooming) dzoom -= zoom_speed;
+
+	camera_move(c, dx, dy, dzoom);
+}
+
+void handle_window_resize(window w, camera c)
+{
+	int fb_w, fb_h;
+	window_get_framebuffer_size(w, &fb_w, &fb_h);
+
+	if (fb_h > 0) 
+	{
+		set_camera_aspect(c, (float) fb_w / (float) fb_h);
+		glViewport(0, 0, fb_w, fb_h);
+	}
+}

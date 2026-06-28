@@ -1,6 +1,10 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include "visu/camera.h"
+
+#include <stdbool.h>
+
 /**
  * \file window.h
  * \brief Abstraction de la gestion de la fenêtre et du contexte OpenGL.
@@ -9,8 +13,6 @@
  * une fenêtre d'affichage. Il encapsule les appels à la bibliothèque
  * GLFW pour éviter d'exposer ces détails au reste du programme.
  */
-
-#include <stdbool.h>
 
 /**
  * \brief Pointeur représentant la structure et l'état d'une fenêtre.
@@ -119,5 +121,10 @@ void* window_get_native_handle(window w);
  * \param height Pointeur où stocker la hauteur physique en pixels.
  */
 void window_get_framebuffer_size(window w, int* width, int* height);
+
+
+void handle_window_input(window w, camera c);
+
+void handle_window_resize(window w, camera c);
 
 #endif // WINDOW_H
