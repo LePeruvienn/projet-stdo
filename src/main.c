@@ -38,7 +38,9 @@ int main(void)
 	while(!window_should_close(w))
 	{
 		handle_window_input(w, c);
-		render();
+
+		render(tsp_file);
+
 		window_update_events(w);
 		handle_window_resize(w, c);
 	}

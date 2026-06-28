@@ -8,6 +8,7 @@
 #include "visu/text_renderer.h"
 
 #include "tsp/file.h"
+#include "tsp/section.h"
 
 #include "utils/logger.h"
 
@@ -19,6 +20,24 @@
 #include "visu/camera.h"
 
 static camera main_camera = NULL;
+
+static void draw_TSP(TSP_File tsp_file)
+{
+	TSP_Section_Data data = TSP_Section_get_data(tsp_file->NODE_COORD_SECTION);
+	TSP_Node_Coord* nodes_coords = data.coords;
+
+	circle_begin_draw();
+
+	for (size_t i = 0; i < data.size; ++i)
+	{
+		float x = nodes_coords[i].px;
+		float y = nodes_coords[i].py;
+
+		circle_draw(x, y);
+	}
+
+	circle_end_draw();
+}
 
 void init_renderer()
 {
@@ -50,7 +69,7 @@ void set_renderer_camera(camera c)
 	set_text_renderer_camera(c);
 }
 
-void render()
+void render(TSP_File tsp_file)
 {
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -61,65 +80,7 @@ void render()
 	
 	draw_grid();
 
-	float x1 = 5.f;
-	float y1 = 5.f;
-
-	float x2 =   5.f;
-	float y2 = - 5.f;
-
-	float x3 = - 5.f;
-	float y3 = - 5.f;
-
-	// IL FAUT SET AVANT DE DRAW (sinon bug jsp pk)
-	set_line_renderer_color((color_rgba) {0x00, 0xFF, 0x00, 0xFF});
-
-	line_begin_draw();
-
-	line_draw(x1, y1, x2, y2);
-	
-	set_line_renderer_color((color_rgba) {0xFF, 0xFF, 0x00, 0xFF});
-
-	line_draw(x2, y2, x3, y3);
-
-	line_end_draw();
-
-	// IL FAUT SET AVANT DE DRAW (sinon bug jsp pk)
-	set_circle_renderer_fill_color((color_rgba) {0x00, 0x00, 0x00, 0xFF});
-
-	circle_begin_draw();
-
-	/*
-	for (size_t i = 0; i < data.size; ++i)
-	{
-		float x = nodes_coords[i].px;
-		float y = nodes_coords[i].py;
-
-		circle_draw(x, y);
-	}
-	*/
-
-	circle_draw(x1, y1);
-
-	set_circle_renderer_fill_color((color_rgba) {0xFF, 0xFF, 0xFF, 0xFF});
-
-	circle_draw(x3, y3);
-
-	circle_end_draw();
-
-
-	text_begin_draw();
-
-	/*
-	for (char i = 0; i < 100; ++i)
-	{
-		draw_char((char)('!' + i), (float) i * 2, 0.f);
-	}
-	*/
-
-	draw_text("Sarah je t'aime !", 0.f, 0.f);
-
-
-	text_end_draw();
+	draw_TSP(tsp_file);
 }
 
 void free_renderer()

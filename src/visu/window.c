@@ -19,6 +19,13 @@ struct window_s {
 	int height;
 };
 
+static float scroll_delta = 0.f;
+
+static void scroll_callback(GLFWwindow* /*window*/, double /*xoffset*/, double yoffset)
+{
+	scroll_delta += (float) yoffset;
+}
+
 /**
  * \brief Fonction de rappel appelée lors du redimensionnement de la fenêtre.
  *
@@ -84,6 +91,7 @@ window create_window(int width, int height, const char* title)
 	glfwMakeContextCurrent(w->handle);
 	glfwSetWindowUserPointer(w->handle, w);
 	glfwSetFramebufferSizeCallback(w->handle, framebuffer_size_callback);
+	glfwSetScrollCallback(w->handle, scroll_callback);
 
 	// On désactive le V-Sync
 	glfwSwapInterval(0);
@@ -153,32 +161,41 @@ void window_get_framebuffer_size(window w, int* width, int* height)
 
 void handle_window_input(window w, camera c)
 {
-	GLFWwindow* handle = (GLFWwindow*) window_get_native_handle(w);
+	GLFWwindow* handle = w->handle;
 
-	bool up = glfwGetKey(handle, GLFW_KEY_W) == GLFW_PRESS;
-	bool left = glfwGetKey(handle, GLFW_KEY_A) == GLFW_PRESS;
-	bool down = glfwGetKey(handle, GLFW_KEY_S) == GLFW_PRESS;
-	bool right = glfwGetKey(handle, GLFW_KEY_D) == GLFW_PRESS;
-
-	bool zooming = glfwGetKey(handle, GLFW_KEY_SPACE) == GLFW_PRESS;
-	bool dezooming = glfwGetKey(handle, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS;
+	static bool dragging = false;
+	static double last_mouse_x = 0.0;
+	static double last_mouse_y = 0.0;
 
 	float current_zoom = get_camera_zoom(c);
-
-	float speed = (1.f / 10.f) * fmin(current_zoom, 1.f);
-	float zoom_speed = 1.f / 10.f;
-
 	float dx = 0.f;
 	float dy = 0.f;
-	float dzoom = 0.f;
 
-	if (up) dy += speed;
-	if (down) dy -= speed;
-	if (right) dx += speed;
-	if (left) dx -= speed;
+	float zoom_speed = 1.f / 5.f;
+	float dzoom = scroll_delta / zoom_speed;
+	scroll_delta = 0.f;
 
-	if (zooming) dzoom += zoom_speed;
-	if (dezooming) dzoom -= zoom_speed;
+	int mouse_button = glfwGetMouseButton(handle, GLFW_MOUSE_BUTTON_LEFT);
+	double mouse_x, mouse_y;
+	glfwGetCursorPos(handle, &mouse_x, &mouse_y);
+
+	if (mouse_button == GLFW_PRESS)
+	{
+		if (dragging)
+		{
+			float speed = current_zoom * 0.1f;
+
+			dx = (float)(last_mouse_x - mouse_x) * speed * 0.01f;
+			dy = (float)(mouse_y - last_mouse_y) * speed * 0.01f;
+		}
+		dragging = true;
+		last_mouse_x = mouse_x;
+		last_mouse_y = mouse_y;
+	}
+	else 
+	{
+		dragging = false;
+	}
 
 	camera_move(c, dx, dy, dzoom);
 }
