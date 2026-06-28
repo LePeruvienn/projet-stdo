@@ -25,8 +25,8 @@ int main(void)
 
 	init_renderer();
 	
-	const char* filepath = "TSPLIB/res/a280.tsp";
-	tsp_instance = TSP_Instance_create(filepath, 0.05f);
+	const char* filepath = "TSPLIB/res/att48.tsp";
+	tsp_instance = TSP_Instance_create(filepath, 0.5f);
 
 	float aspect = (float) window_width / (float) window_height;
 

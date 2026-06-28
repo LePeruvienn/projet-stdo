@@ -137,7 +137,7 @@ void line_draw(float x1, float y1, float x2, float y2)
 	float dx = x1 - x2;
 	float dy = y1 - y2;
 
-	float dist = dx * dy + dy * dy;
+	float dist = dx * dx + dy * dy;
 
 	// Dont draw if too small
 	if (dist < 0.001f)
