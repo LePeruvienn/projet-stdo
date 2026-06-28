@@ -20,4 +20,5 @@ target_sources(${LIB_NAME}
 		parser.c
 		section.c
 		section_unstream.c
+		instance.c
 )

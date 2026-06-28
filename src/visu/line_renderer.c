@@ -13,7 +13,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#define MAX_INSTANCES_AMOUNT 512
+#define MAX_INSTANCES_AMOUNT 900048
 
 typedef struct line_rep line_rep;
 
@@ -133,6 +133,19 @@ void line_draw(float x1, float y1, float x2, float y2)
 		LOG_ERROR("lineRep instances amount is full !");
 		return;
 	}
+
+	float dx = x1 - x2;
+	float dy = y1 - y2;
+
+	float dist = dx * dy + dy * dy;
+
+	// Dont draw if too small
+	if (dist < 0.001f)
+	{
+		return;
+	}
+
+	LOG("Draw line : (%f, %f) -> (%f, %f)", x1, y1, x2, y2);
 
 	instances[instances_amount].x1 = x1;
 	instances[instances_amount].y1 = y1;

@@ -3,13 +3,13 @@
 
 #include "visu/camera.h"
 
-#include "tsp/file.h"
+#include "tsp/instance.h"
 
 void init_renderer();
 
 void set_renderer_camera(camera c);
 
-void render(TSP_File tsp_file);
+void render(TSP_Instance instance);
 
 void free_renderer();
 

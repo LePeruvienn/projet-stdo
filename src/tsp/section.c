@@ -173,8 +173,7 @@ TSP_Section_Type parse_TSP_Section_Type(const char* field)
 	else if(strcmp(field, TSP_SECTION_TYPE_TOUR_SECTION_STR)         == 0) return e_TOUR_SECTION;
 	else if(strcmp(field, TSP_SECTION_TYPE_EDGE_WEIGHT_SECTION_STR)  == 0) return e_EDGE_WEIGHT_SECTION;
 
-	// TODO uncomment this
-	// LOG_ERROR("Could not find .TSP Section type for field : %s", field);
+	LOG_ERROR("Could not find .TSP Section type for field : %s", field);
 
 	return TSP_SECTION_UNDEFINED;
 }

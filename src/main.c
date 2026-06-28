@@ -1,6 +1,5 @@
 #include "tsp/parser.h"
-#include "tsp/file.h"
-#include "tsp/section.h"
+#include "tsp/instance.h"
 
 #include "visu/window.h"
 #include "visu/camera.h"
@@ -18,7 +17,7 @@ static unsigned int window_height = 960;
 static window w = NULL;
 static camera c = NULL;
 
-static TSP_File tsp_file = NULL;
+static TSP_Instance tsp_instance;
 
 int main(void)
 {
@@ -27,7 +26,7 @@ int main(void)
 	init_renderer();
 	
 	const char* filepath = "TSPLIB/res/a280.tsp";
-	tsp_file = TSP_parse_file(filepath);
+	tsp_instance = TSP_Instance_create(filepath, 0.05f);
 
 	float aspect = (float) window_width / (float) window_height;
 
@@ -39,7 +38,7 @@ int main(void)
 	{
 		handle_window_input(w, c);
 
-		render(tsp_file);
+		render(tsp_instance);
 
 		window_update_events(w);
 		handle_window_resize(w, c);
@@ -48,5 +47,5 @@ int main(void)
 	free_renderer();
 
 	free_window(w);
-	TSP_File_free(tsp_file);
+	TSP_Instance_free(tsp_instance);
 }

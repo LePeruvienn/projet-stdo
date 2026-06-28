@@ -8,7 +8,8 @@
 #include "visu/text_renderer.h"
 
 #include "tsp/file.h"
-#include "tsp/section.h"
+#include "tsp/instance.h"
+#include "tsp/section_datas.h"
 
 #include "utils/logger.h"
 
@@ -21,23 +22,99 @@
 
 static camera main_camera = NULL;
 
-static void draw_TSP(TSP_File tsp_file)
+void draw_test()
 {
-	TSP_Section_Data data = TSP_Section_get_data(tsp_file->NODE_COORD_SECTION);
-	TSP_Node_Coord* nodes_coords = data.coords;
+    // =========================
+    // 🔵 AXES (LINES)
+    // =========================
+    set_line_renderer_color((color_rgba){0, 120, 255, 255}); // bleu
+
+    line_begin_draw();
+    line_draw(0, 0, 10, 0);   // X+
+    line_draw(0, 0, -10, 0);  // X-
+    line_draw(0, 0, 0, 10);   // Y+
+    line_draw(0, 0, 0, -10);  // Y-
+    line_end_draw();
+
+
+    // =========================
+    // 🔴 DIAGONALES (LINES)
+    // =========================
+    set_line_renderer_color((color_rgba){255, 80, 80, 255}); // rouge
+
+    line_begin_draw();
+    line_draw(-10, -10, 10, 10);  //left
+    line_draw(-10, 10, 10, -10);  // right
+
+    line_end_draw();
+
+
+    // =========================
+    // 🟢 CERCLES - QUADRANTS
+    // =========================
+    set_circle_renderer_fill_color((color_rgba){80, 255, 80, 255}); // vert
+
+    circle_begin_draw();
+
+    circle_draw(0, 0);
+
+    circle_draw(5, 5);     // Q1
+    circle_draw(-5, 5);    // Q2
+    circle_draw(-5, -5);   // Q3
+    circle_draw(5, -5);    // Q4
+
+    circle_end_draw();
+
+
+    // =========================
+    // 🟣 CERCLES - AXES TEST
+    // =========================
+    set_circle_renderer_fill_color((color_rgba){200, 80, 255, 255}); // violet
+
+    circle_begin_draw();
+
+    circle_draw(2, 0);   // X+
+    circle_draw(-2, 0);  // X-
+    circle_draw(0, 2);   // Y+
+    circle_draw(0, -2);  // Y-
+
+    circle_end_draw();
+}
+
+/*
+static void draw_TSP(TSP_Instance instance)
+{
+	TSP_Instance_Nodes nodes = TSP_Instance_get_nodes(instance);
+	TSP_Instance_Edges edges = TSP_Instance_get_edges(instance);
+
+	line_begin_draw();
+	for (size_t i = 0; i < edges.size; ++i)
+	{
+		TSP_Node_Coord* n1 = edges.data[i].from;
+		TSP_Node_Coord* n2 = edges.data[i].to;
+
+		float x1 = (float) n1->px;
+		float x2 = (float) n2->px;
+
+		float y1 = (float) n1->py;
+		float y2 = (float) n2->px;
+
+		line_draw(x1, y1, x2, y2);
+	}
+	line_end_draw();
+
 
 	circle_begin_draw();
-
-	for (size_t i = 0; i < data.size; ++i)
+	for (size_t i = 0; i < nodes.size; ++i)
 	{
-		float x = nodes_coords[i].px;
-		float y = nodes_coords[i].py;
+		float x = nodes.data[i].px;
+		float y = nodes.data[i].py;
 
 		circle_draw(x, y);
 	}
-
 	circle_end_draw();
 }
+*/
 
 void init_renderer()
 {
@@ -69,7 +146,7 @@ void set_renderer_camera(camera c)
 	set_text_renderer_camera(c);
 }
 
-void render(TSP_File tsp_file)
+void render(TSP_Instance /*instance*/)
 {
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -80,7 +157,8 @@ void render(TSP_File tsp_file)
 	
 	draw_grid();
 
-	draw_TSP(tsp_file);
+	// draw_TSP(instance);
+	draw_test();
 }
 
 void free_renderer()
