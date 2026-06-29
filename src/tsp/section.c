@@ -101,7 +101,7 @@ TSP_Section_Data TSP_Section_get_data(TSP_Section section)
 
 	data.type = section->type;
 	data.buffer = section->buffer;
-	data.size = section->element_size;
+	data.size = section->element_amount;
 
 	return data;
 }
