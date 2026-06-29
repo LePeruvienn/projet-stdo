@@ -2,7 +2,7 @@
 
 #include <time.h>
 
-uint64_t now_ms()
+uint64_t bench_now_ms()
 {
 	struct timespec ts;
 
@@ -11,7 +11,7 @@ uint64_t now_ms()
 	return (uint64_t) ts.tv_sec * 1000ULL + (uint64_t) ts.tv_nsec / 1000000ULL;
 }
 
-uint64_t now_ns()
+uint64_t bench_now_ns()
 {
 	struct timespec ts;
 

@@ -7,7 +7,6 @@
 #include "visu/grid_renderer.h"
 #include "visu/text_renderer.h"
 
-#include "tsp/file.h"
 #include "tsp/instance.h"
 #include "tsp/section_datas.h"
 
@@ -25,10 +24,32 @@ static camera main_camera = NULL;
 
 static bool is_intialized = false;
 
+static bool draw_help = true;
+
+static void draw_UI()
+{
+	set_text_renderer_to_screen_space(true);
+
+	if (draw_help)
+	{
+		text_begin_draw();
+			draw_text("Controles :", 0.0f, 0.9f);
+			draw_text("- [C/c] : Agrandir/retrecir les cercles", 0.0f, 0.8f);
+			draw_text("- [L/l] : Agrandir/retrecir les lignes", 0.0f, 0.7f);
+			draw_text("- [G/g] : Agrandir/retrecir la grille", 0.0f, 0.6f);
+			draw_text("- [H/h] : Afficher/cacher ce message !", 0.0f, 0.5f);
+		text_end_draw();
+	}
+
+	set_text_renderer_to_screen_space(false);
+}
+
 static void draw_TSP(TSP_Instance instance)
 {
 	TSP_Instance_Nodes nodes = TSP_Instance_get_nodes(instance);
 	TSP_Instance_Edges edges = TSP_Instance_get_edges(instance);
+
+	set_line_renderer_color((color_rgba) { 0x4D, 0x33, 0xFF, 0xFF });
 
 	line_begin_draw();
 	for (size_t i = 0; i < edges.size; ++i)
@@ -46,7 +67,29 @@ static void draw_TSP(TSP_Instance instance)
 	}
 	line_end_draw();
 
-	set_text_renderer_to_screen_space(false);
+	// vvv DRAW SHORTEST PATH
+	
+	TSP_Path path = TSP_Instance_get_shortest_path(instance);
+
+	set_line_renderer_color((color_rgba) { 0xFF, 0x00, 0x00, 0xFF });
+
+	line_begin_draw();
+	for (size_t i = 0; i < path.length; ++i)
+	{
+		TSP_Node_Coord* n1 = path.edges[i].from;
+		TSP_Node_Coord* n2 = path.edges[i].to;
+
+		float x1 = (float) n1->px;
+		float x2 = (float) n2->px;
+
+		float y1 = (float) n1->py;
+		float y2 = (float) n2->py;
+
+		line_draw(x1, y1, x2, y2);
+	}
+	line_end_draw();
+
+	// ^^^^ DRAW SHORTEST PATH
 
 	text_begin_draw();
 	circle_begin_draw();
@@ -68,12 +111,6 @@ static void draw_TSP(TSP_Instance instance)
 		draw_text(node_str, x, y);
 	}
 	circle_end_draw();
-	text_end_draw();
-
-	set_text_renderer_to_screen_space(true);
-
-	text_begin_draw();
-		draw_text("Salut le monde !", 0.f, 0.9f);
 	text_end_draw();
 }
 
@@ -135,6 +172,7 @@ void render(TSP_Instance instance)
 	draw_grid();
 
 	draw_TSP(instance);
+	draw_UI();
 }
 
 void free_renderer()

@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-uint64_t now_ms();
-uint64_t now_ns();
+uint64_t bench_now_ms();
+uint64_t bench_now_ns();
 
 #endif // BENCH_H
