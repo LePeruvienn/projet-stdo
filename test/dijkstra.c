@@ -14,17 +14,27 @@ void dijkstra_base()
  
 	char names[] = "EABCDS";
 
-	graph_add_edge(g, 0, 1, 3.0);
-	graph_add_edge(g, 0, 2, 1.0);
-	graph_add_edge(g, 1, 3, 3.0);
-	graph_add_edge(g, 1, 2, 1.0);
-	graph_add_edge(g, 2, 3, 3.0);
-	graph_add_edge(g, 2, 4, 5.0);
-	graph_add_edge(g, 3, 5, 3.0);
-	graph_add_edge(g, 3, 4, 1.0);
-	graph_add_edge(g, 4, 5, 1.0);
+	int E = 0;
+	int A = 1;
+	int B = 2;
+	int C = 3;
+	int D = 4;
+	int S = 5;
 
-	hashmap *h = dijkstra(g, 0);
+	graph_add_edge(g, E, A, 3.0);
+	graph_add_edge(g, E, B, 1.0);
+	graph_add_edge(g, A, C, 3.0);
+	graph_add_edge(g, A, B, 1.0);
+	graph_add_edge(g, B, C, 3.0);
+	graph_add_edge(g, B, D, 5.0);
+	graph_add_edge(g, C, S, 3.0);
+	graph_add_edge(g, C, D, 1.0);
+	graph_add_edge(g, D, S, 1.0);
+
+	hashmap *h = dijkstra(g, E);
+
+    float exp_distances[] = { 0.0, 2.0, 1.0, 4.0, 5.0, 6.0};
+	int exp_through[]     = { E, B, E, B, C, D };
 
     edge *edge;
 	for (int i = 0; i < 6; i++) 
@@ -32,12 +42,13 @@ void dijkstra_base()
 		edge = hashmap_get(h, i);
 		LOG("Node: %c, Distance from %c: %f (through %c)", 
 			names[i],
-			names[0],
+			names[E],
 			edge_distance(edge),
 			names[edge_node(edge)]
 		);
+		CU_ASSERT(edge_distance(edge) - exp_distances[i] < 0.01);
+		CU_ASSERT(edge_node(edge) == exp_through[i])
 	}
- 
 }
 
 int main()
