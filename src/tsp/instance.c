@@ -103,7 +103,6 @@ static void setup_edges(TSP_Instance instance)
 	LOG("Built %zu edges (threshold: %f)", instance->edges.size, threshold);
 }
 
-/*
 static void setup_graph(TSP_Instance instance)
 {
 	CHECK_IS_NULL(instance, "Instance is NULL");
@@ -118,14 +117,11 @@ static void setup_graph(TSP_Instance instance)
 		int src  = (int) e->from->node_number;
 		int dest = (int) e->to->node_number;
 
-		// Graphe non orienté donc les deux sens
 		graph_add_edge(instance->g, src, dest, e->cost);
-		graph_add_edge(instance->g, dest, src, e->cost);
 	}
 
 	LOG("Graph built with %d nodes", graph_get_node_number(instance->g));
 }
-*/
 
 static void setup_instance(TSP_Instance instance)
 {
@@ -139,7 +135,7 @@ static void setup_instance(TSP_Instance instance)
 
 	setup_nodes(instance);
 	setup_edges(instance);
-	// setup_graph(instance);
+	setup_graph(instance);
 }
 
 TSP_Instance TSP_Instance_create(const char* path, float p)
