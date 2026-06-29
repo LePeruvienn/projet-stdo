@@ -4,6 +4,8 @@
 #include "visu/camera.h"
 #include "visu/color.h"
 
+#include <stdbool.h>
+
 void init_text_renderer();
 
 void text_begin_draw();
@@ -24,5 +26,9 @@ void set_text_renderer_char_space_size(float space);
 void set_text_renderer_text_size(float size);
 
 void add_text_renderer_text_size(float size);
+
+void set_text_renderer_to_screen_space(bool value);
+
+void set_text_renderer_screen_space_size(float size);
 
 #endif // TEXT_RENDERER_H

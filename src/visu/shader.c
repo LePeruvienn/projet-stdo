@@ -58,6 +58,8 @@ struct shader
 	// text color location 
 	GLint loc_text_color;
 	GLint loc_text_size;
+	GLint loc_text_screen_space;
+	GLint loc_text_screen_space_size;
 };
 
 // Nom des variables uniformes
@@ -85,6 +87,9 @@ const char* U_NAME_TEXTURE         = "uTexture";
 
 const char* U_NAME_TEXT_COLOR      = "uTextColor";
 const char* U_NAME_TEXT_SIZE       = "uTextSize";
+
+const char* U_NAME_TEXT_SCREEN_SPACE      = "uTextScreenSpace";
+const char* U_NAME_TEXT_SCREEN_SPACE_SIZE = "uTextScreenSpaceSize";
 
 // Shaders globaux précharger à l'intialisations
 shader global_default_shader = NULL;
@@ -263,6 +268,9 @@ shader create_shader(const char* vert_shader_path, const char* frag_shader_path)
 
 	s->loc_text_color     = glGetUniformLocation(s->program, U_NAME_TEXT_COLOR);
 	s->loc_text_size      = glGetUniformLocation(s->program, U_NAME_TEXT_SIZE);
+
+	s->loc_text_screen_space      = glGetUniformLocation(s->program, U_NAME_TEXT_SCREEN_SPACE);
+	s->loc_text_screen_space_size = glGetUniformLocation(s->program, U_NAME_TEXT_SCREEN_SPACE_SIZE);
 
 	return s;
 }
@@ -590,3 +598,33 @@ void set_shader_text_size(shader s, float size)
 	GL_CALL(glUniform1f(s->loc_text_size, size));
 }
 
+void set_shader_text_screen_space(shader s, bool val)
+{
+	CHECK_SHADER_IS_NULL(s, "Tried to set circle border thickness on a NULL shader.", );
+
+	static bool print_warning_not_used = true;
+	if (print_warning_not_used && s->loc_text_screen_space == -1)
+	{
+		LOG_WARNING("Uniform 'text screen space' is not used in current shader (-1).");
+		print_warning_not_used = false;
+		return;
+	}
+
+	GL_CALL(glUniform1i(s->loc_text_screen_space, val ? GL_TRUE : GL_FALSE));
+}
+
+
+void set_shader_text_screen_space_size(shader s, float size)
+{
+	CHECK_SHADER_IS_NULL(s, "Tried to set circle border thickness on a NULL shader.", );
+
+	static bool print_warning_not_used = true;
+	if (print_warning_not_used && s->loc_text_screen_space_size == -1)
+	{
+		LOG_WARNING("Uniform 'text screen space size' is not used in current shader (-1).");
+		print_warning_not_used = false;
+		return;
+	}
+
+	GL_CALL(glUniform1f(s->loc_text_screen_space_size, size));
+}

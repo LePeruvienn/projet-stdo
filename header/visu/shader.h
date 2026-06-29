@@ -7,6 +7,7 @@
 #include "glad/glad.h"
 
 #include <stddef.h>
+#include <stdbool.h>
 
 /**
  * \file shader.h
@@ -163,5 +164,9 @@ void set_shader_line_thickness(shader s, float t);
 void set_shader_text_color(shader s, color c);
 
 void set_shader_text_size(shader s, float size);
+
+void set_shader_text_screen_space(shader s, bool val);
+
+void set_shader_text_screen_space_size(shader s, float size);
 
 #endif // SHADER_H

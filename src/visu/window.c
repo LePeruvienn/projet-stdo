@@ -207,8 +207,8 @@ void handle_window_input(window w, camera c)
 
 	bool renderer_init = renderer_get_is_intialized();
 
-	float circle_scale_speed = 5.f;
-	float text_scale_speed = 3.f;
+	float circle_scale_speed = 1.f;
+	float text_scale_speed = 0.5f;
 	float line_scale_speed = 0.01f;
 	float grid_scale_speed = 1.f;
 

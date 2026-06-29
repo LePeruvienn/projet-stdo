@@ -20,6 +20,8 @@
 
 #define MIN_TEXT_SCALE 0.25f
 
+#define SPACE_BITMAP_INDEX 95
+
 typedef struct char_rep char_rep;
 
 struct char_rep
@@ -44,6 +46,9 @@ static color text_color = (color) { .rgba = {255, 255, 255, 255 },
 
 static float char_space_size = 1.5f;
 static float text_size = 2.5f;
+
+static bool to_screen_space = false;
+static float text_screen_space_size = 0.025f;
 
 static bool is_intialized = false;
 static bool is_drawing = false;
@@ -140,7 +145,9 @@ void draw_char(char c, float x, float y)
 		return;
 	}
 
-	instances[instances_amount].id = (int) (c - '!');
+	int id = (c == ' ') ? SPACE_BITMAP_INDEX : (int) (c - '!');
+
+	instances[instances_amount].id = id;
 	instances[instances_amount].x  = x;
 	instances[instances_amount].y  = y;
 
@@ -153,19 +160,16 @@ void draw_text(const char* text, float x, float y)
 {
 	size_t len = strlen(text);
 
-	float text_width = len * char_space_size * text_size;
-    float start_x = x - text_width * 0.25f;
+	float size = (to_screen_space) ? text_screen_space_size : text_size;
+	float text_width = len * char_space_size * size;
+	float start_x = x - text_width * 0.5f;
 
 	for(size_t i = 0; i < len; ++i)
 	{
 		char c = text[i];
 
-		if (c == ' ')
-		{
-			continue;
-		}
 
-		float px = start_x + i * char_space_size * text_size;
+		float px = start_x + i * char_space_size * size;
 		float py = y;
 
 		draw_char(c, px, py);
@@ -196,6 +200,8 @@ void text_end_draw()
 
 	set_shader_text_size(text_shader, text_size);
 	set_shader_text_color(text_shader, text_color);
+	set_shader_text_screen_space(text_shader, to_screen_space);
+	 set_shader_text_screen_space_size(text_shader, text_screen_space_size);
 	set_shader_camera(text_shader, text_camera);
 
 	bind_geometry(text_geometry);
@@ -229,22 +235,45 @@ void set_text_renderer_camera(camera c)
 		return;
 	}
 
+	if(is_drawing)
+	{
+		LOG_ERROR("Cannot set text uniform whie drawing !");
+		return;
+	}
+
 	text_camera = c;
 }
 
 void set_text_renderer_color(color_rgba rgba)
 {
+	if(is_drawing)
+	{
+		LOG_ERROR("Cannot set text uniform whie drawing !");
+		return;
+	}
+
 	color_set_rgba(&text_color, rgba);
 }
 
 void set_text_renderer_char_space_size(float space)
 {
+	if(is_drawing)
+	{
+		LOG_ERROR("Cannot set text uniform whie drawing !");
+		return;
+	}
+
 	char_space_size = space;
 }
 
-
 void set_text_renderer_text_size(float size)
 {
+	if(is_drawing)
+	{
+		LOG_ERROR("Cannot set text uniform whie drawing !");
+		return;
+	}
+
 	text_size = size;
 
 	if (text_size < MIN_TEXT_SCALE)
@@ -253,8 +282,36 @@ void set_text_renderer_text_size(float size)
 
 void add_text_renderer_text_size(float size)
 {
+	if(is_drawing)
+	{
+		LOG_ERROR("Cannot set text uniform whie drawing !");
+		return;
+	}
+
 	text_size += size;
 
 	if (text_size < MIN_TEXT_SCALE)
 		text_size = MIN_TEXT_SCALE;
+}
+
+void set_text_renderer_to_screen_space(bool value)
+{
+	if(is_drawing)
+	{
+		LOG_ERROR("Cannot set text uniform whie drawing !");
+		return;
+	}
+
+	to_screen_space = value;
+}
+
+void set_text_renderer_screen_space_size(float size)
+{
+	if(is_drawing)
+	{
+		LOG_ERROR("Cannot set text uniform whie drawing !");
+		return;
+	}
+
+	text_screen_space_size = size;
 }

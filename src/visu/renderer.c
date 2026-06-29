@@ -46,6 +46,7 @@ static void draw_TSP(TSP_Instance instance)
 	}
 	line_end_draw();
 
+	set_text_renderer_to_screen_space(false);
 
 	text_begin_draw();
 	circle_begin_draw();
@@ -67,6 +68,12 @@ static void draw_TSP(TSP_Instance instance)
 		draw_text(node_str, x, y);
 	}
 	circle_end_draw();
+	text_end_draw();
+
+	set_text_renderer_to_screen_space(true);
+
+	text_begin_draw();
+		draw_text("Salut le monde !", 0.f, 0.9f);
 	text_end_draw();
 }
 

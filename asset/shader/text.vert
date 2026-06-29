@@ -9,6 +9,8 @@ uniform float uCameraZoom;
 uniform float uCameraAspect;
 
 uniform float uTextSize;
+uniform float uTextScreenSpaceSize;
+uniform bool uTextScreenSpace;
 
 out vec2 vUV;
 
@@ -33,7 +35,19 @@ void main()
 		mix(v0, v1, local.y)
 	);
 
-	vec2 pos = ((aVertexPosition * uTextSize) + aInstancePosition - uCameraPosition) / uCameraZoom;
-	pos.y *= uCameraAspect;
+	float textSize = (uTextScreenSpace) ? uTextScreenSpaceSize : uTextSize;
+
+	vec2 pos = aVertexPosition * textSize + aInstancePosition;
+
+	if (!uTextScreenSpace)
+	{
+		pos = (pos - uCameraPosition) / uCameraZoom;
+		pos.y *= uCameraAspect;
+	}
+	else
+	{
+		pos.x /= uCameraAspect;
+	}
+
 	gl_Position = vec4(pos, 0.0, 1.0);
 }
