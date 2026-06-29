@@ -113,6 +113,14 @@ static hm_entry*   __hashmap_get_entry_if_exists(hm_entry *entries, int key)
     return NULL;
 }
 
+bool        hashmap_has(hashmap *hm, int key)
+{
+    int hash = __hash(key);
+    hm_entry *entry = __hashmap_get_entry_if_exists(hm->keys[hash], key);
+
+    return (entry != NULL);
+}
+
 void        hashmap_put(hashmap *hm, int key, void *value)
 {
     int hash        = __hash(key);

@@ -20,10 +20,10 @@ void graph_test()
 
 	int_list *il = graph_get_all_nodes_names(g);
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 6; i++)
 	    CU_ASSERT(il->inner[i] == i);
-
-    node *nd = graph_get_edges(g, 0);
+    
+	node *nd = graph_get_edges(g, 0);
 
 	CU_ASSERT(node_edge_number(nd) == 2);
 	

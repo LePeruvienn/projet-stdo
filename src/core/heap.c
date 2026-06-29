@@ -55,30 +55,6 @@ bool        heap_is_empty   (heap *h)
     return h->used_size == 0;
 }
 
-void        heap_insert     (heap *h, edge *value)
-{
-    int child   = h->used_size++;
-    int parent  = (child - 1) / 2;
-
-    // if we don't have space left in the heap, increase it to the next 2 power n value
-    if (h->used_size > h->alllocated_size)
-    {
-        h->alllocated_size = 1 + (h->alllocated_size - 1) * 2;
-        h->data = realloc(h->data, sizeof(edge*) * h->alllocated_size );
-        
-    }
-
-    while (child > 0 && edge_distance(h->data[parent]) > edge_distance(value) )
-    {
-        h->data[child] = h->data[parent];
-        child = parent;
-        parent = (child - 1) / 2;
-    }
-
-    LOG("Inserted (n:%d, d:%f) at index %d", edge_node(value), edge_distance(value), child);
-    h->data[child] = value;
-}
-
 
 static int  __heap_find_edge(heap *h, int dest)
 {
@@ -102,7 +78,7 @@ static int  __heap_find_edge(heap *h, int dest)
 
 static int  __heap_get_parent(int i)
 {
-    return (i % 2 == 0) ? (i - 2) / 2 : (i - 1) / 2;
+    return (i - 1) / 2;
 }
 
 static int  __heap_get_left_child(int i)
@@ -119,17 +95,22 @@ static void __heap_decrease_value(heap *h, int selected_index, float value)
 {
     edge *selected = h->data[selected_index];
     int i = selected_index;
-    while (i > 0 && h->data[__heap_get_parent(selected_index)] < h->data[i])
+    int parent = __heap_get_parent(i);
+    while (i > 0 
+            && edge_distance(h->data[__heap_get_parent(i)]) > edge_distance(selected))
     {
-        LOG("Switching with its parent");
-        int parent = __heap_get_parent(selected_index);
+        parent = __heap_get_parent(i);
         edge *temp = h->data[parent];
-        h->data[parent] = h->data[i];
+        LOG("Switching node (n:%d) with its parent (n:%d)",
+                edge_node(selected),
+                edge_node(temp)
+        );
+        h->data[parent] = selected;
         h->data[i] = temp;
         i = parent;
     }
+    LOG("Moved (n:%d) at index %d", edge_node(selected), parent);
 }
-
 
 static void __heap_increase_value(heap *h, int selected_index, float value)
 {
@@ -139,8 +120,8 @@ static void __heap_increase_value(heap *h, int selected_index, float value)
     int right_child_index   = __heap_get_right_child(selected_index);
 
     edge *selected          = h->data[selected_index];
-    edge *left_child;
-    edge *right_child;
+    edge *left_child        = NULL;
+    edge *right_child       = NULL;
     
     if (left_child_index < h->used_size
         && edge_distance(h->data[left_child_index]) < edge_distance(selected))
@@ -189,6 +170,23 @@ void        heap_change_value(heap *h, int dest, float value)
         edge_set_distance(selected, value);
         __heap_increase_value(h, selected_index, value);
     }
+}
+
+void        heap_insert     (heap *h, edge *value)
+{
+    int child   = h->used_size++;
+    int parent  = (child - 1) / 2;
+
+    // if we don't have space left in the heap, increase it to the next 2 power n value
+    if (h->used_size > h->alllocated_size)
+    {
+        h->alllocated_size = 1 + (h->alllocated_size - 1) * 2;
+        h->data = realloc(h->data, sizeof(edge*) * h->alllocated_size );
+        
+    }
+
+    h->data[child] = value;
+    __heap_decrease_value(h, child, edge_distance(value));
 }
 
 edge        *heap_pop       (heap *h)

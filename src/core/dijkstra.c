@@ -15,6 +15,7 @@ hashmap *dijkstra(graph *g, int src)
     int_list *nodes         = graph_get_all_nodes_names(g);
     int n                   = nodes->size;
     hashmap *results        = hashmap_new(edge_free);
+    hashmap *nodes_visited  = hashmap_new(free);
 
     bool    src_exists      = false;
     heap    *remainingNodes = heap_new(n);
@@ -43,7 +44,6 @@ hashmap *dijkstra(graph *g, int src)
         return NULL;
     }
 
-    int result_index = 0;
     while (!heap_is_empty(remainingNodes))
     {   
         // the edge containing the node with the smallest cumulative distance from src
@@ -57,13 +57,22 @@ hashmap *dijkstra(graph *g, int src)
         // list of edges from current
         edge    **edge_list         = node_edge_list(current_node);
     
+        hashmap_put(nodes_visited, edge_node(current), malloc(1));
+
         // iterate through all successors
         for (int i = 0; i < successors_number; i++)
         {
+            if (hashmap_has(nodes_visited, edge_node(edge_list[i])))
+            {
+                LOG("  * Node (n:%d) already visited, skipping...", edge_node(edge_list[i]));
+                continue;
+            }
             // current successor
             edge *successor     = edge_list[i]; 
             // successor but in result map
             edge *result        = hashmap_get(results, edge_node(edge_list[i]));
+
+
 
             float cumulative_distance = edge_distance(current) + edge_distance(successor);
 

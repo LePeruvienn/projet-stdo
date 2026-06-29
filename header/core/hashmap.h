@@ -1,6 +1,7 @@
 #ifndef HASHMAP_H
 #define HASHMAP_H
 
+#include <stdbool.h>
 typedef struct s_hashmap hashmap;
 
 /**
@@ -33,6 +34,8 @@ void    hashmap_put         (hashmap *hm, int key, void *value);
  * \param key The key used to identify the value
  */
 void    *hashmap_get        (hashmap *hm, int key);
+
+bool    hashmap_has        (hashmap *hm, int key);
 
 /**
  * \brief Remove a value associated with the given key from the hashmap
