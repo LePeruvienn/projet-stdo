@@ -87,6 +87,7 @@ static void __heap_decrease_value(heap *h, int selected_index, float value)
     while (i > 0 
             && edge_distance(h->data[__heap_get_parent(i)]) > edge_distance(selected))
     {
+        LOG("Smaller than parent (%f vs. %f)", edge_distance(h->data[__heap_get_parent(i)]), edge_distance(selected));
         parent = __heap_get_parent(i);
         edge *temp = h->data[parent];
         LOG("Switching node (n:%d) with its parent (n:%d)",
