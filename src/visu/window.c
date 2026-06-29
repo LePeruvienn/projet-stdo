@@ -1,5 +1,9 @@
 #include "visu/window.h"
 #include "visu/camera.h"
+#include "visu/renderer.h"
+#include "visu/circle_renderer.h"
+#include "visu/line_renderer.h"
+#include "visu/grid_renderer.h"
 
 #include "utils/logger.h"
 
@@ -192,12 +196,47 @@ void handle_window_input(window w, camera c)
 		last_mouse_x = mouse_x;
 		last_mouse_y = mouse_y;
 	}
-	else 
+	else
 	{
 		dragging = false;
 	}
 
 	camera_move(c, dx, dy, dzoom);
+
+
+	bool renderer_init = renderer_get_is_intialized();
+
+	float circle_scale_speed = 5.f;
+	float line_scale_speed = 0.01f;
+	float grid_scale_speed = 1.f;
+
+	if (renderer_init)
+	{
+		bool shift = glfwGetKey(handle, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ||
+		             glfwGetKey(handle, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
+
+		bool scale_circle = glfwGetKey(handle, GLFW_KEY_C) == GLFW_PRESS;
+		bool scale_line = glfwGetKey(handle, GLFW_KEY_L) == GLFW_PRESS;
+		bool scale_grid = glfwGetKey(handle, GLFW_KEY_G) == GLFW_PRESS;
+
+		if (scale_circle)
+		{
+			if (shift) add_circle_renderer_scale(+circle_scale_speed);
+			else       add_circle_renderer_scale(-circle_scale_speed);
+		}
+
+		if (scale_line)
+		{
+			if (shift) add_line_renderer_thickness(-line_scale_speed);
+			else       add_line_renderer_thickness(+line_scale_speed);
+		}
+
+		if(scale_grid)
+		{
+			if (shift) add_grid_renderer_grid_size(-grid_scale_speed);
+			else       add_grid_renderer_grid_size(+grid_scale_speed);
+		}
+	}
 }
 
 void handle_window_resize(window w, camera c)

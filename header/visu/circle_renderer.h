@@ -23,4 +23,6 @@ void set_circle_renderer_scale(float s);
 void set_circle_renderer_radius(float r);
 void set_circle_renderer_border_thickness(float t);
 
+void add_circle_renderer_scale(float s);
+
 #endif // CIRCLE_RENDERER_H

@@ -22,6 +22,8 @@
 
 static camera main_camera = NULL;
 
+static bool is_intialized = false;
+
 static void draw_TSP(TSP_Instance instance)
 {
 	TSP_Instance_Nodes nodes = TSP_Instance_get_nodes(instance);
@@ -57,6 +59,12 @@ static void draw_TSP(TSP_Instance instance)
 
 void init_renderer()
 {
+	if (is_intialized)
+	{
+		LOG_ERROR("Renderer already initialized.");
+		return;
+	}
+
 	if (!gladLoadGL())
 	{
 		LOG_ERROR("Failed to initialize glad.");
@@ -73,10 +81,18 @@ void init_renderer()
 	init_line_renderer();
 	init_grid_renderer();
 	init_text_renderer();
+
+	is_intialized = true;
 }
 
 void set_renderer_camera(camera c)
 {
+	if (is_intialized == false)
+	{
+		LOG_ERROR("Renderer not initialized !");
+		return;
+	}
+
 	main_camera = c;
 
 	set_circle_renderer_camera(c);
@@ -87,6 +103,12 @@ void set_renderer_camera(camera c)
 
 void render(TSP_Instance instance)
 {
+	if (is_intialized == false)
+	{
+		LOG_ERROR("Renderer not initialized !");
+		return;
+	}
+
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	
@@ -101,6 +123,11 @@ void free_renderer()
 	free_line_renderer();
 	free_grid_renderer();
 	free_text_renderer();
+}
+
+bool renderer_get_is_intialized()
+{
+	return is_intialized;
 }
 
 #endif // RENDERER_H

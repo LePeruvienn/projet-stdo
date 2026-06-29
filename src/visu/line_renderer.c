@@ -13,6 +13,9 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#define LINE_THICKNESS_MIN 0.01f
+#define LINE_THICKNESS_MAX 1.f
+
 #define MAX_INSTANCES_AMOUNT 900048
 
 typedef struct line_rep line_rep;
@@ -40,6 +43,15 @@ static color line_color = (color) { .rgba = { 0x4D, 0x33, 0xFF, 0xFF },
 
 static bool is_drawing = false;
 static bool is_intialized = false;
+
+static void clamp_line_thickness()
+{
+	if (line_thickness > LINE_THICKNESS_MAX)
+		line_thickness = LINE_THICKNESS_MAX;
+
+	if (line_thickness < LINE_THICKNESS_MIN)
+		line_thickness = LINE_THICKNESS_MIN;
+}
 
 static vertex_layout create_instance_layout()
 {
@@ -246,4 +258,21 @@ void set_line_renderer_thickness(float t)
 	}
 
 	line_thickness = t;
+
+	clamp_line_thickness();
+}
+
+void add_line_renderer_thickness(float t)
+{
+	if(is_drawing)
+	{
+		line_end_draw();
+		line_thickness += t;
+		line_begin_draw();
+		return;
+	}
+
+	line_thickness += t;
+
+	clamp_line_thickness();
 }

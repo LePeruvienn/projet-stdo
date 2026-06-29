@@ -13,4 +13,6 @@ void render(TSP_Instance instance);
 
 void free_renderer();
 
+bool renderer_get_is_intialized();
+
 #endif // RENDERER_H

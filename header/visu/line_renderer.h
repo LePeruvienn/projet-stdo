@@ -18,4 +18,6 @@ void set_line_renderer_camera(camera c);
 void set_line_renderer_color(color_rgba rgba);
 void set_line_renderer_thickness(float t);
 
+void add_line_renderer_thickness(float t);
+
 #endif // LINE_RENDERER_H

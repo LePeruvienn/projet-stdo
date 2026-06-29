@@ -17,4 +17,6 @@ void set_grid_renderer_line_color(color_rgba rgba);
 
 void set_grid_renderer_grid_size(float size);
 
+void add_grid_renderer_grid_size(float size);
+
 #endif // GRID_RENDERER_H

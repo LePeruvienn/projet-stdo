@@ -97,3 +97,9 @@ void set_grid_renderer_grid_size(float size)
 	grid_size = size;
 }
 
+void add_grid_renderer_grid_size(float size)
+{
+	grid_size += size;
+}
+
+

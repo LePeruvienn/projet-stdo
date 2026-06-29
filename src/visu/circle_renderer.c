@@ -270,3 +270,16 @@ void set_circle_renderer_scale(float s)
 
 	circle_scale = s;
 }
+
+void add_circle_renderer_scale(float s)
+{
+	if (is_drawing)
+	{
+		circle_end_draw();
+		circle_scale += s;
+		circle_begin_draw();
+		return;
+	}
+
+	circle_scale += s;
+}
