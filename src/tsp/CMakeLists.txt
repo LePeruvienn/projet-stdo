@@ -22,3 +22,6 @@ target_sources(${LIB_NAME}
 		section_unstream.c
 		instance.c
 )
+
+# On link les librarie nécessaire à la compilation du projet
+target_link_libraries(${LIB_NAME} PUBLIC m)
