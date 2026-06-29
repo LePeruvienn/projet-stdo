@@ -16,5 +16,6 @@ target_include_directories(${LIB_NAME} PUBLIC ${HEADER_DIR})
 target_sources(${LIB_NAME}
 	PRIVATE
 		read_file.c
+		bench.c
 )
 
