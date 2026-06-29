@@ -72,7 +72,7 @@ hashmap *dijkstra(graph *g, int src)
             if (cumulative_distance < edge_distance(result))
             {  
                 LOG("  * It's the best path, registering (%d->%d: %f)", src, edge_node(successor), cumulative_distance);
-                heap_decrease_value(remainingNodes, edge_node(successor), cumulative_distance);
+                heap_change_value(remainingNodes, edge_node(successor), cumulative_distance);
                 edge_set_node(result, edge_node(current));
                 edge_set_distance(result, cumulative_distance);
             }

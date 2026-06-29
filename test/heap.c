@@ -21,13 +21,28 @@ void heap_test()
 	heap_insert(h, edge_new(2, 10.0));
 	heap_insert(h, edge_new(3, 20.0));
 
-	heap_decrease_value(h, 3, 5.0);
+	heap_change_value(h, 3, 5.0);
 
     edge *decreased = heap_pop(h);
 	
 	LOG("(n: %d, d: %f)", edge_node(decreased), edge_distance(decreased));
 	CU_ASSERT(edge_node(decreased) == 3);
 	CU_ASSERT(edge_distance(decreased) - 5.0 < 0.01);
+
+	heap_insert(h, e);
+	heap_change_value(h, 1, 100.0);
+
+    decreased = heap_pop(h);
+	
+	LOG("(n: %d, d: %f)", edge_node(decreased), edge_distance(decreased));
+	CU_ASSERT(edge_node(decreased) == 2);
+	CU_ASSERT(edge_distance(decreased) - 10.0 < 0.01);
+
+    decreased = heap_pop(h);
+	
+	LOG("(n: %d, d: %f)", edge_node(decreased), edge_distance(decreased));
+	CU_ASSERT(edge_node(decreased) == 1);
+	CU_ASSERT(edge_distance(decreased) - 100.0 < 0.01);
 }
 
 int main()

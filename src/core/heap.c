@@ -75,6 +75,7 @@ void        heap_insert     (heap *h, edge *value)
         parent = (child - 1) / 2;
     }
 
+    LOG("Inserted (n:%d, d:%f) at index %d", edge_node(value), edge_distance(value), child);
     h->data[child] = value;
 }
 
@@ -112,9 +113,58 @@ static int  __heap_get_left_child(int i)
 static int  __heap_get_right_child(int i)
 {
     return (2 * i) + 2;
+} 
+
+static void __heap_decrease_value(heap *h, int selected_index, float value)
+{
+    edge *selected = h->data[selected_index];
+    int i = selected_index;
+    while (i > 0 && h->data[__heap_get_parent(selected_index)] < h->data[i])
+    {
+        LOG("Switching with its parent");
+        int parent = __heap_get_parent(selected_index);
+        edge *temp = h->data[parent];
+        h->data[parent] = h->data[i];
+        h->data[i] = temp;
+        i = parent;
+    }
 }
 
-void        heap_decrease_value(heap *h, int dest, float value)
+
+static void __heap_increase_value(heap *h, int selected_index, float value)
+{
+    int max_index = selected_index;
+
+    int left_child_index    = __heap_get_left_child(selected_index);
+    int right_child_index   = __heap_get_right_child(selected_index);
+
+    edge *selected          = h->data[selected_index];
+    edge *left_child;
+    edge *right_child;
+    
+    if (left_child_index < h->used_size
+        && edge_distance(h->data[left_child_index]) < edge_distance(selected))
+    {
+        LOG("Left child (n:%d) exists and is smaller", left_child_index);
+        max_index = left_child_index;
+    }
+
+    if (right_child_index < h->used_size
+        && edge_distance(h->data[right_child_index]) < edge_distance(selected))
+    {
+        LOG("Right child (index %d) exists and is smaller", right_child_index);
+        max_index = right_child_index;
+    }
+
+    if (max_index != selected_index)
+    {
+        h->data[selected_index] = h->data[max_index];
+        h->data[max_index] = selected;
+        __heap_increase_value(h, max_index, value);
+    }
+}
+
+void        heap_change_value(heap *h, int dest, float value)
 {
     int selected_index = __heap_find_edge(h, dest);
 
@@ -125,22 +175,19 @@ void        heap_decrease_value(heap *h, int dest, float value)
     }
 
     edge *selected = h->data[selected_index];
-    LOG("Found selected: (n: %d, d: %f)", edge_node(selected), edge_distance(selected));
-
+    LOG("Found selected: (n: %d, d: %f) at index %d", edge_node(selected), edge_distance(selected), selected_index);
+    
     if (edge_distance(selected) > value)
-    {   
+    {
         LOG("Value smaller than current (old: %f, new: %f)", edge_distance(selected), value);
         edge_set_distance(selected, value);
-        int i = selected_index;
-        while (i > 0 && h->data[__heap_get_parent(selected_index)] < h->data[i])
-        {
-            LOG("Switching with its parent");
-            int parent = __heap_get_parent(selected_index);
-            edge *temp = h->data[parent];
-            h->data[parent] = h->data[i];
-            h->data[i] = temp;
-            i = parent;
-        }
+        __heap_decrease_value(h, selected_index, value);
+    }
+    else if (edge_distance(selected) < value)
+    {    
+        LOG("Value bigger than current (old: %f, new: %f)", edge_distance(selected), value);
+        edge_set_distance(selected, value);
+        __heap_increase_value(h, selected_index, value);
     }
 }
 

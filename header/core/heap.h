@@ -15,7 +15,7 @@ bool    heap_is_empty           (heap *h);
 
 void    heap_insert             (heap *h, edge *value);
 
-void    heap_decrease_value     (heap *h, int dest, float value);
+void    heap_change_value       (heap *h, int dest, float value);
 
 edge    *heap_pop               (heap *h);
 
