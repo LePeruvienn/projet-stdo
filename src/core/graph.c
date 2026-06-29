@@ -10,8 +10,9 @@
 struct s_graph
 {
     hashmap     *storage;
-    int         *node_names;
     size_t      node_number;
+    size_t      node_names_allocated_space;
+    int         *node_names;
 
 };
 
@@ -22,6 +23,7 @@ graph   *graph_new()
     g->storage  = hashmap_new(node_free);
     g->node_number = 0;
     g->node_names = NULL;
+    g->node_names_allocated_space = 0;
 
     return g;
 }
@@ -52,12 +54,21 @@ static node *__graph_get_node_from_hashmap(graph *g, int node_name)
 
     if (nd == NULL)
     {
-        g->node_number++;
-
-        // to keep the names
-        if (g->node_names != NULL) g->node_names = realloc(g->node_names, sizeof(g->node_number));
-        else g->node_names = malloc(sizeof(int));
-        g->node_names[g->node_number - 1] = node_name;
+        if (g->node_number == g->node_names_allocated_space) 
+        {
+            if (g->node_names != NULL) 
+            {
+                LOG("Reallocating space from %zu to %zu", g->node_names_allocated_space, (size_t) (g->node_names_allocated_space * 1.2));
+                g->node_names_allocated_space *= 1.2;
+                g->node_names = realloc(g->node_names, sizeof(int) * g->node_names_allocated_space);
+            }
+            else 
+            {
+                g->node_names_allocated_space = 16;
+                g->node_names = malloc(sizeof(int) * g->node_names_allocated_space);
+            }
+        }
+        g->node_names[g->node_number++] = node_name;
         LOG("Added node (%d) to the graph", node_name);
 
         nd = node_new();

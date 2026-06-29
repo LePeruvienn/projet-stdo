@@ -16,18 +16,6 @@ struct s_heap {
     size_t  alllocated_size;
 };
 
-static int  __get_nearest_up_2_pow_n_value(size_t initial_size)
-{
-    size_t upper_bound = 2;
-
-    while (initial_size >= upper_bound + 1)
-    {
-        upper_bound *= 2;
-    }
-
-    return upper_bound;
-}
-
 heap        *heap_new       (size_t initial_size)
 {
     if (initial_size < HEAP_SIZE_MIN || initial_size > HEAP_SIZE_MAX)
@@ -37,7 +25,7 @@ heap        *heap_new       (size_t initial_size)
 
     heap *h = malloc(sizeof(heap));
     // adding +1 because of the heap's root
-    h->alllocated_size = __get_nearest_up_2_pow_n_value(initial_size) + 1;
+    h->alllocated_size = (int) (initial_size * 1.2);
     h->data = malloc(sizeof(edge*) * h->alllocated_size);
     h->used_size = 0;
 
@@ -180,7 +168,8 @@ void        heap_insert     (heap *h, edge *value)
     // if we don't have space left in the heap, increase it to the next 2 power n value
     if (h->used_size > h->alllocated_size)
     {
-        h->alllocated_size = 1 + (h->alllocated_size - 1) * 2;
+        LOG("Reallocating space from %zu to %zu", h->alllocated_size, (size_t)(h->alllocated_size * 1.2));
+        h->alllocated_size = (int) (h->alllocated_size * 1.2);
         h->data = realloc(h->data, sizeof(edge*) * h->alllocated_size );
         
     }
