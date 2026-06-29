@@ -63,7 +63,7 @@ static void draw_TSP(TSP_Instance instance)
 
 		snprintf(node_str, sizeof(node_str), "%zu", (size_t) node);
 
-		LOG("[%zu] > %s || %zu", i, node_str, (size_t) node);
+		// LOG("[%zu] > %s || %zu", i, node_str, (size_t) node);
 
 		draw_text(node_str, x, y);
 	}

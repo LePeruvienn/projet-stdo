@@ -16,7 +16,7 @@
 #define LINE_THICKNESS_MIN 0.01f
 #define LINE_THICKNESS_MAX 1.f
 
-#define MAX_INSTANCES_AMOUNT 900048
+#define DEFAULT_INSTANCE_SIZE 512
 
 typedef struct line_rep line_rep;
 
@@ -33,8 +33,9 @@ static vertex_layout line_layout = NULL;
 
 static GLuint instance_VBO;
 
-static line_rep instances[MAX_INSTANCES_AMOUNT] = { 0 };
+static line_rep* instances = NULL;
 static size_t instances_amount = 0;
+static size_t instances_size = DEFAULT_INSTANCE_SIZE;
 
 
 static float line_thickness = 0.05f;
@@ -83,6 +84,8 @@ void init_line_renderer()
 		LOG_ERROR("Already intialized");
 		return;
 	}
+
+	instances = malloc(sizeof(line_rep) * instances_size);
 
 	line_geometry = create_quad_geometry();
 
@@ -140,10 +143,15 @@ void line_draw(float x1, float y1, float x2, float y2)
 		return;
 	}
 
-	if(instances_amount == MAX_INSTANCES_AMOUNT)
+	if(instances_amount == instances_size)
 	{
-		LOG_ERROR("lineRep instances amount is full !");
-		return;
+		instances_size *= 2;
+		instances = realloc(instances, sizeof(line_rep) * instances_size);
+
+		if (instances == NULL)
+		{
+			EXIT_ERROR(8, "line_rep instances realloc failed.");
+		}
 	}
 
 	float dx = x1 - x2;
@@ -213,6 +221,8 @@ void free_line_renderer()
 	FREE_PTR_NOT_NULL(line_geometry, free_geometry);
 	FREE_PTR_NOT_NULL(line_shader, free_shader);
 	FREE_PTR_NOT_NULL(line_layout, free_vertex_layout);
+
+	FREE_PTR_NOT_NULL(instances, free);
 
 	is_intialized = false;
 }

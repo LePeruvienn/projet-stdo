@@ -13,7 +13,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#define MAX_INSTANCES_AMOUNT 512
+#define DEFAULT_INSTANCE_SIZE 512
 
 #define MIN_CIRCLE_SCALE 0.5f
 
@@ -31,8 +31,9 @@ static vertex_layout circle_layout = NULL;
 
 static GLuint instance_VBO;
 
-static circle_rep instances[MAX_INSTANCES_AMOUNT] = { 0 };
+static circle_rep* instances = NULL;
 static size_t instances_amount = 0;
+static size_t instances_size = DEFAULT_INSTANCE_SIZE;
 
 
 static color circle_color = { .rgba = {  0x78,  0xD9,  0x76, 0xFF },
@@ -71,6 +72,8 @@ void init_circle_renderer()
 		LOG_ERROR("Already initialized !");
 		return;
 	}
+
+	instances = malloc(sizeof(circle_rep) * instances_size);
 
 	circle_geometry = create_circle_fan_geometry(50);
 
@@ -126,10 +129,15 @@ void circle_draw(float x, float y)
 		return;
 	}
 
-	if(instances_amount == MAX_INSTANCES_AMOUNT)
+	if(instances_amount == instances_size)
 	{
-		LOG_ERROR("circleRep instances amount is full !");
-		return;
+		instances_size *= 2;
+		instances = realloc(instances, sizeof(circle_rep) * instances_size);
+
+		if (instances == NULL)
+		{
+			EXIT_ERROR(8, "line_rep instances realloc failed.");
+		}
 	}
 
 	instances[instances_amount].x = x;

@@ -16,7 +16,7 @@
 #include <string.h>
 
 #define BITMAP_PATH "asset/bitmap/font.png"
-#define MAX_INSTANCES_AMOUNT 1024
+#define DEFAULT_INSTANCES_SIZE 512
 
 #define MIN_TEXT_SCALE 0.25f
 
@@ -38,8 +38,9 @@ static shader text_shader = NULL;
 static vertex_layout text_layout = NULL;
 
 static GLuint instance_VBO;
-static char_rep instances[MAX_INSTANCES_AMOUNT] = { 0 };
+static char_rep* instances = NULL;
 static size_t instances_amount = 0;
+static size_t instances_size = DEFAULT_INSTANCES_SIZE;
 
 static color text_color = (color) { .rgba = {255, 255, 255, 255 },
                                     .norm = {1.f, 1.f, 1.f, 1.f } };
@@ -83,6 +84,8 @@ void init_text_renderer()
 		LOG_ERROR("Already intialized !");
 		return;
 	}
+
+	instances = malloc(sizeof(char_rep) * instances_size);
 
 	bitmap_texture = create_texture(BITMAP_PATH);
 	text_geometry = create_quad_geometry();
@@ -139,10 +142,15 @@ void draw_char(char c, float x, float y)
 		return;
 	}
 
-	if(instances_amount == MAX_INSTANCES_AMOUNT)
+	if(instances_amount == instances_size)
 	{
-		LOG_ERROR("textRep instances amount is full !");
-		return;
+		instances_size *= 2;
+		instances = realloc(instances, sizeof(char_rep) * instances_size);
+
+		if (instances == NULL)
+		{
+			EXIT_ERROR(8, "line_rep instances realloc failed.");
+		}
 	}
 
 	int id = (c == ' ') ? SPACE_BITMAP_INDEX : (int) (c - '!');
@@ -162,12 +170,11 @@ void draw_text(const char* text, float x, float y)
 
 	float size = (to_screen_space) ? text_screen_space_size : text_size;
 	float text_width = len * char_space_size * size;
-	float start_x = x - text_width * 0.5f;
+	float start_x = x - text_width * 0.25f;
 
 	for(size_t i = 0; i < len; ++i)
 	{
 		char c = text[i];
-
 
 		float px = start_x + i * char_space_size * size;
 		float py = y;

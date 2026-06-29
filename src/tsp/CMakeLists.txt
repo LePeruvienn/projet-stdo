@@ -24,4 +24,4 @@ target_sources(${LIB_NAME}
 )
 
 # On link les librarie nécessaire à la compilation du projet
-target_link_libraries(${LIB_NAME} PUBLIC m)
+target_link_libraries(${LIB_NAME} PUBLIC m core)
