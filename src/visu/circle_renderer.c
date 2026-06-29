@@ -15,6 +15,8 @@
 
 #define MAX_INSTANCES_AMOUNT 512
 
+#define MIN_CIRCLE_SCALE 0.5f
+
 typedef struct circle_rep circle_rep;
 
 struct circle_rep
@@ -269,6 +271,11 @@ void set_circle_renderer_scale(float s)
 	}
 
 	circle_scale = s;
+
+	if (circle_scale < MIN_CIRCLE_SCALE)
+	{
+		circle_scale = MIN_CIRCLE_SCALE;
+	}
 }
 
 void add_circle_renderer_scale(float s)
@@ -282,4 +289,9 @@ void add_circle_renderer_scale(float s)
 	}
 
 	circle_scale += s;
+
+	if (circle_scale < MIN_CIRCLE_SCALE)
+	{
+		circle_scale = MIN_CIRCLE_SCALE;
+	}
 }

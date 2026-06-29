@@ -4,6 +4,7 @@
 #include "visu/circle_renderer.h"
 #include "visu/line_renderer.h"
 #include "visu/grid_renderer.h"
+#include "visu/text_renderer.h"
 
 #include "utils/logger.h"
 
@@ -207,6 +208,7 @@ void handle_window_input(window w, camera c)
 	bool renderer_init = renderer_get_is_intialized();
 
 	float circle_scale_speed = 5.f;
+	float text_scale_speed = 3.f;
 	float line_scale_speed = 0.01f;
 	float grid_scale_speed = 1.f;
 
@@ -221,8 +223,16 @@ void handle_window_input(window w, camera c)
 
 		if (scale_circle)
 		{
-			if (shift) add_circle_renderer_scale(+circle_scale_speed);
-			else       add_circle_renderer_scale(-circle_scale_speed);
+			if (shift)
+			{
+				add_circle_renderer_scale(+circle_scale_speed);
+				add_text_renderer_text_size(+text_scale_speed);
+			}
+			else
+			{
+				add_circle_renderer_scale(-circle_scale_speed);
+				add_text_renderer_text_size(-text_scale_speed);
+			}
 		}
 
 		if (scale_line)

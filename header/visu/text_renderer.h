@@ -23,4 +23,6 @@ void set_text_renderer_char_space_size(float space);
 
 void set_text_renderer_text_size(float size);
 
+void add_text_renderer_text_size(float size);
+
 #endif // TEXT_RENDERER_H

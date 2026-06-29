@@ -17,6 +17,7 @@
 
 #include <GLFW/glfw3.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "visu/camera.h"
 
@@ -46,15 +47,27 @@ static void draw_TSP(TSP_Instance instance)
 	line_end_draw();
 
 
+	text_begin_draw();
 	circle_begin_draw();
 	for (size_t i = 0; i < nodes.size; ++i)
 	{
+		TSP_Node_Number node = nodes.data[i].node_number;
+
 		float x = nodes.data[i].px;
 		float y = nodes.data[i].py;
 
 		circle_draw(x, y);
+		
+		char node_str[32];
+
+		snprintf(node_str, sizeof(node_str), "%zu", (size_t) node);
+
+		LOG("[%zu] > %s || %zu", i, node_str, (size_t) node);
+
+		draw_text(node_str, x, y);
 	}
 	circle_end_draw();
+	text_end_draw();
 }
 
 void init_renderer()

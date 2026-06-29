@@ -18,6 +18,8 @@
 #define BITMAP_PATH "asset/bitmap/font.png"
 #define MAX_INSTANCES_AMOUNT 1024
 
+#define MIN_TEXT_SCALE 0.25f
+
 typedef struct char_rep char_rep;
 
 struct char_rep
@@ -41,7 +43,7 @@ static color text_color = (color) { .rgba = {255, 255, 255, 255 },
                                     .norm = {1.f, 1.f, 1.f, 1.f } };
 
 static float char_space_size = 1.5f;
-static float text_size = 0.5f;
+static float text_size = 2.5f;
 
 static bool is_intialized = false;
 static bool is_drawing = false;
@@ -151,6 +153,9 @@ void draw_text(const char* text, float x, float y)
 {
 	size_t len = strlen(text);
 
+	float text_width = len * char_space_size * text_size;
+    float start_x = x - text_width * 0.25f;
+
 	for(size_t i = 0; i < len; ++i)
 	{
 		char c = text[i];
@@ -160,7 +165,7 @@ void draw_text(const char* text, float x, float y)
 			continue;
 		}
 
-		float px = x + (i * char_space_size * text_size);
+		float px = start_x + i * char_space_size * text_size;
 		float py = y;
 
 		draw_char(c, px, py);
@@ -241,4 +246,15 @@ void set_text_renderer_char_space_size(float space)
 void set_text_renderer_text_size(float size)
 {
 	text_size = size;
+
+	if (text_size < MIN_TEXT_SCALE)
+		text_size = MIN_TEXT_SCALE;
+}
+
+void add_text_renderer_text_size(float size)
+{
+	text_size += size;
+
+	if (text_size < MIN_TEXT_SCALE)
+		text_size = MIN_TEXT_SCALE;
 }
