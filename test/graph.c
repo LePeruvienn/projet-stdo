@@ -8,16 +8,15 @@ void graph_test()
 {
 	graph *g = graph_new();
 
-    graph_add_edge(g, 0, 1, 10.0);
-    graph_add_edge(g, 0, 4, 5.0);
-    graph_add_edge(g, 1, 2, 1.0);
-    graph_add_edge(g, 1, 4, 2.0);
-    graph_add_edge(g, 2, 3, 4.0);
-    graph_add_edge(g, 3, 2, 6.0);
-    graph_add_edge(g, 3, 0, 7.0);
-    graph_add_edge(g, 4, 1, 3.0);
-    graph_add_edge(g, 4, 2, 9.0);
-    graph_add_edge(g, 4, 3, 2.0);
+	graph_add_edge(g, 0, 1, 3.0);
+	graph_add_edge(g, 0, 2, 1.0);
+	graph_add_edge(g, 1, 3, 3.0);
+	graph_add_edge(g, 1, 2, 1.0);
+	graph_add_edge(g, 2, 3, 3.0);
+	graph_add_edge(g, 2, 4, 5.0);
+	graph_add_edge(g, 3, 5, 3.0);
+	graph_add_edge(g, 3, 4, 1.0);
+	graph_add_edge(g, 4, 5, 1.0);
 
 	int_list *il = graph_get_all_nodes_names(g);
 
@@ -30,10 +29,23 @@ void graph_test()
 	
 	edge **ed = node_edge_list(nd);
 
-	CU_ASSERT(edge_distance(ed[0]) - 10.0 < 0.01);
-	CU_ASSERT(edge_distance(ed[1]) - 5.0 < 0.01);
+	CU_ASSERT(edge_distance(ed[0]) - 3.0 < 0.01);
+	CU_ASSERT(edge_distance(ed[1]) - 1.0 < 0.01);
 	CU_ASSERT(edge_node(ed[0]) == 1);
-	CU_ASSERT(edge_node(ed[1]) == 4);
+	CU_ASSERT(edge_node(ed[1]) == 2);
+
+    nd = graph_get_edges(g, 1);
+
+	CU_ASSERT(node_edge_number(nd) == 3);
+	
+	ed = node_edge_list(nd);
+
+	CU_ASSERT(edge_distance(ed[0]) - 3.0 < 0.01);
+	CU_ASSERT(edge_distance(ed[1]) - 3.0 < 0.01);
+	CU_ASSERT(edge_distance(ed[2]) - 2.0 < 0.01);
+	CU_ASSERT(edge_node(ed[0]) == 0);
+	CU_ASSERT(edge_node(ed[1]) == 3);
+	CU_ASSERT(edge_node(ed[2]) == 2);
 }
 
 int main()

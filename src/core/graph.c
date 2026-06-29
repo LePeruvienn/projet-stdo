@@ -54,7 +54,7 @@ static node *__graph_get_node_from_hashmap(graph *g, int node_name)
     {
         g->node_number++;
 
-// to keep the names
+        // to keep the names
         if (g->node_names != NULL) g->node_names = realloc(g->node_names, sizeof(g->node_number));
         else g->node_names = malloc(sizeof(int));
         g->node_names[g->node_number - 1] = node_name;
@@ -76,8 +76,9 @@ void    graph_bulk_add_edge(graph *g, int src, int *dest, float *distance, size_
     {
         node *nd_dest = __graph_get_node_from_hashmap(g, dest[n]);
         node_add_edge(nd, dest[n], distance[n]);
-        node_add_edge(nd_dest, src, distance[n]);
         LOG("Added edge from (%d) to (%d) (distance: %f)", src, dest[n], distance[n]);
+        node_add_edge(nd_dest, src, distance[n]);
+        LOG("Added edge from (%d) to (%d) (distance: %f)", dest[n], src, distance[n]);
     }
 }
 
