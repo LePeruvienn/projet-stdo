@@ -133,7 +133,7 @@ ou directement avec les commandes de CMake :
 
 ```bash
 cmake -B build
-camke --build build
+cmake --build build
 ```
 
 ### 5.3 Lancer le programme
