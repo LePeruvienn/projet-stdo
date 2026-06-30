@@ -28,20 +28,37 @@ static bool is_intialized = false;
 
 static bool draw_help = true;
 
-static void draw_UI()
+static void draw_UI(TSP_Instance instance)
 {
 	set_text_renderer_to_screen_space(true);
 
+	text_begin_draw();
+
 	if (draw_help)
 	{
-		text_begin_draw();
 			draw_text("Controles :", 0.0f, 0.9f);
 			draw_text("- [C/c] : Agrandir/retrecir les cercles", 0.0f, 0.8f);
 			draw_text("- [L/l] : Agrandir/retrecir les lignes", 0.0f, 0.7f);
 			draw_text("- [G/g] : Agrandir/retrecir la grille", 0.0f, 0.6f);
 			draw_text("- [H/h] : Afficher/cacher ce message !", 0.0f, 0.5f);
-		text_end_draw();
 	}
+
+	bool have_shortest = TSP_Instance_have_shortest_path(instance);
+
+	if (have_shortest)
+	{
+		TSP_Path shortest = TSP_Instance_get_shortest_path(instance);
+		uint64_t compute_time = shortest.compute_time;
+
+		size_t str_size = 128;
+		char temp[str_size];
+
+		snprintf(temp, str_size, "Compute time : %ld ms", compute_time);
+
+		draw_text(temp, 0.0f, - 0.9f);
+	}
+
+	text_end_draw();
 
 	set_text_renderer_to_screen_space(false);
 }
@@ -232,7 +249,7 @@ void render(TSP_Instance instance)
 
 	draw_TSP_edges(instance);
 	draw_TSP_nodes(instance);
-	draw_UI();
+	draw_UI(instance);
 }
 
 void free_renderer()
@@ -291,6 +308,11 @@ TSP_Node_Coord* node_picking(TSP_Instance instance, float sx, float sy)
 	}
 
 	return NULL;
+}
+
+void renderer_set_draw_help(bool value)
+{
+	draw_help = value;
 }
 
 #endif // RENDERER_H

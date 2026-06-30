@@ -359,3 +359,24 @@ TSP_Node_Number TSP_Instance_get_target(TSP_Instance instance)
 {
 	return instance->target_node;
 }
+
+void TSP_Instance_set_random_source_target(TSP_Instance instance)
+{
+	CHECK_IS_NULL(instance, "Instance is NULL.");
+	CHECK_IS_NULL(instance->nodes.data, "Instance nodes are NULL");
+
+	if (instance->nodes.size < 2)
+	{
+		LOG_ERROR("No enought nodes");
+		return;
+	}
+
+	size_t source_idx = (size_t) rand() % instance->nodes.size;
+	size_t target_idx = (size_t) rand() % instance->nodes.size;
+
+	TSP_Node_Number source = instance->nodes.data[source_idx].node_number;
+	TSP_Node_Number target = instance->nodes.data[target_idx].node_number;
+
+	TSP_Instance_set_source(instance, source);
+	TSP_Instance_set_target(instance, target);
+}

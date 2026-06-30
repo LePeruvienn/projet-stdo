@@ -116,8 +116,7 @@ int main(void)
 	const char* filepath = "TSPLIB/res/att48.tsp";
 	tsp_instance = TSP_Instance_create(filepath, 0.5f);
 
-	TSP_Instance_set_source(tsp_instance, 1);
-	TSP_Instance_set_target(tsp_instance, 2);
+	TSP_Instance_set_random_source_target(tsp_instance);
 
 	TSP_Instance_compute_shortest_path(tsp_instance);
 

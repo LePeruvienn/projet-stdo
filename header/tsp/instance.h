@@ -3,10 +3,9 @@
 
 #include "tsp/section_datas.h"
 
-#include "core/hashmap.h"
-
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef struct TSP_Instance* TSP_Instance;
 
@@ -62,5 +61,7 @@ bool TSP_Instance_have_shortest_path(TSP_Instance instance);
 
 TSP_Node_Number TSP_Instance_get_source(TSP_Instance instance);
 TSP_Node_Number TSP_Instance_get_target(TSP_Instance instance);
+
+void TSP_Instance_set_random_source_target(TSP_Instance instance);
 
 #endif // TSP_INSTANCE_H

@@ -221,6 +221,13 @@ void handle_window_input(window w, camera c)
 		bool scale_line = glfwGetKey(handle, GLFW_KEY_L) == GLFW_PRESS;
 		bool scale_grid = glfwGetKey(handle, GLFW_KEY_G) == GLFW_PRESS;
 
+		bool toggle_draw_help = glfwGetKey(handle, GLFW_KEY_H) == GLFW_PRESS;
+
+		if (toggle_draw_help)
+		{
+			renderer_set_draw_help(shift);
+		}
+
 		if (scale_circle)
 		{
 			if (shift)
