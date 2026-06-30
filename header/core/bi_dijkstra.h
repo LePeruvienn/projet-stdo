@@ -1,5 +1,5 @@
-#ifndef BI_DJIKSTRA_H
-#define BI_DJIKSTRA_H
+#ifndef BI_DIJKSTRA_H
+#define BI_DIJKSTRA_H
 
 #include "core/graph.h"
 #include "core/hashmap.h"
@@ -10,6 +10,6 @@
  * \param src The source node
  * \return Array of int
  */
-hashmap     *bi_dijkstra(graph *g, int src, int dest);
+hashmap     *bi_dijkstra(graph *g, int src, int dest, int *visited_edge_number);
 
-#endif // BI_DJIKSTRA_H
+#endif // BI_DIJKSTRA_H
