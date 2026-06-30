@@ -114,14 +114,14 @@ L'outil permet :
 
 ## 5. Utilisation
 
-### 5.1 Cloner le projet
+### Cloner le projet
 
 ```bash
 git clone https://github.com/LePeruvienn/projet-stdo
 cd projet-stdo
 ```
 
-### 5.2 Compiler
+### Compiler
 
 Le projet utilise CMake comme système de build, avec un Makefile en wrapper pour simplifier les commandes courantes.
 
@@ -129,7 +129,12 @@ Le projet utilise CMake comme système de build, avec un Makefile en wrapper pou
 make
 ```
 
-Cette commande configure et compile l'ensemble du projet (algorithmes, moteur de rendu, exécutable principal).
+ou directement avec les commandes de CMake :
+
+```bash
+cmake -B build
+camke --build build
+```
 
 ### 5.3 Lancer le programme
 
@@ -150,44 +155,100 @@ Exemple :
 
 ### 5.4 Compatibilité des instances
 
+Pour cloner le répo `TSPLIB` avec toutes les instances nécessaire au test du programme veuillez cloner le sous module avec la commande :
+
+```
+git submodule update --init --recursive
+```
+
 Le programme prend en charge la quasi-totalité des fichiers `.tsp` du dépôt [TSPLIB](https://github.com/shredderzwj/TSPLIB/tree/master/res), tant que le fichier expose une section `NODE_COORD_SECTION` exploitable par le parseur.
+
 
 > **Important** : Si il ya d'autres sections que `NODE_COORD_SECTION`, le parser n'arrivera pas à lire le fichier ; certain problème ne sont pas exploitable alors avec le loigiciel.
 
 ## 6. Résultats expérimentaux
 
-> **[Section à compléter — chiffres pas encore en main]**
-
 Cette section doit comparer, pour chaque algorithme (Dijkstra, A*, bidirectionnel), sur les instances suivantes :
 
-- att48, p = 15%, sommets 43 → 45
-- att48, p = 12%, sommets 43 → 45
-- a280, p = 6%, sommets 8 → 92
+- `att48.tsp`
+- `a280.tsp`
+- `gil262.tsp`
+- `ali535.tsp`
 
-les métriques suivantes :
+Tous disponible dans le dossier `TSPLIB/res` du projet. Je vous invite à tester de vous même de votre coté.
+
+Avec les métriques suivantes :
 
 - **Nombre de sommets visités** (marqués) avant terminaison
-- **Temps de calcul** (déjà mesuré via `bench_now_ms()` dans `TSP_Instance_compute_shortest_path`)
-- **Coût du chemin trouvé** (pour validation croisée : les trois algorithmes doivent converger vers le même coût optimal sur une même instance)
+- **Temps de calcul** (Tout les calculs nécessaire pour calculer le chemin le plus court)
+
+### Contexte des résultats
+
+Les temps présentés correspondent au temps total de notre implémentation.
+
+Pour **Dijkstra**, l'algorithme ne s'arrête pas lorsqu'il atteint la destination. Il calcule les plus courts chemins vers tous les sommets du graphe avant d'extraire le chemin demandé. Le nombre de sommets visités est donc généralement égal au nombre total de sommets de l'instance.
+
+Pour **A\***, le temps inclut également la construction du graphe contenant les distances euclidiennes utilisées comme heuristique. Ce coût supplémentaire explique pourquoi A* n'est pas toujours plus rapide que Dijkstra, malgré un nombre de sommets explorés bien plus faible.
+
+Enfin, notre implémentation de la recherche **bidirectionnelle** n'est pas encore totalement correcte. Les valeurs de sommets visités sont donc à prendre avec précaution et ne permettent pas de comparer correctement cet algorithme avec les deux autres.
 
 
-> **[À remplir avec les chiffres]**
+| Instance | p   | Source → Cible | Algo           | Sommets visités | Temps (ms) |
+|----------|-----|----------------|----------------|-----------------|------------|
+| att48    | 15% | 43 → 45        | Dijkstra       | 48              | 13 ms      |
+| att48    | 15% | 43 → 45        | A*             | 12              | 10 ms      |
+| att48    | 15% | 43 → 45        | Bidirectionnel | 174             | 12 ms      |
 
-| Instance | p | Source → Cible | Algo | Sommets visités | Temps (ms) | Coût du chemin |
-|---|---|---|---|---|---|---|
-| att48 | 15% | 43 → 45 | Dijkstra | | | |
-| att48 | 15% | 43 → 45 | A* | | | |
-| att48 | 15% | 43 → 45 | Bidirectionnel | | | |
-| att48 | 12% | 43 → 45 | Dijkstra | | | |
-| att48 | 12% | 43 → 45 | A* | | | |
-| att48 | 12% | 43 → 45 | Bidirectionnel | | | |
-| a280 | 6% | 8 → 92 | Dijkstra | | | |
-| a280 | 6% | 8 → 92 | A* | | | |
-| a280 | 6% | 8 → 92 | Bidirectionnel | | | |
+| Instance | p   | Source → Cible | Algo           | Sommets visités | Temps (ms) |
+|----------|-----|----------------|----------------|-----------------|------------|
+| a280     | 6%  | 1 → 78         | Dijkstra       | 280             | 54 ms      |
+| a280     | 6%  | 1 → 78         | A*             | 165             | 67 ms      |
+| a280     | 6%  | 1 → 78         | Bidirectionnel | 970             | 56 ms      |
+
+
+**Autres instances** :
+
+| Instance | p   | Source → Cible | Algo           | Sommets visités | Temps (ms) |
+|----------|-----|----------------|----------------|-----------------|------------|
+| gil262   | 8%  | 1 → 17         | Dijkstra       | 262             | 51 ms      |
+| gil262   | 8%  | 1 → 17         | A*             | 114             | 70 ms      |
+| gil262   | 8%  | 1 → 17         | Bidirectionnel | 800             | 50 ms      |
+
+| Instance | p   | Source → Cible | Algo           | Sommets visités | Temps (ms) |
+|----------|-----|----------------|----------------|-----------------|------------|
+| ali535   | 10% | 19 → 26        | Dijkstra       | 534             | 952 ms     |
+| ali535   | 10% | 19 → 26        | A*             | 22              | 138 ms     |
+| ali535   | 10% | 19 → 26        | Bidirectionnel | 52 603          | 956 ms     |
+
+### Analyse des résultats
+
+Les résultats montrent que **A\*** explore beaucoup moins de sommets que **Dijkstra**. L'heuristique permet de guider la recherche vers la destination au lieu d'explorer le graphe presque entièrement. Sur les grandes instances, l'écart devient très important : par exemple sur ali535, **A\*** ne visite que 22 sommets contre 534 pour **Dijkstra**.
+
+En revanche, cette réduction du nombre de sommets ne se traduit pas toujours par un meilleur temps d'exécution. Dans notre implémentation, le **calcul de l'heuristique est inclus dans le temps mesuré**, ce qui ajoute un coût fixe avant même le début de la recherche. Sur les petites instances, ce coût peut être plus important que le temps économisé pendant l'exploration.
+
+Concernant la recherche bidirectionnelle, nous n'avons pas obtenu les résultats attendus. Les valeurs de sommets visités sont largement supérieures à la taille des graphes, ce qui montre que notre implémentation comporte encore un problème. Nous avons tout de même choisi de présenter ces résultats afin de montrer l'état actuel du projet, mais ils ne permettent pas de tirer de conclusion sur les performances de cet algorithme.
+
+### Caputures décrans des problèmes musurés
+
+| att48.tsp                            |
+|--------------------------------------|
+| ![att48](asset/screenshot/att48.png) |
+
+| a280.tsp                             |
+|--------------------------------------|
+| ![a280](asset/screenshot/a280.png)   |
+
+| gil262.tsp                             |
+|----------------------------------------|
+| ![gil262](asset/screenshot/gil262.png) |
+
+| ali535.tsp                             |
+|----------------------------------------|
+| ![ali535](asset/screenshot/ali535.png) |
+
 
 ## 7. Capture vidéo
 
-![d493](asset/screenshot/d493.png)
 ![video_1](asset/screenshot/video_1.gif)
 ![video_2](asset/screenshot/video_2.gif)
 
