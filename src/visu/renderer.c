@@ -35,13 +35,12 @@ static void draw_UI(TSP_Instance instance)
 	if (draw_help)
 	{
 		text_begin_draw();
-
 			draw_text("Controles :", 0.0f, 0.9f);
 			draw_text("- [C/c] : Agrandir/retrecir les cercles", 0.0f, 0.8f);
 			draw_text("- [L/l] : Agrandir/retrecir les lignes", 0.0f, 0.7f);
 			draw_text("- [G/g] : Agrandir/retrecir la grille", 0.0f, 0.6f);
-			draw_text("- [H/h] : Afficher/cacher ce message !", 0.0f, 0.5f);
-
+			draw_text("- [A/a] : Changer d'algorithme", 0.0f, 0.5f);
+			draw_text("- [H/h] : Afficher/cacher ce message !", 0.0f, 0.4f);
 		text_end_draw();
 	}
 

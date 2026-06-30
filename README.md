@@ -96,6 +96,7 @@ L'outil permet :
 | `C` / `Shift+C`  | Agrandir / réduire les cercles (sommets)           |
 | `L` / `Shift+L`  | Agrandir / réduire l'épaisseur des lignes (arêtes) |
 | `G` / `Shift+G`  | Agrandir / réduire la grille de fond               |
+| `A`              | Changer d'algorithme                               |
 | `H` / `Shift+H`  | Afficher / cacher le message d'aide                |
 | `Clique gauche`  | Définir un nouveau noeud source                    |
 | `Clique droit`   | Définir un nouveau noeud cible                     |
@@ -142,6 +143,8 @@ Exemple :
 
 Le programme prend en charge la quasi-totalité des fichiers `.tsp` du dépôt [TSPLIB](https://github.com/shredderzwj/TSPLIB/tree/master/res), tant que le fichier expose une section `NODE_COORD_SECTION` exploitable par le parseur.
 
+> **Important** : Si il ya d'autres sections que `NODE_COORD_SECTION`, le parser n'arrivera pas à lire le fichier ; certain problème ne sont pas exploitable alors avec le loigiciel.
+
 ## 8. Résultats expérimentaux
 
 > **[Section à compléter — chiffres pas encore en main]**
@@ -175,6 +178,7 @@ les métriques suivantes :
 
 ## 9. Capture vidéo
 
+![d493](asset/screenshot/d493.png)
 ![video_1](asset/screenshot/video_1.gif)
 ![video_2](asset/screenshot/video_2.gif)
 
