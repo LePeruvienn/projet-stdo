@@ -188,7 +188,7 @@ Les temps présentés correspondent au temps total de notre implémentation.
 
 Pour **Dijkstra**, l'algorithme ne s'arrête pas lorsqu'il atteint la destination. Il calcule les plus courts chemins vers tous les sommets du graphe avant d'extraire le chemin demandé. Le nombre de sommets visités est donc généralement égal au nombre total de sommets de l'instance.
 
-Pour **A\***, le temps inclut également la construction du graphe contenant les distances euclidiennes utilisées comme heuristique. Ce coût supplémentaire explique pourquoi A* n'est pas toujours plus rapide que Dijkstra, malgré un nombre de sommets explorés bien plus faible.
+Pour **A\***, le temps inclut également la **construction du graphe contenant les distances euclidiennes utilisées comme heuristique** (seulement ce qui viennt du noeud cible). Ce coût supplémentaire explique pourquoi A* n'est pas toujours plus rapide que Dijkstra, malgré un nombre de sommets explorés bien plus faible.
 
 Enfin, notre implémentation de la recherche **bidirectionnelle** n'est pas encore totalement correcte. Les valeurs de sommets visités sont donc à prendre avec précaution et ne permettent pas de comparer correctement cet algorithme avec les deux autres.
 
@@ -244,7 +244,7 @@ Dijkstra explose lorsque les possiblité deviennet trop grande.
 
 Les résultats montrent que **A\*** explore beaucoup moins de sommets que **Dijkstra**. L'heuristique permet de guider la recherche vers la destination au lieu d'explorer le graphe presque entièrement. Sur les grandes instances, l'écart devient très important : par exemple sur ali535, **A\*** ne visite que 22 sommets contre 534 pour **Dijkstra**.
 
-En revanche, cette réduction du nombre de sommets ne se traduit pas toujours par un meilleur temps d'exécution. Dans notre implémentation, le **calcul de l'heuristique est inclus dans le temps mesuré**, ce qui ajoute un coût fixe avant même le début de la recherche. Sur les petites instances, ce coût peut être plus important que le temps économisé pendant l'exploration.
+En revanche, cette réduction du nombre de sommets ne se traduit pas toujours par un meilleur temps d'exécution. Dans notre implémentation, le **calcul de l'heuristique est inclus dans le temps mesuré** (seulement ce du noeuds cible), ce qui ajoute un coût fixe avant même le début de la recherche. Sur les petites instances, ce coût peut être plus important que le temps économisé pendant l'exploration.
 
 Concernant la recherche bidirectionnelle, nous n'avons pas obtenu les résultats attendus. Les valeurs de sommets visités sont largement supérieures à la taille des graphes, ce qui montre que notre implémentation comporte encore un problème. Nous avons tout de même choisi de présenter ces résultats afin de montrer l'état actuel du projet, mais ils ne permettent pas de tirer de conclusion sur les performances de cet algorithme.
 
