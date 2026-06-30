@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define TSP_EOF_STR "EOF"
+
 #define ELMENT_START_SIZE 32
 
 #define TSP_SECTION_TYPE_NODE_COORD_SECTION_STR "NODE_COORD_SECTION"
@@ -37,6 +39,10 @@ static size_t get_stride(TSP_Section_Type type)
 	{
 		case e_SECTION_TYPE_UNDEFINED:
 			LOG_ERROR("Trying to get stride for a undefined section type, returning 0 instead.");
+			return 0;
+
+		case e_SECTION_EOF:
+			LOG_ERROR("Trying to get stride for a EOF section type, returning 0 instead.");
 			return 0;
 
 		case e_NODE_COORD_SECTION:
@@ -172,6 +178,7 @@ TSP_Section_Type parse_TSP_Section_Type(const char* field)
 	else if(strcmp(field, TSP_SECTION_TYPE_DISPLAY_DATA_SECTION_STR) == 0) return e_DISPLAY_DATA_SECTION;
 	else if(strcmp(field, TSP_SECTION_TYPE_TOUR_SECTION_STR)         == 0) return e_TOUR_SECTION;
 	else if(strcmp(field, TSP_SECTION_TYPE_EDGE_WEIGHT_SECTION_STR)  == 0) return e_EDGE_WEIGHT_SECTION;
+	else if(strcmp(field, TSP_EOF_STR)                               == 0) return e_SECTION_EOF;
 
 	LOG_ERROR("Could not find .TSP Section type for field : %s", field);
 
@@ -192,6 +199,7 @@ const char* TSP_Section_Type_to_str(TSP_Section_Type type)
 		case e_EDGE_WEIGHT_SECTION  : return TSP_SECTION_TYPE_EDGE_WEIGHT_SECTION_STR ;
 		
 		case e_SECTION_TYPE_UNDEFINED: return TSP_SECTION_UNDEFINED_STR;
+		case e_SECTION_EOF:            return TSP_EOF_STR;
 	}
 
 	LOG_ERROR("Could not find .TSP string for SECTION_TYPE enum : %d", type);

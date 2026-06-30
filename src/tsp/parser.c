@@ -22,6 +22,21 @@
 #define RETURN_LINE '\r'
 #define END_STR '\0'
 
+bool is_str_empty(const char* str)
+{
+	size_t len = strlen(str);
+
+	for (size_t i = 0; i < len; ++i)
+	{
+		char c = str[i];
+
+		if (c != SPACE_CHAR && c != TAB_CHAR && c != END_LINE && c != RETURN_LINE && c != END_STR)
+			return false;
+	}
+
+	return true;
+}
+
 // from: https://www.delftstack.com/howto/c/trim-string-in-c/
 void trim_str(char* str)
 {
@@ -126,7 +141,7 @@ TSP_File TSP_parse_file(const char* filepath)
 		if (is_section)
 		{
 			LOG("%zu > Section : %s", i, field);
- 			TSP_parse_section_to_file(str, tsp_file, field);
+			TSP_parse_section_to_file(str, tsp_file, field);
 		}
 		else
 		{
@@ -194,6 +209,11 @@ void TSP_parse_field_to_file(TSP_File tsp_file, const char* field, const char* i
 
 void TSP_parse_section_to_file(FILE* str, TSP_File tsp_file, const char* field)
 {
+	if (is_str_empty(field))
+	{
+		return;
+	}
+
 	TSP_Section_Type type = parse_TSP_Section_Type(field);
 
 	switch(type)
@@ -221,6 +241,9 @@ void TSP_parse_section_to_file(FILE* str, TSP_File tsp_file, const char* field)
 			break;
 
 		case e_EDGE_WEIGHT_SECTION:
+			break;
+
+		case e_SECTION_EOF:
 			break;
 
 		case e_SECTION_TYPE_UNDEFINED:
