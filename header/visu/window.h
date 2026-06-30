@@ -19,6 +19,15 @@
  */
 typedef struct window_s* window;
 
+typedef struct mouse_status mouse_status;
+
+struct mouse_status
+{
+	float x, y;
+	int left_click;
+	int right_click;
+};
+
 /**
  * \brief Crée et initialise une nouvelle fenêtre d'affichage.
  *
@@ -126,5 +135,7 @@ void window_get_framebuffer_size(window w, int* width, int* height);
 void handle_window_input(window w, camera c);
 
 void handle_window_resize(window w, camera c);
+
+mouse_status window_get_mouse_status(window w);
 
 #endif // WINDOW_H

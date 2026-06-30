@@ -1,13 +1,18 @@
 #include "tsp/instance.h"
+#include "tsp/section_datas.h"
 
 #include "visu/window.h"
 #include "visu/camera.h"
 #include "visu/renderer.h"
 
+#include "utils/logger.h"
+#include "utils/ptr.h"
+
 #include "glad/glad.h"
 
 #include <GLFW/glfw3.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <math.h>
 
 static unsigned int window_width = 1280;
@@ -17,6 +22,54 @@ static window w = NULL;
 static camera c = NULL;
 
 static TSP_Instance tsp_instance;
+
+static void handle_picking()
+{
+	CHECK_IS_NULL(w, "Cannot do picking with NULL window");
+	CHECK_IS_NULL(tsp_instance, "Cannot do picking with NULL TSP instance");
+
+	mouse_status mouse = window_get_mouse_status(w);
+
+	if (mouse.left_click == 0 && mouse.right_click == 0)
+		return;
+
+	int fb_w, fb_h;
+	window_get_framebuffer_size(w, &fb_w, &fb_h);
+
+	float x = (mouse.x / (float) fb_w)  * 2.f - 1.f;
+	float y = 1.f - (mouse.y / (float) fb_h) * 2.f;
+
+	TSP_Node_Coord* node = node_picking(tsp_instance, x, y);
+
+	if (node == NULL)
+		return;
+
+	LOG_INFO("Picked node : %zu", (size_t) node->node_number);
+
+	if(mouse.left_click != 0)
+	{
+		TSP_Node_Number target_node = TSP_Instance_get_target(tsp_instance);
+
+		if (node->node_number != target_node)
+		{
+			TSP_Instance_set_target(tsp_instance, node->node_number);
+			TSP_Instance_compute_shortest_path(tsp_instance);
+			return;
+		}
+	}
+
+	if(mouse.right_click != 0)
+	{
+		TSP_Node_Number source_node = TSP_Instance_get_source(tsp_instance);
+
+		if (node->node_number != source_node)
+		{
+			TSP_Instance_set_source(tsp_instance, node->node_number);
+			TSP_Instance_compute_shortest_path(tsp_instance);
+			return;
+		}
+	}
+}
 
 static void fit_camera()
 {
@@ -80,6 +133,8 @@ int main(void)
 	{
 		handle_window_input(w, c);
 
+		handle_picking();
+	
 		render(tsp_instance);
 
 		window_update_events(w);

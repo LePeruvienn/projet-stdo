@@ -344,3 +344,18 @@ TSP_Path TSP_Instance_get_shortest_path(TSP_Instance instance)
 
 	return instance->shortest_path;
 }
+
+bool TSP_Instance_have_shortest_path(TSP_Instance instance)
+{
+	return instance->have_shortest_path;
+}
+
+TSP_Node_Number TSP_Instance_get_source(TSP_Instance instance)
+{
+	return instance->source_node;
+}
+
+TSP_Node_Number TSP_Instance_get_target(TSP_Instance instance)
+{
+	return instance->target_node;
+}

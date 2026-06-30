@@ -53,9 +53,14 @@ TSP_Instance_Edges TSP_Instance_get_edges(TSP_Instance instance);
 
 void TSP_Instance_set_source(TSP_Instance instance, TSP_Node_Number source);
 void TSP_Instance_set_target(TSP_Instance instance, TSP_Node_Number target);
- 
+
 void TSP_Instance_compute_shortest_path(TSP_Instance instance);
 
 TSP_Path TSP_Instance_get_shortest_path(TSP_Instance instance);
+
+bool TSP_Instance_have_shortest_path(TSP_Instance instance);
+
+TSP_Node_Number TSP_Instance_get_source(TSP_Instance instance);
+TSP_Node_Number TSP_Instance_get_target(TSP_Instance instance);
 
 #endif // TSP_INSTANCE_H

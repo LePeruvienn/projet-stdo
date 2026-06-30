@@ -17,13 +17,6 @@
 
 #define MIN_CIRCLE_SCALE 0.5f
 
-typedef struct circle_rep circle_rep;
-
-struct circle_rep
-{
-	float x, y;
-};
-
 static camera circle_camera = NULL;
 static geometry circle_geometry = NULL;
 static shader circle_shader = NULL;
@@ -302,4 +295,10 @@ void add_circle_renderer_scale(float s)
 	{
 		circle_scale = MIN_CIRCLE_SCALE;
 	}
+}
+
+
+float get_circle_renderer_scale()
+{
+	return circle_scale;
 }

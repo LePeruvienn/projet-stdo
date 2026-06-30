@@ -20,6 +20,8 @@
 
 #include "visu/camera.h"
 
+// static TSP_Node_Coord* last_picked_node = NULL;
+
 static camera main_camera = NULL;
 
 static bool is_intialized = false;
@@ -44,9 +46,89 @@ static void draw_UI()
 	set_text_renderer_to_screen_space(false);
 }
 
-static void draw_TSP(TSP_Instance instance)
+static void draw_TSP_nodes(TSP_Instance instance)
 {
 	TSP_Instance_Nodes nodes = TSP_Instance_get_nodes(instance);
+
+	TSP_Node_Number source_node = TSP_Instance_get_source(instance);
+	TSP_Node_Number target_node = TSP_Instance_get_target(instance);
+
+	bool is_source_set = false;
+	bool is_target_set = false;
+
+	TSP_Node_Coord source = { 0 };
+	TSP_Node_Coord target = { 0 };
+
+	set_circle_renderer_fill_color((color_rgba){0x78,  0xD9,  0x76, 0xFF});
+
+	text_begin_draw();
+	circle_begin_draw();
+	for (size_t i = 0; i < nodes.size; ++i)
+	{
+		TSP_Node_Number node = nodes.data[i].node_number;
+
+		if (node == source_node)
+		{
+			source = nodes.data[i];
+			is_source_set = true;
+			continue;
+		}
+
+		if (node == target_node)
+		{
+			target = nodes.data[i];
+			is_target_set = true;
+			continue;
+		}
+
+		float x = nodes.data[i].px;
+		float y = nodes.data[i].py;
+
+		circle_draw(x, y);
+		
+		char node_str[32];
+
+		snprintf(node_str, sizeof(node_str), "%zu", (size_t) node);
+
+		// LOG("[%zu] > %s || %zu", i, node_str, (size_t) node);
+
+		draw_text(node_str, x, y);
+	}
+	circle_end_draw();
+	text_end_draw();
+
+	set_circle_renderer_fill_color((color_rgba){0xFF,  0x00,  0x00, 0xFF});
+
+	circle_begin_draw();
+
+	if(is_source_set)
+		circle_draw(source.px, source.py);
+
+	if(is_target_set)
+		circle_draw(target.px, target.py);
+
+	circle_end_draw();
+
+	text_begin_draw();
+
+	char node_str[32];
+
+	if(is_source_set)
+	{
+		snprintf(node_str, sizeof(node_str), "%zu", (size_t) source.node_number);
+		draw_text(node_str, source.px, source.py);
+	}
+	if(is_target_set)
+	{
+		snprintf(node_str, sizeof(node_str), "%zu", (size_t) target.node_number);
+		draw_text(node_str, target.px, target.py);
+	}
+
+	text_end_draw();
+}
+
+static void draw_TSP_edges(TSP_Instance instance)
+{
 	TSP_Instance_Edges edges = TSP_Instance_get_edges(instance);
 
 	set_line_renderer_color((color_rgba) { 0x4D, 0x33, 0xFF, 0xFF });
@@ -89,29 +171,6 @@ static void draw_TSP(TSP_Instance instance)
 	}
 	line_end_draw();
 
-	// ^^^^ DRAW SHORTEST PATH
-
-	text_begin_draw();
-	circle_begin_draw();
-	for (size_t i = 0; i < nodes.size; ++i)
-	{
-		TSP_Node_Number node = nodes.data[i].node_number;
-
-		float x = nodes.data[i].px;
-		float y = nodes.data[i].py;
-
-		circle_draw(x, y);
-		
-		char node_str[32];
-
-		snprintf(node_str, sizeof(node_str), "%zu", (size_t) node);
-
-		// LOG("[%zu] > %s || %zu", i, node_str, (size_t) node);
-
-		draw_text(node_str, x, y);
-	}
-	circle_end_draw();
-	text_end_draw();
 }
 
 void init_renderer()
@@ -171,7 +230,8 @@ void render(TSP_Instance instance)
 	
 	draw_grid();
 
-	draw_TSP(instance);
+	draw_TSP_edges(instance);
+	draw_TSP_nodes(instance);
 	draw_UI();
 }
 
@@ -186,6 +246,51 @@ void free_renderer()
 bool renderer_get_is_intialized()
 {
 	return is_intialized;
+}
+
+TSP_Node_Coord* node_picking(TSP_Instance instance, float sx, float sy)
+{
+	if(is_intialized == false)
+	{
+		LOG_ERROR("Cannot do picking before initialization.");
+		return NULL;
+	}
+
+	if (main_camera == NULL)
+	{
+		LOG_ERROR("Cannot pick with a NULL camera");
+		return NULL;
+	}
+
+	float cam_px = get_camera_pos_x(main_camera);
+	float cam_py = get_camera_pos_y(main_camera);
+
+	float zoom   = get_camera_zoom(main_camera);
+	float aspect = get_camera_aspect(main_camera);
+
+	float undone_y = sy / aspect;
+
+	float world_x = sx * zoom + cam_px;
+	float world_y = undone_y * zoom + cam_py;
+
+	float circle_scale = get_circle_renderer_scale();
+	float radius2 = circle_scale * circle_scale;
+
+	TSP_Instance_Nodes nodes = TSP_Instance_get_nodes(instance);
+
+	for (size_t i = 0; i < nodes.size; ++i)
+	{
+		float dx = nodes.data[i].px - world_x;
+		float dy = nodes.data[i].py - world_y;
+		float dist2 = dx * dx + dy * dy;
+
+		if (dist2 <= radius2)
+		{
+			return &nodes.data[i];
+		}
+	}
+
+	return NULL;
 }
 
 #endif // RENDERER_H

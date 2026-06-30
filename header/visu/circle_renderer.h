@@ -4,6 +4,13 @@
 #include "visu/camera.h"
 #include "visu/color.h"
 
+typedef struct circle_rep circle_rep;
+
+struct circle_rep
+{
+	float x, y;
+};
+
 void init_circle_renderer();
 
 void circle_begin_draw();
@@ -24,5 +31,7 @@ void set_circle_renderer_radius(float r);
 void set_circle_renderer_border_thickness(float t);
 
 void add_circle_renderer_scale(float s);
+
+float get_circle_renderer_scale();
 
 #endif // CIRCLE_RENDERER_H

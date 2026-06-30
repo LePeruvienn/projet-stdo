@@ -260,3 +260,15 @@ void handle_window_resize(window w, camera c)
 		glViewport(0, 0, fb_w, fb_h);
 	}
 }
+
+mouse_status window_get_mouse_status(window w)
+{
+	int left_click = glfwGetMouseButton(w->handle, GLFW_MOUSE_BUTTON_LEFT);
+	int right_click = glfwGetMouseButton(w->handle, GLFW_MOUSE_BUTTON_RIGHT);
+
+	double x, y;
+
+	glfwGetCursorPos(w->handle, &x, &y);
+
+	return (mouse_status) {(float) x, (float) y, left_click, right_click};
+}
