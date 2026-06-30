@@ -220,6 +220,26 @@ Enfin, notre implémentation de la recherche **bidirectionnelle** n'est pas enco
 | ali535   | 10% | 19 → 26        | A*             | 22              | 138 ms     |
 | ali535   | 10% | 19 → 26        | Bidirectionnel | 52 603          | 956 ms     |
 
+### Courbes Dijkstra vs A*
+
+Légende :
+🔵 Dijkstra 
+🟢 A* 
+
+1. Temps d'exécution comparé (en ms)
+
+```mermaid
+xychart-beta
+    title "Temps d'exécution par algorithme"
+    x-axis ["att48", "a280", "gil262", "ali535"]
+    y-axis "Temps (ms)" 0 --> 1000
+
+    line "Dijkstra" [13, 54, 51, 952]
+    line "A*" [10, 67, 70, 138]
+```
+
+Dijkstra explose lorsque les possiblité deviennet trop grande.
+
 ### Analyse des résultats
 
 Les résultats montrent que **A\*** explore beaucoup moins de sommets que **Dijkstra**. L'heuristique permet de guider la recherche vers la destination au lieu d'explorer le graphe presque entièrement. Sur les grandes instances, l'écart devient très important : par exemple sur ali535, **A\*** ne visite que 22 sommets contre 534 pour **Dijkstra**.
