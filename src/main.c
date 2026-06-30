@@ -21,7 +21,7 @@ static unsigned int window_height = 960;
 static window w = NULL;
 static camera c = NULL;
 
-static TSP_Instance tsp_instance;
+static TSP_Instance tsp_instance = NULL;
 
 static void handle_picking()
 {
@@ -107,18 +107,46 @@ static void fit_camera()
 }
 
 
-int main(void)
+int main(int argc, char* argv[])
 {
-	w = create_window(window_width, window_height, "Projet STDO");
+	if (argc != 3)
+	{
+		LOG("Usage: %s <tsp_file> <p>", argv[0]);
+		EXIT_PROGRAM(1);
+	}
 
-	init_renderer();
+	const char* filepath = argv[1];
+
+	char* end;
+	float p = strtof(argv[2], &end);
+
+	if (*end != '\0')
+	{
+		LOG("ERROR: Invalid value for p: '%s'", argv[2]);
+		EXIT_PROGRAM(2);
+	}
+
+	if (p < 0.0f || p > 1.0f)
+	{
+		LOG("ERROR: p must be between 0 and 1.");
+		EXIT_PROGRAM(3);
+	}
 	
-	const char* filepath = "TSPLIB/res/att48.tsp";
-	tsp_instance = TSP_Instance_create(filepath, 0.1f);
+	tsp_instance = TSP_Instance_create(filepath, p);
+
+	if (tsp_instance == NULL)
+	{
+		LOG("ERROR: Failed to load TSP problem");
+		EXIT_PROGRAM(4);
+	}
 
 	TSP_Instance_set_random_source_target(tsp_instance);
 
 	TSP_Instance_compute_shortest_path(tsp_instance);
+
+	w = create_window(window_width, window_height, "Projet STDO");
+
+	init_renderer();
 
 	float aspect = (float) window_width / (float) window_height;
 

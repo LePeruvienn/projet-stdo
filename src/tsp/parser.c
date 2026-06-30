@@ -102,11 +102,11 @@ TSP_File TSP_parse_file(const char* filepath)
 
 	if (str == NULL)
 	{
-		LOG_ERROR("Failed to open .lsp file");
+		LOG_ERROR("Failed to open .tsp file");
 		return NULL;
 	}
 
-	TSP_File lsp_file = TSP_File_create();
+	TSP_File tsp_file = TSP_File_create();
 
 	char line[MAX_LINE_SIZE];
 
@@ -126,65 +126,65 @@ TSP_File TSP_parse_file(const char* filepath)
 		if (is_section)
 		{
 			LOG("%zu > Section : %s", i, field);
- 			TSP_parse_section_to_file(str, lsp_file, field);
+ 			TSP_parse_section_to_file(str, tsp_file, field);
 		}
 		else
 		{
 			LOG("%zu > %s : %s", i, field, input);
-			TSP_parse_field_to_file(lsp_file, field, input);
+			TSP_parse_field_to_file(tsp_file, field, input);
 		}
 	}
 
 	fclose(str);
 
-	return lsp_file;
+	return tsp_file;
 }
 
-void TSP_parse_field_to_file(TSP_File lsp_file, const char* field, const char* input)
+void TSP_parse_field_to_file(TSP_File tsp_file, const char* field, const char* input)
 {
 	if (strcmp(field, TSP_NAME_STR) == 0)
 	{
-		strncpy(lsp_file->NAME, input, TSP_NAME_MAX_SIZE);
+		strncpy(tsp_file->NAME, input, TSP_NAME_MAX_SIZE);
 	}
 	else if(strcmp(field, TSP_TYPE_STR) == 0)
 	{
-		lsp_file->TYPE = parse_TSP_Type(input);
+		tsp_file->TYPE = parse_TSP_Type(input);
 	}
 	else if(strcmp(field, TSP_COMMENT_STR) == 0)
 	{
-		strncpy(lsp_file->COMMENT, input, TSP_COMMENT_MAX_SIZE);
+		strncpy(tsp_file->COMMENT, input, TSP_COMMENT_MAX_SIZE);
 	}
 	else if(strcmp(field, TSP_DIMENSION_STR) == 0)
 	{
 		long long n = atoll(input);
-		lsp_file->DIMENSION = n;
+		tsp_file->DIMENSION = n;
 		// LOG("atoi parsed input %s -> %lld", input, n);
 	}
 	else if(strcmp(field, TSP_CAPACITY_STR) == 0)
 	{
 		long long n = atoll(input);
-		lsp_file->CAPACITY = n;
+		tsp_file->CAPACITY = n;
 		// LOG("atoi parsed input %s -> %lld", input, n);
 	}
 	else if(strcmp(field, TSP_EDGE_WEIGHT_TYPE_STR) == 0)
 	{
-		lsp_file->EDGE_WEIGHT_TYPE = parse_TSP_Edge_Weight_Type(input);
+		tsp_file->EDGE_WEIGHT_TYPE = parse_TSP_Edge_Weight_Type(input);
 	}
 	else if(strcmp(field, TSP_EDGE_WEIGHT_FORMAT_STR) == 0)
 	{
-		lsp_file->EDGE_WEIGHT_FORMAT = parse_TSP_Edge_Weight_Format(input);
+		tsp_file->EDGE_WEIGHT_FORMAT = parse_TSP_Edge_Weight_Format(input);
 	}
 	else if(strcmp(field, TSP_EDGE_DATA_FORMAT_STR) == 0)
 	{
-		lsp_file->EDGE_DATA_FORMAT = parse_TSP_Edge_Data_Format(input);
+		tsp_file->EDGE_DATA_FORMAT = parse_TSP_Edge_Data_Format(input);
 	}
 	else if(strcmp(field, TSP_NODE_COORD_TYPE_STR) == 0)
 	{
-		lsp_file->NODE_COORD_TYPE = parse_TSP_Node_Coord_Type(input);
+		tsp_file->NODE_COORD_TYPE = parse_TSP_Node_Coord_Type(input);
 	}
 	else if(strcmp(field, TSP_DISPLAY_DATA_TYPE_STR) == 0)
 	{
-		lsp_file->DISPLAY_DATA_TYPE = parse_TSP_Display_Data_Type(input);
+		tsp_file->DISPLAY_DATA_TYPE = parse_TSP_Display_Data_Type(input);
 	}
 	else
 	{
@@ -192,14 +192,14 @@ void TSP_parse_field_to_file(TSP_File lsp_file, const char* field, const char* i
 	}
 }
 
-void TSP_parse_section_to_file(FILE* str, TSP_File lsp_file, const char* field)
+void TSP_parse_section_to_file(FILE* str, TSP_File tsp_file, const char* field)
 {
 	TSP_Section_Type type = parse_TSP_Section_Type(field);
 
 	switch(type)
 	{
 		case e_NODE_COORD_SECTION:
-			TSP_Node_Coord_Section_unstream(str, lsp_file);
+			TSP_Node_Coord_Section_unstream(str, tsp_file);
 			break;
 
 		case e_DEPOT_SECTION:
