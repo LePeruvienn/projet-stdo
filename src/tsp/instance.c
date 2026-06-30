@@ -5,6 +5,7 @@
 #include "core/hashmap.h"
 #include "core/dijkstra.h"
 #include "core/astar.h"
+#include "core/bi_dijkstra.h"
 
 #include "utils/logger.h"
 #include "utils/ptr.h"
@@ -123,6 +124,11 @@ static hashmap* compute_current_aglo(TSP_Instance instance)
 			CHECK_IS_NULL(h, "Failed to build heuristic graph for A*");
 			return astar(instance->g,
 					(int) instance->source_node, (int) instance->target_node, h,
+					&instance->shortest_path.edge_visited_amount);
+
+		case e_TSP_BI_DIJKSTRA:
+			return bi_dijkstra(instance->g,
+					(int) instance->source_node, instance->target_node,
 					&instance->shortest_path.edge_visited_amount);
 
 		case e_TSP_ALGO_END:
@@ -500,6 +506,9 @@ const char* TSP_Instance_get_algo_name(TSP_Instance instance)
 
 		case e_TSP_A_STAR:
 			return "A Star";
+
+		case e_TSP_BI_DIJKSTRA:
+			return "Dijkstra Bidirectionnel";
 
 		case e_TSP_ALGO_END:
 			return "Undefined (Enum End)";

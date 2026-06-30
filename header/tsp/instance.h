@@ -13,6 +13,7 @@ enum TSP_Algo
 {
 	e_TSP_DIJKSTRA = 0,
 	e_TSP_A_STAR,
+	e_TSP_BI_DIJKSTRA,
 
 	e_TSP_ALGO_END
 };
