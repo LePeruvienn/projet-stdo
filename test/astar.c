@@ -44,7 +44,9 @@ void astar_base()
 			dist, 
 			6);
 
-	hashmap *r = astar(g, A, Z, h);
+	int visited_edge_number = 0;
+
+	hashmap *r = astar(g, A, Z, h, &visited_edge_number);
 
     float exp_distances[] = { 0.0, 4.0, 3.0, 10.0, 12.0, 9.0, 17.0};
 	int exp_through[]     = { A, A, A, C, D, B, E };
