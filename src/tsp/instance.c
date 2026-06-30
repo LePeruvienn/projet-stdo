@@ -110,26 +110,26 @@ static graph* build_heuristic_graph(TSP_Instance instance, TSP_Node_Number targe
 
 static hashmap* compute_current_aglo(TSP_Instance instance)
 {
-	instance->shortest_path.edge_visited_amount = 0;
+	instance->shortest_path.node_visited_amount = 0;
 
 	switch(instance->algo)
 	{
 		case e_TSP_DIJKSTRA:
 			return dijkstra(
 					instance->g, (int) instance->source_node,
-					&instance->shortest_path.edge_visited_amount);
+					&instance->shortest_path.node_visited_amount);
 
 		case e_TSP_A_STAR:
 			graph* h = build_heuristic_graph(instance, instance->target_node);
 			CHECK_IS_NULL(h, "Failed to build heuristic graph for A*");
 			return astar(instance->g,
 					(int) instance->source_node, (int) instance->target_node, h,
-					&instance->shortest_path.edge_visited_amount);
+					&instance->shortest_path.node_visited_amount);
 
 		case e_TSP_BI_DIJKSTRA:
 			return bi_dijkstra(instance->g,
 					(int) instance->source_node, instance->target_node,
-					&instance->shortest_path.edge_visited_amount);
+					&instance->shortest_path.node_visited_amount);
 
 		case e_TSP_ALGO_END:
 			LOG_ERROR("Algo is end ?? Bad value");
@@ -275,7 +275,7 @@ TSP_Instance TSP_Instance_create(const char* path, float p)
 	instance->shortest_path.length = 0;
 	instance->shortest_path.compute_time = 0;
 	instance->shortest_path.cost = 0.f;
-	instance->shortest_path.edge_visited_amount = 0;
+	instance->shortest_path.node_visited_amount = 0;
 
 	instance->shortest_path.is_unreachable = true;
 
@@ -350,7 +350,7 @@ void TSP_Instance_compute_shortest_path(TSP_Instance instance)
 
 	hashmap* h = compute_current_aglo(instance);
 
-	LOG_INFO("Edges visited amount : %d", instance->shortest_path.edge_visited_amount);
+	LOG_INFO("Edges visited amount : %d", instance->shortest_path.node_visited_amount);
 
 	uint64_t bench_end = bench_now_ms();
 

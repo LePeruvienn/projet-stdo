@@ -52,16 +52,16 @@ static void draw_UI(TSP_Instance instance)
 
 			TSP_Path shortest = TSP_Instance_get_shortest_path(instance);
 			uint64_t compute_time = shortest.compute_time;
-			int edge_visited_amount = shortest.edge_visited_amount;
+			int node_visited_amount = shortest.node_visited_amount;
 
 			size_t str_size = 128;
 			char temp[str_size];
 
-			snprintf(temp, str_size, "Compute time : %ld ms", compute_time);
+			snprintf(temp, str_size, "Temps de calcul : %ld ms", compute_time);
 
 			draw_text(temp, 0.0f, - 0.9f);
 
-			snprintf(temp, str_size, "Edge visited amount (for all graph) : %d", edge_visited_amount);
+			snprintf(temp, str_size, "Nombre de sommet visites : %d", node_visited_amount);
 			draw_text(temp, 0.0f, - 0.8f);
 
 		text_end_draw();

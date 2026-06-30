@@ -54,7 +54,7 @@ struct TSP_Path
 	float cost;
 
 	uint64_t compute_time;
-	int edge_visited_amount;
+	int node_visited_amount;
 };
 
 TSP_Instance TSP_Instance_create(const char* path, float p);
