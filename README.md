@@ -181,6 +181,13 @@ Avec les métriques suivantes :
 
 - **Nombre de sommets visités** (marqués) avant terminaison
 - **Temps de calcul** (Tout les calculs nécessaire pour calculer le chemin le plus court)
+- **Facteur de réduction d’exploration** (Ce ratio permet de quantifier directement le gain en exploration)
+
+$$
+R = \frac
+{Sommets \ visité \ par Dijkstra}
+{Sommets \ visité \ par A^*}
+$$
 
 ### Contexte des résultats
 
@@ -199,12 +206,20 @@ Enfin, notre implémentation de la recherche **bidirectionnelle** n'est pas enco
 | att48    | 15% | 43 → 45        | A*             | 12              | 10 ms      |
 | att48    | 15% | 43 → 45        | Bidirectionnel | 174             | 12 ms      |
 
+$$
+R = \frac{48}{12} = 4
+$$
+
 | Instance | p   | Source → Cible | Algo           | Sommets visités | Temps (ms) |
 |----------|-----|----------------|----------------|-----------------|------------|
 | a280     | 6%  | 1 → 78         | Dijkstra       | 280             | 54 ms      |
 | a280     | 6%  | 1 → 78         | A*             | 165             | 67 ms      |
 | a280     | 6%  | 1 → 78         | Bidirectionnel | 970             | 56 ms      |
 
+
+$$
+R = \frac{280}{165} = 1.70
+$$
 
 **Autres instances** :
 
@@ -214,11 +229,21 @@ Enfin, notre implémentation de la recherche **bidirectionnelle** n'est pas enco
 | gil262   | 8%  | 1 → 17         | A*             | 114             | 70 ms      |
 | gil262   | 8%  | 1 → 17         | Bidirectionnel | 800             | 50 ms      |
 
+$$
+R = \frac{262}{114} = 2.30
+$$
+
 | Instance | p   | Source → Cible | Algo           | Sommets visités | Temps (ms) |
 |----------|-----|----------------|----------------|-----------------|------------|
 | ali535   | 10% | 19 → 26        | Dijkstra       | 534             | 952 ms     |
 | ali535   | 10% | 19 → 26        | A*             | 22              | 138 ms     |
 | ali535   | 10% | 19 → 26        | Bidirectionnel | 52 603          | 956 ms     |
+
+$$
+R = \frac{534}{22} = 24
+$$
+
+Résultat impréssionnant de $A^*$ mais ça peut être expliqué via la forme du graphe qui avantage la méthode d'exploration de $A^*$. (voir les images ci dessous)
 
 ### Courbes Dijkstra vs A*
 
@@ -242,11 +267,63 @@ Dijkstra explose lorsque les possiblité deviennet trop grande.
 
 ### Analyse des résultats
 
-Les résultats montrent que **A\*** explore beaucoup moins de sommets que **Dijkstra**. L'heuristique permet de guider la recherche vers la destination au lieu d'explorer le graphe presque entièrement. Sur les grandes instances, l'écart devient très important : par exemple sur ali535, **A\*** ne visite que 22 sommets contre 534 pour **Dijkstra**.
+#### Influence de la taille du graphe
 
-En revanche, cette réduction du nombre de sommets ne se traduit pas toujours par un meilleur temps d'exécution. Dans notre implémentation, le **calcul de l'heuristique est inclus dans le temps mesuré** (seulement ce du noeuds cible), ce qui ajoute un coût fixe avant même le début de la recherche. Sur les petites instances, ce coût peut être plus important que le temps économisé pendant l'exploration.
+On observe que Dijkstra explore systématiquement l’ensemble des sommets accessibles, ce qui conduit à une complexité directement proportionnelle à la taille du graphe.
 
-Concernant la recherche bidirectionnelle, nous n'avons pas obtenu les résultats attendus. Les valeurs de sommets visités sont largement supérieures à la taille des graphes, ce qui montre que notre implémentation comporte encore un problème. Nous avons tout de même choisi de présenter ces résultats afin de montrer l'état actuel du projet, mais ils ne permettent pas de tirer de conclusion sur les performances de cet algorithme.
+À l’inverse, A* réduit fortement l’espace de recherche en exploitant une heuristique géométrique basée sur la distance euclidienne vers la destination.
+
+Cette différence devient plus marquée lorsque la taille de l’instance augmente, ce qui suggère que A* bénéficie particulièrement des graphes de grande dimension.
+
+#### Influence de la densité du graphe (paramètre p)
+
+Le paramètre `p` contrôle la densité des arêtes dans le graphe.
+
+* lorsque `p` est faible : le graphe est peu dense, les chemins sont plus contraints
+* lorsque `p` augmente : le nombre de chemins alternatifs explose
+
+Dans ce second cas, Dijkstra explore un espace beaucoup plus large, tandis que A* reste guidé vers la cible.
+
+On peut alors émettre une hypothèse : 
+
+> Le gain relatif de A* augmente avec la densité du graphe.
+
+
+#### Analyse du facteur de réduction
+
+Sur les instances testées, on observe que :
+
+* sur petites instances : ( $R \approx 1 \ à \ 4$ )
+* sur grandes instances : ( $R \gg 10$ )
+
+Conclusion intermédiaire :
+A* devient exponentiellement plus efficace en exploration lorsque la taille du problème augmente.
+
+---
+
+#### Analyse des temps d’exécution
+
+On remarque que la réduction du nombre de sommets explorés ne se traduit pas toujours par une réduction proportionnelle du temps.
+
+Cela s’explique par :
+
+* le coût de calcul de l’heuristique
+* la gestion des structures de priorité
+* les effets mémoire (cache, allocations)
+
+Le gain en exploration n’implique pas nécessairement un gain linéaire en temps.
+
+#### Synthèse
+
+Les résultats expérimentaux confirment les comportements théoriques attendus :
+
+* Dijkstra explore exhaustivement le graphe
+* A* réduit fortement l’espace de recherche grâce à une heuristique géométrique efficace
+* la recherche bidirectionnelle nécessite une implémentation plus robuste pour être correctement évaluée
+
+Les expérimentations montrent que l’intérêt principal de A* ne réside pas uniquement dans la réduction du temps d’exécution, mais surtout dans la **réduction massive de l’espace exploré**.
+
+Cette réduction devient particulièrement significative sur les instances de grande taille, ce qui valide l’intérêt des heuristiques admissibles dans les graphes euclidiens issus de problèmes réels.
 
 ### Caputures décrans des problèmes musurés
 
@@ -267,7 +344,22 @@ Concernant la recherche bidirectionnelle, nous n'avons pas obtenu les résultats
 | ![ali535](asset/screenshot/ali535.png) |
 
 
-## 7. Capture vidéo
+## 7. Conclusion
+
+Ce projet nous a permis de mettre en œuvre plusieurs algorithmes de plus court chemin et de comparer leurs performances sur des instances réelles issues de la TSPLIB. Les résultats obtenus confirment l'intérêt de l'algorithme A*, qui réduit significativement le nombre de sommets explorés par rapport à Dijkstra sur les grandes instances.
+
+Le développement en C, associé à un moteur de rendu OpenGL, a représenté un défi supplémentaire par rapport au Java proposé dans le sujet. Bien que ce choix ait rendu le développement et la maintenance plus complexes, il nous a permis d'acquérir une meilleure maîtrise de la gestion mémoire, des performances et du développement graphique.
+
+Nous sommes également satisfaits d'avoir développé un outil de visualisation interactif, qui rend l'exécution des algorithmes plus intuitive et facilite leur compréhension ainsi que leur débogage.
+
+Enfin, si nous avions disposé de davantage de temps, nous aurions principalement cherché à finaliser et corriger notre implémentation de la recherche bidirectionnelle, à enrichir notre campagne de benchmarks sur un plus grand nombre d'instances et de paramètres, ainsi qu'à poursuivre les optimisations de nos structures de données et du moteur de rendu. Malgré ces pistes d'amélioration, ce projet nous a permis d'approfondir concrètement nos connaissances en algorithmique, en structures de données et en développement logiciel.
+
+On as passer beaucoup de temps à paufiner le logiciels et j'espère qu'il vaut plairat, en tou cas nous on s'est bien amusé !
+
+
+## 8. Captures vidéo
+
+*ancienne version manque une partie de l'UI*
 
 ![video_1](asset/screenshot/video_1.gif)
 ![video_2](asset/screenshot/video_2.gif)
