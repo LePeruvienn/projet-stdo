@@ -13,7 +13,7 @@ static void __dijkstra_pass(
         int s, int p,
         heap *remaining, 
         hashmap *results, hashmap *opposite_results,
-        int *visited_edge_number)
+        int *visited_node_number)
 {
     LOG("Starting %d turn...", edge_node(current));
     // the node associated with the edge
@@ -34,6 +34,8 @@ static void __dijkstra_pass(
             LOG("  * Node (n:%d) already visited, skipping...", edge_node(edge_list[i]));
             continue;
         }
+
+        (*visited_node_number)++;
         // current successor
         edge *successor     = edge_list[i]; 
         // successor but in result map
@@ -46,7 +48,6 @@ static void __dijkstra_pass(
         if (cumulative_distance < edge_distance(result))
         {  
             LOG("  * It's the best path, registering (s->%d: %f)", edge_node(successor), cumulative_distance);
-            (*visited_edge_number)++;
             if (hashmap_has(opposite_results, edge_node(successor)))
             {
                 edge *p_result          = hashmap_get(results, p);
@@ -63,7 +64,7 @@ static void __dijkstra_pass(
     }
 }
 
-hashmap     *bi_dijkstra(graph *g, int src, int dest, int *visited_edge_number)
+hashmap     *bi_dijkstra(graph *g, int src, int dest, int *visited_node_number)
 {
     int_list    *nodes                      = graph_get_all_nodes_names(g);
     int         n                           = nodes->size;
@@ -137,7 +138,7 @@ hashmap     *bi_dijkstra(graph *g, int src, int dest, int *visited_edge_number)
         hashmap_put(forward_visited, edge_node(forward), malloc(1));
 
         __dijkstra_pass(g, forward_visited, backward_visited, forward, src, dest, 
-                remaining_forward_nodes, forward_results, backward_results, visited_edge_number);
+                remaining_forward_nodes, forward_results, backward_results, visited_node_number);
 
         // time to do it the opposite way
         edge *backward      = heap_pop(remaining_backward_nodes);
@@ -147,7 +148,7 @@ hashmap     *bi_dijkstra(graph *g, int src, int dest, int *visited_edge_number)
 
         hashmap_put(backward_visited, edge_node(backward), malloc(1));
 
-        __dijkstra_pass(g, backward_visited, forward_visited, backward, dest, src, remaining_backward_nodes, backward_results, forward_results, visited_edge_number);
+        __dijkstra_pass(g, backward_visited, forward_visited, backward, dest, src, remaining_backward_nodes, backward_results, forward_results, visited_node_number);
     }
 
     hashmap_free(backward_results);

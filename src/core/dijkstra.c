@@ -10,7 +10,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-hashmap *dijkstra(graph *g, int src, int *visited_edge_number)
+hashmap *dijkstra(graph *g, int src, int *visited_node_number)
 {
     int_list *nodes         = graph_get_all_nodes_names(g);
     int n                   = nodes->size;
@@ -58,7 +58,8 @@ hashmap *dijkstra(graph *g, int src, int *visited_edge_number)
         edge    **edge_list         = node_edge_list(current_node);
     
         hashmap_put(nodes_visited, edge_node(current), malloc(1));
-
+        (*visited_node_number)++;
+        
         // iterate through all successors
         for (int i = 0; i < successors_number; i++)
         {
@@ -68,8 +69,6 @@ hashmap *dijkstra(graph *g, int src, int *visited_edge_number)
                 continue;
             }
            
-            (*visited_edge_number)++;
-
             // current successor
             edge *successor     = edge_list[i]; 
             // successor but in result map

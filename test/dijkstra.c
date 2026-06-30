@@ -31,9 +31,11 @@ void dijkstra_base()
 	graph_add_edge(g, C, D, 1.0);
 	graph_add_edge(g, D, S, 1.0);
 
-	int visited_edges = 0;
+	int visited_node_number = 0;
 
-	hashmap *h = dijkstra(g, E, &visited_edges);
+	hashmap *h = dijkstra(g, E, &visited_node_number);
+    
+	CU_ASSERT(visited_node_number == 6);
 
     float exp_distances[] = { 0.0, 2.0, 1.0, 4.0, 5.0, 6.0};
 	int exp_through[]     = { E, B, E, B, C, D };
@@ -51,8 +53,6 @@ void dijkstra_base()
 		CU_ASSERT(edge_distance(edge) - exp_distances[i] < 0.01);
 		CU_ASSERT(edge_node(edge) == exp_through[i])
 	}
-
-	CU_ASSERT(visited_edges == 9);
 }
 
 int main()

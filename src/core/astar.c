@@ -8,7 +8,7 @@
 
 
 
-hashmap     *astar(graph *g, int src, int p, graph *h, int *visited_edge_number)
+hashmap     *astar(graph *g, int src, int p, graph *h, int *visited_node_number)
 {
     int_list    *nodes      = graph_get_all_nodes_names(g);
     int         n           = nodes->size;
@@ -66,7 +66,8 @@ hashmap     *astar(graph *g, int src, int p, graph *h, int *visited_edge_number)
         edge    *current_result     = hashmap_get(results, edge_node(current));
 
         hashmap_put(nodes_visited, edge_node(current), malloc(1));
-
+        (*visited_node_number)++;
+        
         // iterate through all successors
         for (int i = 0; i < successors_number; i++)
         {
@@ -76,7 +77,6 @@ hashmap     *astar(graph *g, int src, int p, graph *h, int *visited_edge_number)
                 continue;
             }
 
-            (*visited_edge_number)++;
 
             // current successor
             edge *successor     = edge_list[i]; 

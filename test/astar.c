@@ -44,12 +44,14 @@ void astar_base()
 			dist, 
 			6);
 
-	int visited_edge_number = 0;
+	int visited_node_number = 0;
 
-	hashmap *r = astar(g, A, Z, h, &visited_edge_number);
+	hashmap *r = astar(g, A, Z, h, &visited_node_number);
 
     float exp_distances[] = { 0.0, 4.0, 3.0, 10.0, 12.0, 9.0, 17.0};
 	int exp_through[]     = { A, A, A, C, D, B, E };
+
+    CU_ASSERT(visited_node_number == 5);
 
     edge *edge;
 	for (int i = 0; i < 7; i++) 

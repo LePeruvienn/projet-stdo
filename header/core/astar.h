@@ -11,6 +11,6 @@
  * \param h Graph representing the euclidian distance between each node
  * \return Array of int
  */
-hashmap     *astar(graph *g, int src, int p, graph *h, int *visited_edge_number);
+hashmap     *astar(graph *g, int src, int p, graph *h, int *visited_node_number);
 
 #endif // ASTAR_H

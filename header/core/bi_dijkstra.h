@@ -10,6 +10,6 @@
  * \param src The source node
  * \return Array of int
  */
-hashmap     *bi_dijkstra(graph *g, int src, int dest, int *visited_edge_number);
+hashmap     *bi_dijkstra(graph *g, int src, int dest, int *visited_node_number);
 
 #endif // BI_DIJKSTRA_H
