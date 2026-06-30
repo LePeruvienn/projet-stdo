@@ -175,8 +175,8 @@ void handle_window_input(window w, camera c)
 	float dx = 0.f;
 	float dy = 0.f;
 
-	float zoom_speed = 1.f / 5.f;
-	float dzoom = scroll_delta / zoom_speed;
+	float zoom_speed = 20.f;
+	float dzoom = scroll_delta * zoom_speed;
 	scroll_delta = 0.f;
 
 	int mouse_button = glfwGetMouseButton(handle, GLFW_MOUSE_BUTTON_LEFT);

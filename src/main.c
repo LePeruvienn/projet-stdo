@@ -4,6 +4,10 @@
 #include "visu/window.h"
 #include "visu/camera.h"
 #include "visu/renderer.h"
+#include "visu/circle_renderer.h"
+#include "visu/text_renderer.h"
+#include "visu/line_renderer.h"
+#include "visu/grid_renderer.h"
 
 #include "utils/logger.h"
 #include "utils/ptr.h"
@@ -99,13 +103,22 @@ static void fit_camera()
 	float span_x = max_x - min_x;
 	float span_y = max_y - min_y;
 
-	float zoom = fmaxf(span_x / (float) window_width, span_y / (float) window_height);
+	float aspect = (float) window_width / (float) window_height;
 
-	zoom *= 1.1f;
+	float zoom_x = span_x / 2.f;
+	float zoom_y = (span_y / 2.f) * aspect;
+
+	float zoom = fmaxf(zoom_x, zoom_y);
+	zoom *= 1.1f;  // marge pour ne pas coller les bords
 
 	camera_move(c, center_x, center_y, zoom);
-}
 
+	// On adapte les paramêtre de rendu à la taille du problème
+	set_circle_renderer_scale(zoom * 0.015f);
+	set_text_renderer_text_size(zoom * 0.0075f);
+	set_line_renderer_thickness(zoom * 0.0002f);
+	set_grid_renderer_grid_size(zoom * 0.5f);
+}
 
 int main(int argc, char* argv[])
 {
