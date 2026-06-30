@@ -8,7 +8,7 @@ Eva GENTILHOMME, Arthur PINEL
 
 ## 1. Introduction
 
-Ce projet implémente l'algorithme de Dijkstra et deux variantes A* et la recherche bidirectionnelle  pour calculer la plus courte chaîne entre deux sommets dans un graphe euclidien non orienté. L'objectif est double : produire des implémentations efficaces et comparer expérimentalement les trois algorithmes sur des instances réelles issues de la TSPLIB (att48, a280).
+Ce projet implémente l'algorithme de Dijkstra et deux variantes A* et la recherche bidirectionnelle pour calculer la plus courte chaîne entre deux sommets dans un graphe euclidien non orienté. L'objectif est double : produire des implémentations efficaces et comparer expérimentalement les trois algorithmes sur des instances réelles issues de la TSPLIB (att48, a280).
 
 En complément, un outil de visualisation interactif a été développé pour explorer les instances et observer les chemins calculés en temps réel.
 
@@ -24,9 +24,25 @@ Le sujet préconise Java pour l'implémentation des algorithmes. Nous avons fait
 - **Intégration avec le moteur de rendu** : le bonus visualisation utilise OpenGL/GLFW, dont les bindings natifs sont plus directs en C qu'en Java (pas de couche JNI), ce qui simplifie l'architecture globale et réduit les dépendances.
 
 
-### 2.2 Représentation du graphe
+### 2.2 Structures utilisées
 
-Le graphe est représenté par une table de hachage associant à chaque sommet la liste de ses voisins et des coûts d'arête associés, conformément à la section 3.1 du sujet. L'implémentation utilise un chaînage pour la gestion des collisions (cf. `core/hashmap.c`).
+#### 2.2.1 Table de hachage
+
+Nous avons implémenté une table de hachage simple en C, avec chaînage quand collision il y a. Le choix a été fait de rendre cette structure "générique", c'est à dire qu'elle demande un pointeur vers void en tant que valeur, et à l'initialisation elle demande la fonction permettant de libérer la mémoire des valeurs (pour quand un objet est retiré de la hashmap, ou quand la hashmap est libérée).
+De cette façon, nous pouvons l'utiliser autant pour stocker des chemins dans le graphe, que pour stocker les noeuds marqués dans les divers algorithmes implémentés.
+
+#### 2.2.2 Tas
+
+Un tas, cette fois spécialisé pour stocker des sommets, a aussi été implémenté. 
+Nous avons implémenté un tas binaire priorisé minimum, et nous pouvons donc changer la priorisation d'un chemin à partir du noeud associé avec, que ce soit en augmentant la priorité (il sera moins important) ou en la réduisant.
+En mémoire, il est représenté par une array contigue qui est réallouée au besoin.
+
+Nous utilisons le tas dans chaque algorithme pour stocker les noeuds non-visités, ainsi que les prioriser selon leur distance par rapport à la racine. La structure garantissant que chaque parent a une distance inférieure à ses enfants, quand nous utilisons `edge *heap_pop(heap *h)`, nous avons la garantie d'avoir le meilleur noeud à utiliser.
+
+#### 2.2.3 Graphe
+
+Le graphe est représenté par une table de hachage associant à chaque sommet la liste de ses voisins et des coûts d'arête associés, conformément à la section 3.1 du sujet. 
+Le nom des sommets est aussi stocké, et l'ajout d'un sommet dans un sens l'ajoute aussi dans l'autre dans la table de hachage interne, pour que le graphe reste non-orienté.
 
 ### 2.3 Construction des instances
 
@@ -42,10 +58,10 @@ arête(i, j) existe ⟺ dist(i, j) ≤ threshold
 ### 3.1 Dijkstra
 
 Implémentation standard de l'algorithme décrit en section 2.1 du sujet : exploration par ordre croissant de distance depuis la racine, jusqu'à épuisement de la frontière ou (selon la variante d'arrêt utilisée) jusqu'à extraction du sommet cible.
+Une hashmap est utilisée pour stocker les résultats (le noeud visité, ainsi que la distance totale pour y arriver depuis le noeud source), et un pointeur vers int est utilisé pour mettre à jour le nombre de sommets visités. 
+En interne de l'algorithme, une table de hachage est aussi utilisée pour marquer les points. Elle est utilisée pour simuler un Set, c'est à dire une structure de données non-ordonnée et sans répétitions, donc nous initialisons chaque valeur avec juste un octet alloué, qui est libéré à la libération de la hashmap.
 
 ### 3.2 A*
-
-> **[À compléter] — l'heuristique h(x) n'est pas encore fixée.**
 
 Le sujet propose la distance euclidienne au sommet destination comme heuristique par défaut :
 
@@ -53,7 +69,10 @@ Le sujet propose la distance euclidienne au sommet destination comme heuristique
 h(x) = √((x_p − x_x)² + (y_p − y_x)²)
 ```
 
-Cette heuristique est admissible (elle ne surestime jamais le coût réel restant, car les coûts d'arête du graphe sont eux-mêmes des distances euclidiennes), ce qui garantit l'optimalité de A* sur ces instances. À confirmer/détailler une fois l'implémentation finalisée.
+Cette heuristique est admissible (elle ne surestime jamais le coût réel restant, car les coûts d'arête du graphe sont eux-mêmes des distances euclidiennes), ce qui garantit l'optimalité de A* sur ces instances.
+Le seul problème c'est que ça demande de pré-compiler une table pour cette heuristique: si nous savons à l'avance quel chemin nous voulons faire il n'y a pas de problème (on a besoin que de compiler depuis un noeud), mais si ne le connait pas on doit compiler pour chaque noeud vers chaque noeud.
+
+D'un point de vue technique, nous stockons cette heuristique dans un graphe donné en argument en plus du graphe initial.
 
 ### 3.3 Recherche bidirectionnelle
 
@@ -63,27 +82,17 @@ Implémentation de la variante décrite en section 2.2 du sujet : exploration al
 π_av(p) > π_av(u) + c_uv + π_ar(v)  ⟹  mise à jour
 ```
 
-> **[À compléter] — préciser la stratégie d'équilibrage avant/arrière effectivement utilisée (alternance stricte, ou basée sur la taille de la frontière, etc.)**
+Pour notre algorithme, nous alternons strictement entre avant/arrière jusqu'à qu'une itération tombe sur un noeud déjà visité par le passage opposé.
 
-## 4. Structure de données : le Tas
+## 4. Moteur de rendu (Bonus visualisation)
 
-> **[Section à compléter ultérieurement — Partie 1 du projet non réalisée à ce stade]**
-
-Cette section doit décrire :
-- la structure de tas retenue (binaire, indexé pour `decrease-key`, etc.)
-- les primitives implémentées : extraction du minimum, modification de priorité, suppression, insertion
-- la complexité de chaque opération
-- son intégration dans Dijkstra/A*/bidirectionnel (gestion de la frontière de sommets ouverts)
-
-## 5. Moteur de rendu (Bonus visualisation)
-
-### 5.1 Architecture générale
+### 4.1 Architecture générale
 
 Le moteur de rendu est un renderer 2D OpenGL dédié, écrit en C avec un minimum de dépendances externes : uniquement OpenGL et GLFW (gestion de fenêtre et d'entrées). Ce choix limite la surface de dépendance et permet une optimisation fine du pipeline de rendu, en évitant la surcharge d'un moteur 2D généraliste non adapté au cas d'usage (rendu de graphes : cercles + segments en grand nombre).
 
 Le rendu repose sur de l'**instancing** : les sommets (cercles) et les arêtes (lignes) sont chacun dessinés en un seul draw call par lot, via des buffers d'instances dédiés (`circle_renderer`, `line_renderer`), plutôt qu'un draw call par primitive. Cette approche réduit drastiquement l'overhead CPU↔GPU sur les instances de grande taille (plusieurs centaines à milliers de sommets/arêtes).
 
-### 5.2 Fonctionnalités interactives
+### 4.2 Fonctionnalités interactives
 
 L'outil permet :
 
@@ -103,16 +112,16 @@ L'outil permet :
 | `Molette Souris` | Zoomer / Dé-zoomer                                 |
 
 
-## 6. Utilisation
+## 5. Utilisation
 
-### 6.1 Cloner le projet
+### 5.1 Cloner le projet
 
 ```bash
 git clone https://github.com/LePeruvienn/projet-stdo
 cd projet-stdo
 ```
 
-### 6.2 Compiler
+### 5.2 Compiler
 
 Le projet utilise CMake comme système de build, avec un Makefile en wrapper pour simplifier les commandes courantes.
 
@@ -122,7 +131,7 @@ make
 
 Cette commande configure et compile l'ensemble du projet (algorithmes, moteur de rendu, exécutable principal).
 
-### 6.3 Lancer le programme
+### 5.3 Lancer le programme
 
 ```
 Usage : bin/projet_stdo <chemin_vers_fichier.tsp> <p>
@@ -139,13 +148,13 @@ Exemple :
 
 > **Important** : le programme doit impérativement être lancé depuis la **racine du projet**. Les assets (shaders, polices, etc.) sont chargés via des chemins relatifs (`asset/shader/...`) ; lancer l'exécutable depuis un autre répertoire de travail empêche leur chargement et fait échouer le démarrage du moteur de rendu.
 
-### 6.4 Compatibilité des instances
+### 5.4 Compatibilité des instances
 
 Le programme prend en charge la quasi-totalité des fichiers `.tsp` du dépôt [TSPLIB](https://github.com/shredderzwj/TSPLIB/tree/master/res), tant que le fichier expose une section `NODE_COORD_SECTION` exploitable par le parseur.
 
 > **Important** : Si il ya d'autres sections que `NODE_COORD_SECTION`, le parser n'arrivera pas à lire le fichier ; certain problème ne sont pas exploitable alors avec le loigiciel.
 
-## 8. Résultats expérimentaux
+## 6. Résultats expérimentaux
 
 > **[Section à compléter — chiffres pas encore en main]**
 
@@ -176,7 +185,7 @@ les métriques suivantes :
 | a280 | 6% | 8 → 92 | A* | | | |
 | a280 | 6% | 8 → 92 | Bidirectionnel | | | |
 
-## 9. Capture vidéo
+## 7. Capture vidéo
 
 ![d493](asset/screenshot/d493.png)
 ![video_1](asset/screenshot/video_1.gif)
