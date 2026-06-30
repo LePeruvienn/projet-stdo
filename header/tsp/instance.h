@@ -7,6 +7,16 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+typedef enum TSP_Algo TSP_Algo;
+
+enum TSP_Algo
+{
+	e_TSP_DIJKSTRA = 0,
+	e_TSP_A_STAR,
+
+	e_TSP_ALGO_END
+};
+
 typedef struct TSP_Instance* TSP_Instance;
 
 typedef struct TSP_Instance_Edge TSP_Instance_Edge;
@@ -41,7 +51,9 @@ struct TSP_Path
 	TSP_Instance_Edge* edges;
 	size_t length;
 	float cost;
+
 	uint64_t compute_time;
+	int edge_visited_amount;
 };
 
 TSP_Instance TSP_Instance_create(const char* path, float p);
@@ -65,5 +77,9 @@ TSP_Node_Number TSP_Instance_get_source(TSP_Instance instance);
 TSP_Node_Number TSP_Instance_get_target(TSP_Instance instance);
 
 void TSP_Instance_set_random_source_target(TSP_Instance instance);
+
+TSP_Algo TSP_Instance_get_algo(TSP_Instance instance);
+void TSP_Instance_set_algo(TSP_Instance instance, TSP_Algo algo);
+void TSP_Instance_go_next_algo(TSP_Instance instance);
 
 #endif // TSP_INSTANCE_H

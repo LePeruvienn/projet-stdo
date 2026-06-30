@@ -4,6 +4,7 @@
 #include "core/graph.h"
 #include "core/hashmap.h"
 #include "core/dijkstra.h"
+#include "core/astar.h"
 
 #include "utils/logger.h"
 #include "utils/ptr.h"
@@ -25,6 +26,8 @@ struct TSP_Instance
 	float p;
 	graph* g;
 
+	TSP_Algo algo;
+
 	bool have_shortest_path;
 
 	TSP_Node_Number source_node;
@@ -32,6 +35,30 @@ struct TSP_Instance
 
 	TSP_Path shortest_path;
 };
+
+static hashmap* compute_current_aglo(TSP_Instance instance)
+{
+	instance->shortest_path.edge_visited_amount = 0;
+
+	switch(instance->algo)
+	{
+		case e_TSP_DIJKSTRA:
+			return dijkstra(
+					instance->g, (int) instance->source_node,
+					&instance->shortest_path.edge_visited_amount);
+
+		case e_TSP_A_STAR:
+			LOG_ERROR("A* is not supported");
+			return NULL;
+
+		case e_TSP_ALGO_END:
+			LOG_ERROR("Algo is end ?? Bad value");
+			return NULL;
+	}
+
+	LOG_ERROR("The enum doesnt match");
+	return NULL;
+}
 
 static TSP_Node_Coord* find_node_by_number(TSP_Instance instance, TSP_Node_Number node_number)
 {
@@ -179,8 +206,9 @@ TSP_Instance TSP_Instance_create(const char* path, float p)
 	instance->edges.size = 0;
 	instance->g = NULL;
 
-	instance->have_shortest_path = false;
+	instance->algo = e_TSP_DIJKSTRA;
 
+	instance->have_shortest_path = false;
 
 	instance->source_node = 0;
 	instance->target_node = 0;
@@ -188,6 +216,7 @@ TSP_Instance TSP_Instance_create(const char* path, float p)
 	instance->shortest_path.length = 0;
 	instance->shortest_path.compute_time = 0;
 	instance->shortest_path.cost = 0.f;
+	instance->shortest_path.edge_visited_amount = 0;
 
 	instance->shortest_path.is_unreachable = true;
 
@@ -275,7 +304,9 @@ void TSP_Instance_compute_shortest_path(TSP_Instance instance)
 
 	uint64_t bench_start = bench_now_ms();
 
-	hashmap* h = dijkstra(instance->g, instance->source_node);
+	hashmap* h = compute_current_aglo(instance);
+
+	LOG_INFO("Edges visited amount : %d", instance->shortest_path.edge_visited_amount);
 
 	uint64_t bench_end = bench_now_ms();
 
@@ -416,4 +447,25 @@ void TSP_Instance_set_random_source_target(TSP_Instance instance)
 
 	TSP_Instance_set_source(instance, source);
 	TSP_Instance_set_target(instance, target);
+}
+
+
+TSP_Algo TSP_Instance_get_algo(TSP_Instance instance)
+{
+	return instance->algo;
+}
+
+void TSP_Instance_set_algo(TSP_Instance instance, TSP_Algo algo)
+{
+	instance->algo = algo;
+}
+
+void TSP_Instance_go_next_algo(TSP_Instance instance)
+{
+	++instance->algo;
+
+	if (instance->algo == e_TSP_ALGO_END)
+	{
+		instance->algo = 0;
+	}
 }

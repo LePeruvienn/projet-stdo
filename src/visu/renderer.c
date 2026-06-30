@@ -53,6 +53,7 @@ static void draw_UI(TSP_Instance instance)
 
 			TSP_Path shortest = TSP_Instance_get_shortest_path(instance);
 			uint64_t compute_time = shortest.compute_time;
+			int edge_visited_amount = shortest.edge_visited_amount;
 
 			size_t str_size = 128;
 			char temp[str_size];
@@ -61,6 +62,9 @@ static void draw_UI(TSP_Instance instance)
 
 			draw_text(temp, 0.0f, - 0.9f);
 
+			snprintf(temp, str_size, "Edge visited amount (for all graph) : %d", edge_visited_amount);
+			draw_text(temp, 0.0f, - 0.8f);
+
 		text_end_draw();
 
 		if (shortest.is_unreachable)
@@ -68,7 +72,7 @@ static void draw_UI(TSP_Instance instance)
 			set_text_renderer_color((color_rgba) {0xFF, 0xFF, 0x00, 0xFF});
 
 			text_begin_draw();
-				draw_text("Impossible de trouver un chemin.", 0.0f, - 0.8f);
+				draw_text("Impossible de trouver un chemin.", 0.0f, - 0.7f);
 			text_end_draw();
 
 			set_text_renderer_color((color_rgba) {0xFF, 0xFF, 0xFF, 0xFF});
