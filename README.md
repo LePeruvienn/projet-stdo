@@ -170,10 +170,10 @@ Le programme prend en charge la quasi-totalité des fichiers `.tsp` du dépôt [
 
 Cette section doit comparer, pour chaque algorithme (Dijkstra, A*, bidirectionnel), sur les instances suivantes :
 
-- `att48.tsp`
-- `a280.tsp`
-- `gil262.tsp`
-- `ali535.tsp`
+- `att48.tsp` : 48 sommets.
+- `a280.tsp` : 280 sommets.
+- `gil262.tsp` : 262 sommets.
+- `ali535.tsp` : 535 sommets.
 
 Tous disponible dans le dossier `TSPLIB/res` du projet. Je vous invite à tester de vous même de votre coté.
 
