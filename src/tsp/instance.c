@@ -181,12 +181,15 @@ TSP_Instance TSP_Instance_create(const char* path, float p)
 
 	instance->have_shortest_path = false;
 
+
 	instance->source_node = 0;
 	instance->target_node = 0;
 	instance->shortest_path.edges = NULL;
 	instance->shortest_path.length = 0;
 	instance->shortest_path.compute_time = 0;
 	instance->shortest_path.cost = 0.f;
+
+	instance->shortest_path.is_unreachable = true;
 
 	setup_instance(instance);
 
@@ -233,6 +236,8 @@ void TSP_Instance_set_source(TSP_Instance instance, TSP_Node_Number source)
 		instance->shortest_path.cost = 0.f;
 		instance->shortest_path.compute_time = 0.f;
 		instance->have_shortest_path   = false;
+		instance->shortest_path.is_unreachable = true;
+
 	}
 
 	instance->source_node = source;
@@ -251,6 +256,7 @@ void TSP_Instance_set_target(TSP_Instance instance, TSP_Node_Number target)
 		instance->shortest_path.cost = 0.f;
 		instance->shortest_path.compute_time = 0.f;
 		instance->have_shortest_path   = false;
+		instance->shortest_path.is_unreachable = true;
 	}
 
 	instance->target_node = target;
@@ -282,15 +288,30 @@ void TSP_Instance_compute_shortest_path(TSP_Instance instance)
 	int current = target;
 	int source  = (int) instance->source_node;
 
+	size_t max_iterations = (size_t) graph_get_node_number(instance->g);
+	size_t iterations = 0;
+
+	bool unreachable = false;
+	bool cycle_detected = false;
+
 	while (current != source)
 	{
+		if (iterations >= max_iterations)
+		{
+			LOG_WARNING("Nb iterations %zu : Cycle detected while getting path from %d to %d", iterations, target, source);
+			cycle_detected = true;
+			break;
+		}
+
+		++iterations;
+
 		edge* e = hashmap_get(h, current);
 
 		if (e == NULL)
 		{
-			LOG_ERROR("Node %d is unreachable from source %d", current, source);
-			hashmap_free(h);
-			return;
+			LOG_WARNING("Node %d is unreachable from source %d", current, source);
+			unreachable = true;
+			break;
 		}
 		
 		if (tmp_size == len)
@@ -302,6 +323,21 @@ void TSP_Instance_compute_shortest_path(TSP_Instance instance)
 		
 		tmp[len++] = current;
 		current    = edge_node(e);
+	}
+
+	if (unreachable || cycle_detected)
+	{
+		instance->shortest_path.is_unreachable = true;
+
+		instance->shortest_path.edges = NULL;
+		instance->shortest_path.length = 0;
+		instance->shortest_path.cost = - 1.f;
+		instance->shortest_path.compute_time = bench_end - bench_start;
+		instance->have_shortest_path = true;
+
+		hashmap_free(h);
+		free(tmp);
+		return;
 	}
 
 	tmp[len++] = instance->source_node;
@@ -328,6 +364,7 @@ void TSP_Instance_compute_shortest_path(TSP_Instance instance)
 	}
 
 	instance->have_shortest_path = true;
+	instance->shortest_path.is_unreachable = false;
 
 	hashmap_free(h);
 	free(tmp);

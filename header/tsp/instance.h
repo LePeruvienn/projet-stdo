@@ -36,6 +36,8 @@ struct TSP_Instance_Nodes
 
 struct TSP_Path
 {
+	bool is_unreachable;
+
 	TSP_Instance_Edge* edges;
 	size_t length;
 	float cost;

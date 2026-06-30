@@ -32,33 +32,48 @@ static void draw_UI(TSP_Instance instance)
 {
 	set_text_renderer_to_screen_space(true);
 
-	text_begin_draw();
-
 	if (draw_help)
 	{
+		text_begin_draw();
+
 			draw_text("Controles :", 0.0f, 0.9f);
 			draw_text("- [C/c] : Agrandir/retrecir les cercles", 0.0f, 0.8f);
 			draw_text("- [L/l] : Agrandir/retrecir les lignes", 0.0f, 0.7f);
 			draw_text("- [G/g] : Agrandir/retrecir la grille", 0.0f, 0.6f);
 			draw_text("- [H/h] : Afficher/cacher ce message !", 0.0f, 0.5f);
+
+		text_end_draw();
 	}
 
 	bool have_shortest = TSP_Instance_have_shortest_path(instance);
 
 	if (have_shortest)
 	{
-		TSP_Path shortest = TSP_Instance_get_shortest_path(instance);
-		uint64_t compute_time = shortest.compute_time;
+		text_begin_draw();
 
-		size_t str_size = 128;
-		char temp[str_size];
+			TSP_Path shortest = TSP_Instance_get_shortest_path(instance);
+			uint64_t compute_time = shortest.compute_time;
 
-		snprintf(temp, str_size, "Compute time : %ld ms", compute_time);
+			size_t str_size = 128;
+			char temp[str_size];
 
-		draw_text(temp, 0.0f, - 0.9f);
+			snprintf(temp, str_size, "Compute time : %ld ms", compute_time);
+
+			draw_text(temp, 0.0f, - 0.9f);
+
+		text_end_draw();
+
+		if (shortest.is_unreachable)
+		{
+			set_text_renderer_color((color_rgba) {0xFF, 0xFF, 0x00, 0xFF});
+
+			text_begin_draw();
+				draw_text("Impossible de trouver un chemin.", 0.0f, - 0.8f);
+			text_end_draw();
+
+			set_text_renderer_color((color_rgba) {0xFF, 0xFF, 0xFF, 0xFF});
+		}
 	}
-
-	text_end_draw();
 
 	set_text_renderer_to_screen_space(false);
 }
