@@ -36,28 +36,15 @@ struct TSP_Instance
 	TSP_Path shortest_path;
 };
 
-static hashmap* compute_current_aglo(TSP_Instance instance)
+static void reset_shortest_path(TSP_Instance instance)
 {
-	instance->shortest_path.edge_visited_amount = 0;
-
-	switch(instance->algo)
-	{
-		case e_TSP_DIJKSTRA:
-			return dijkstra(
-					instance->g, (int) instance->source_node,
-					&instance->shortest_path.edge_visited_amount);
-
-		case e_TSP_A_STAR:
-			LOG_ERROR("A* is not supported");
-			return NULL;
-
-		case e_TSP_ALGO_END:
-			LOG_ERROR("Algo is end ?? Bad value");
-			return NULL;
-	}
-
-	LOG_ERROR("The enum doesnt match");
-	return NULL;
+	FREE_PTR_NOT_NULL(instance->shortest_path.edges, free);
+	instance->shortest_path.edges = NULL;
+	instance->shortest_path.length = 0;
+	instance->shortest_path.cost = 0.f;
+	instance->shortest_path.compute_time = 0.f;
+	instance->have_shortest_path   = false;
+	instance->shortest_path.is_unreachable = true;
 }
 
 static TSP_Node_Coord* find_node_by_number(TSP_Instance instance, TSP_Node_Number node_number)
@@ -79,6 +66,72 @@ static float node_dist(const TSP_Node_Coord* a, const TSP_Node_Coord* b)
 	double dy = a->py - b->py;
 
 	return sqrtf(dx * dx + dy * dy);
+}
+
+static graph* build_heuristic_graph(TSP_Instance instance, TSP_Node_Number target_number)
+{
+	TSP_Node_Coord* target_coord = find_node_by_number(instance, target_number);
+
+	if (target_coord == NULL)
+	{
+		LOG_ERROR("Target node %d not found", (int) target_number);
+		return NULL;
+	}
+
+	graph* h = graph_new();
+
+	size_t n = instance->nodes.size;
+
+	int*   neighbor_nodes = malloc(sizeof(int) * n);
+	float* neighbor_dists = malloc(sizeof(float) * n);
+
+	size_t count = 0;
+
+	for (size_t i = 0; i < n; ++i)
+	{
+		TSP_Node_Coord* node = &instance->nodes.data[i];
+
+		if (node->node_number == target_number)
+			continue;
+
+		neighbor_nodes[count] = (int) node->node_number;
+		neighbor_dists[count] = node_dist(node, target_coord);
+		++count;
+	}
+
+	graph_bulk_add_edge(h, (int) target_number, neighbor_nodes, neighbor_dists, (int) count);
+
+	free(neighbor_nodes);
+	free(neighbor_dists);
+
+	return h;
+}
+
+static hashmap* compute_current_aglo(TSP_Instance instance)
+{
+	instance->shortest_path.edge_visited_amount = 0;
+
+	switch(instance->algo)
+	{
+		case e_TSP_DIJKSTRA:
+			return dijkstra(
+					instance->g, (int) instance->source_node,
+					&instance->shortest_path.edge_visited_amount);
+
+		case e_TSP_A_STAR:
+			graph* h = build_heuristic_graph(instance, instance->target_node);
+			CHECK_IS_NULL(h, "Failed to build heuristic graph for A*");
+			return astar(instance->g,
+					(int) instance->source_node, (int) instance->target_node, h,
+					&instance->shortest_path.edge_visited_amount);
+
+		case e_TSP_ALGO_END:
+			LOG_ERROR("Algo is end ?? Bad value");
+			return NULL;
+	}
+
+	LOG_ERROR("The enum doesnt match");
+	return NULL;
 }
 
 static void setup_nodes(TSP_Instance instance)
@@ -258,15 +311,7 @@ void TSP_Instance_set_source(TSP_Instance instance, TSP_Node_Number source)
 
 	if (instance->have_shortest_path)
 	{
-		FREE_PTR_NOT_NULL(instance->shortest_path.edges, free);
-
-		instance->shortest_path.edges = NULL;
-		instance->shortest_path.length = 0;
-		instance->shortest_path.cost = 0.f;
-		instance->shortest_path.compute_time = 0.f;
-		instance->have_shortest_path   = false;
-		instance->shortest_path.is_unreachable = true;
-
+		reset_shortest_path(instance);
 	}
 
 	instance->source_node = source;
@@ -278,14 +323,7 @@ void TSP_Instance_set_target(TSP_Instance instance, TSP_Node_Number target)
 
 	if (instance->have_shortest_path)
 	{
-		FREE_PTR_NOT_NULL(instance->shortest_path.edges, free);
-
-		instance->shortest_path.edges = NULL;
-		instance->shortest_path.length = 0;
-		instance->shortest_path.cost = 0.f;
-		instance->shortest_path.compute_time = 0.f;
-		instance->have_shortest_path   = false;
-		instance->shortest_path.is_unreachable = true;
+		reset_shortest_path(instance);
 	}
 
 	instance->target_node = target;
@@ -358,11 +396,9 @@ void TSP_Instance_compute_shortest_path(TSP_Instance instance)
 
 	if (unreachable || cycle_detected)
 	{
-		instance->shortest_path.is_unreachable = true;
+		reset_shortest_path(instance);
 
-		instance->shortest_path.edges = NULL;
-		instance->shortest_path.length = 0;
-		instance->shortest_path.cost = - 1.f;
+		instance->shortest_path.is_unreachable = true;
 		instance->shortest_path.compute_time = bench_end - bench_start;
 		instance->have_shortest_path = true;
 
@@ -455,9 +491,29 @@ TSP_Algo TSP_Instance_get_algo(TSP_Instance instance)
 	return instance->algo;
 }
 
+const char* TSP_Instance_get_algo_name(TSP_Instance instance)
+{
+	switch(instance->algo)
+	{
+		case e_TSP_DIJKSTRA:
+			return "Dijkstra";
+
+		case e_TSP_A_STAR:
+			return "A Star";
+
+		case e_TSP_ALGO_END:
+			return "Undefined (Enum End)";
+	}
+
+	LOG_ERROR("The enum doesnt match");
+	return "Undefined";
+}
+
 void TSP_Instance_set_algo(TSP_Instance instance, TSP_Algo algo)
 {
 	instance->algo = algo;
+
+	reset_shortest_path(instance);
 }
 
 void TSP_Instance_go_next_algo(TSP_Instance instance)
@@ -468,4 +524,7 @@ void TSP_Instance_go_next_algo(TSP_Instance instance)
 	{
 		instance->algo = 0;
 	}
+
+	reset_shortest_path(instance);
 }
+

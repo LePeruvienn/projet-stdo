@@ -79,6 +79,8 @@ TSP_Node_Number TSP_Instance_get_target(TSP_Instance instance);
 void TSP_Instance_set_random_source_target(TSP_Instance instance);
 
 TSP_Algo TSP_Instance_get_algo(TSP_Instance instance);
+const char* TSP_Instance_get_algo_name(TSP_Instance instance);
+
 void TSP_Instance_set_algo(TSP_Instance instance, TSP_Algo algo);
 void TSP_Instance_go_next_algo(TSP_Instance instance);
 

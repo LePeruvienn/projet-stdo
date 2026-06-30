@@ -72,12 +72,18 @@ static void draw_UI(TSP_Instance instance)
 			set_text_renderer_color((color_rgba) {0xFF, 0xFF, 0x00, 0xFF});
 
 			text_begin_draw();
-				draw_text("Impossible de trouver un chemin.", 0.0f, - 0.7f);
+				draw_text("Impossible de trouver un chemin.", 0.0f, - 0.6f);
 			text_end_draw();
 
 			set_text_renderer_color((color_rgba) {0xFF, 0xFF, 0xFF, 0xFF});
 		}
 	}
+
+	const char* algo_name = TSP_Instance_get_algo_name(instance);
+
+	text_begin_draw();
+		draw_text(algo_name, 0.f, - 0.7f);
+	text_end_draw();
 
 	set_text_renderer_to_screen_space(false);
 }

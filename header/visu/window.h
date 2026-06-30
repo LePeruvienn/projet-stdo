@@ -138,4 +138,6 @@ void handle_window_resize(window w, camera c);
 
 mouse_status window_get_mouse_status(window w);
 
+bool window_get_key_pressed(window w, int key);
+
 #endif // WINDOW_H

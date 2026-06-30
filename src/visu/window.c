@@ -279,3 +279,8 @@ mouse_status window_get_mouse_status(window w)
 
 	return (mouse_status) {(float) x, (float) y, left_click, right_click};
 }
+
+bool window_get_key_pressed(window w, int key)
+{
+	return glfwGetKey(w->handle, key) == GLFW_PRESS;
+}

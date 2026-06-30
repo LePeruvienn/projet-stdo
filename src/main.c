@@ -27,6 +27,25 @@ static camera c = NULL;
 
 static TSP_Instance tsp_instance = NULL;
 
+static void handle_algo_switch()
+{
+	CHECK_IS_NULL(tsp_instance, "TSP instance is NULL");
+	CHECK_IS_NULL(w, "Window is NULL");
+
+	static bool last_pressed = false;
+
+	bool pressed = window_get_key_pressed(w, GLFW_KEY_Q); // A en  AZERTY
+
+	if (pressed && !last_pressed)
+	{
+		TSP_Instance_go_next_algo(tsp_instance);
+		// reclaculer pour le nouvelle algo
+		TSP_Instance_compute_shortest_path(tsp_instance);
+	}
+
+	last_pressed = pressed;
+}
+
 static void handle_picking()
 {
 	CHECK_IS_NULL(w, "Cannot do picking with NULL window");
@@ -173,8 +192,9 @@ int main(int argc, char* argv[])
 	{
 		handle_window_input(w, c);
 
+		handle_algo_switch();
 		handle_picking();
-	
+
 		render(tsp_instance);
 
 		window_update_events(w);
